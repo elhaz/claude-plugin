@@ -1,69 +1,105 @@
 ---
 name: youtube-extract
 description: YouTube URL에서 자막을 추출하여 Obsidian 마크다운 문서로 변환
-argument-hint: <YouTube_URL>
+argument-hint: <YouTube_URL> [추가 URL...]
 allowed-tools:
   - Bash
   - Read
   - Write
   - Edit
+  - Task
 ---
 
 # YouTube 자막 추출 및 Obsidian 문서 변환
 
 YouTube URL을 받아 자막을 다운로드하고, Obsidian 스타일의 구조화된 마크다운 문서로 변환한다.
 
+> [!important] 핵심 원칙
+> 1. **임시 폴더 사용**: Obsidian이 파일을 자동 수정하는 것을 방지하기 위해, 모든 중간 작업은 **임시 폴더**에서 수행하고, 최종 완성된 파일만 `00_Inbox/`로 이동한다.
+> 2. **병렬 처리**: 여러 URL이 제공되면 각 URL을 별도의 서브에이전트에서 병렬로 처리한다.
+
 ## 워크플로우
 
-### 1단계: YouTube URL 검증
+### 0단계: URL 파싱 및 병렬 처리 결정
 
-인자로 받은 URL이 유효한 YouTube URL인지 확인한다:
+인자로 받은 URL 목록을 파싱한다:
+- 공백이나 줄바꿈으로 구분된 여러 URL 지원
+- 각 URL이 유효한 YouTube URL인지 확인
+
+**여러 URL이 제공된 경우:**
+```
+Task 도구를 사용하여 각 URL을 별도의 서브에이전트에서 병렬로 처리한다.
+각 서브에이전트에게는 단일 URL과 함께 아래 "단일 URL 처리 지침"을 전달한다.
+서브에이전트는 run_in_background: true 옵션으로 병렬 실행한다.
+```
+
+**단일 URL인 경우:**
+직접 아래 단계를 수행한다.
+
+---
+
+## 단일 URL 처리 지침
+
+### 1단계: 임시 작업 폴더 생성
+
+Obsidian vault 외부의 임시 폴더를 생성한다:
+
+```bash
+# 임시 작업 폴더 생성 (Windows)
+WORK_DIR="$TEMP/youtube-obsidian-$(date +%s)"
+mkdir -p "$WORK_DIR"
+echo "작업 폴더: $WORK_DIR"
+```
+
+### 2단계: YouTube URL 검증
+
+URL이 유효한 YouTube URL인지 확인한다:
 - `youtube.com/watch?v=` 형식
 - `youtu.be/` 형식
 - `youtube.com/shorts/` 형식
 
 URL이 없거나 유효하지 않으면 사용자에게 안내한다.
 
-### 2단계: 자막 다운로드
+### 3단계: 자막 다운로드 (임시 폴더에)
 
-yt-dlp를 사용하여 자막을 다운로드한다. 한국어 자막 우선, 없으면 영어 자막을 다운로드한다.
+yt-dlp를 사용하여 **임시 폴더**에 자막을 다운로드한다. 한국어 자막 우선, 없으면 영어 자막을 다운로드한다.
 
 ```bash
-# 한국어 자막 다운로드 시도
-yt-dlp --write-sub --write-auto-sub --sub-lang ko --sub-format vtt --skip-download -o "00_Inbox/%(title)s [%(id)s]" "<YouTube_URL>"
+# 한국어 자막 다운로드 시도 (임시 폴더에)
+yt-dlp --write-sub --write-auto-sub --sub-lang ko --sub-format vtt --skip-download -o "$WORK_DIR/%(title)s [%(id)s]" "<YouTube_URL>"
 ```
 
 한국어 자막이 없는 경우:
 ```bash
-# 영어 자막 다운로드
-yt-dlp --write-sub --write-auto-sub --sub-lang en --sub-format vtt --skip-download -o "00_Inbox/%(title)s [%(id)s]" "<YouTube_URL>"
+# 영어 자막 다운로드 (임시 폴더에)
+yt-dlp --write-sub --write-auto-sub --sub-lang en --sub-format vtt --skip-download -o "$WORK_DIR/%(title)s [%(id)s]" "<YouTube_URL>"
 ```
 
-### 3단계: VTT를 마크다운으로 변환
+### 4단계: VTT를 마크다운으로 변환 (임시 폴더에서)
 
-다운로드된 VTT 파일을 찾아 변환 스크립트를 실행한다:
+임시 폴더의 VTT 파일을 찾아 변환 스크립트를 실행한다:
 
 ```bash
-# VTT 파일 찾기
-$VTT_FILE=$(ls -t 00_Inbox/*.vtt | head -1)
+# VTT 파일 찾기 (임시 폴더에서)
+VTT_FILE=$(ls -t "$WORK_DIR"/*.vtt | head -1)
 
-# 마크다운 변환 (VTT 파일 삭제 포함)
+# 마크다운 변환 (VTT 파일 삭제 포함) - 결과물도 임시 폴더에 생성됨
 PYTHONIOENCODING=utf-8 uv run ${CLAUDE_PLUGIN_ROOT}/scripts/vtt_to_markdown.py "$VTT_FILE" --delete-vtt
 ```
 
-### 4단계: 영어 자막 번역 (필요시)
+### 5단계: 영어 자막 번역 (필요시)
 
-영어 자막인 경우, 생성된 마크다운 파일을 읽어 한국어로 번역한다:
-1. 생성된 마크다운 파일을 Read 도구로 읽는다
+영어 자막인 경우, **임시 폴더의** 마크다운 파일을 읽어 한국어로 번역한다:
+1. 임시 폴더의 마크다운 파일을 Read 도구로 읽는다
 2. 자막 내용 섹션의 텍스트를 한국어로 번역한다
-3. Edit 도구로 번역된 내용으로 교체한다
+3. Write 도구로 번역된 내용을 임시 폴더에 저장한다
 4. 언어 표시를 "영어 (번역됨)"으로 변경한다
 
-### 5단계: Obsidian 스타일로 문서 재구성 (핵심)
+### 6단계: Obsidian 스타일로 문서 재구성 (핵심)
 
-변환된 마크다운 파일을 읽고 Obsidian 스타일에 맞게 전면 재구성한다.
+**임시 폴더의** 마크다운 파일을 읽고 Obsidian 스타일에 맞게 전면 재구성한다.
 
-#### 5.1 문서 구조 재구성
+#### 6.1 문서 구조 재구성
 
 타임스탬프별 자막을 의미 있는 섹션으로 재구성:
 - 영상 내용을 분석하여 주제별로 섹션 분리
@@ -71,7 +107,7 @@ PYTHONIOENCODING=utf-8 uv run ${CLAUDE_PLUGIN_ROOT}/scripts/vtt_to_markdown.py "
 - `### 세부 항목` (H3)으로 세부 내용 구분
 - 타임스탬프는 각주로 이동하거나 섹션 시작에만 표시
 
-#### 5.2 콜아웃 추가
+#### 6.2 콜아웃 추가
 
 핵심 정보와 중요 내용에 Obsidian 콜아웃 적용:
 ```markdown
@@ -91,7 +127,7 @@ PYTHONIOENCODING=utf-8 uv run ${CLAUDE_PLUGIN_ROOT}/scripts/vtt_to_markdown.py "
 > 영상에서 인용할 만한 문구
 ```
 
-#### 5.3 표 활용
+#### 6.3 표 활용
 
 비교, 목록, 통계 정보는 표로 정리:
 ```markdown
@@ -100,14 +136,14 @@ PYTHONIOENCODING=utf-8 uv run ${CLAUDE_PLUGIN_ROOT}/scripts/vtt_to_markdown.py "
 | 내용1 | 설명1 | 참고1 |
 ```
 
-#### 5.4 내부 링크 추가
+#### 6.4 내부 링크 추가
 
 주요 인물, 기관, 개념에 Obsidian 내부 링크 적용:
 - 인물: `[[홍길동]]`, `[[일론 머스크]]`
 - 기관/기업: `[[삼성전자]]`, `[[미국 연준]]`
 - 개념: `[[인플레이션]]`, `[[양적완화]]`
 
-#### 5.5 개요 섹션 추가
+#### 6.5 개요 섹션 추가
 
 문서 상단에 개요 섹션 추가:
 ```markdown
@@ -119,7 +155,7 @@ PYTHONIOENCODING=utf-8 uv run ${CLAUDE_PLUGIN_ROOT}/scripts/vtt_to_markdown.py "
 - 핵심 포인트 3
 ```
 
-#### 5.6 태그 상세화
+#### 6.6 태그 상세화
 
 문서 하단의 태그를 영상 내용에 맞게 구체화:
 ```markdown
@@ -130,20 +166,67 @@ PYTHONIOENCODING=utf-8 uv run ${CLAUDE_PLUGIN_ROOT}/scripts/vtt_to_markdown.py "
 
 예시: `#유튜브 #국제관계 #미얀마 #제재 #무기거래 #북한`
 
-#### 5.7 브레드크럼 추가 (선택)
+#### 6.7 브레드크럼 추가 (선택)
 
 저장될 폴더에 맞는 브레드크럼 네비게이션 추가:
 ```markdown
 > [[03_Resources/폴더명/인덱스파일|상위폴더]] > 현재문서
 ```
 
-### 6단계: 완료 안내
+### 7단계: 최종 파일을 00_Inbox로 이동
+
+재구성이 완료된 최종 파일을 Obsidian vault의 `00_Inbox/` 폴더로 이동한다:
+
+```bash
+# 임시 폴더의 마크다운 파일을 00_Inbox로 이동
+MD_FILE=$(ls -t "$WORK_DIR"/*.md | head -1)
+mv "$MD_FILE" "00_Inbox/"
+
+# 임시 폴더 정리
+rm -rf "$WORK_DIR"
+```
+
+### 8단계: 완료 안내
 
 재구성 완료 후 사용자에게 다음 정보를 안내한다:
 - 생성된 파일 경로
 - 파일 제목
 - 재구성된 섹션 구조
 - 추가 작업 안내 (폴더 이동, 부모 문서 링크 추가 등)
+
+---
+
+## 병렬 처리 예시
+
+여러 URL이 제공된 경우 Task 도구를 사용하여 병렬 처리:
+
+```
+여러 URL 예시: URL1 URL2 URL3
+
+각 URL에 대해 Task 도구를 병렬로 호출:
+- subagent_type: "general-purpose"
+- run_in_background: true
+- prompt: |
+    YouTube 자막 추출 작업을 수행하세요.
+
+    URL: <URL>
+    작업 디렉토리: <현재 작업 디렉토리>
+
+    다음 단계를 따르세요:
+    1. 임시 폴더 생성: WORK_DIR="$TEMP/youtube-obsidian-$(date +%s)"
+    2. 자막 다운로드 (한국어 우선, 없으면 영어)
+    3. VTT를 마크다운으로 변환
+    4. 영어인 경우 번역
+    5. Obsidian 스타일로 재구성 (콜아웃, 표, 내부링크, 개요, 태그)
+    6. 최종 파일을 00_Inbox/로 이동
+    7. 완료 시 파일명 보고
+
+    스크립트 경로: ${CLAUDE_PLUGIN_ROOT}/scripts/vtt_to_markdown.py
+
+모든 서브에이전트 완료 후 TaskOutput으로 결과 수집하여 사용자에게 보고한다.
+```
+
+---
 
 ## Obsidian 재구성 예시
 
@@ -183,16 +266,21 @@ PYTHONIOENCODING=utf-8 uv run ${CLAUDE_PLUGIN_ROOT}/scripts/vtt_to_markdown.py "
 **태그**: #유튜브 #국제관계 #미얀마 #북한 #무기거래 #제재
 ```
 
+---
+
 ## 중요 사항
 
-1. **출력 위치**: 모든 파일은 `00_Inbox/` 폴더에 저장된다
-2. **VTT 삭제**: 변환 완료 후 원본 VTT 파일은 자동 삭제된다
-3. **재구성 필수**: 단순 변환이 아닌 Obsidian 스타일 재구성까지 완료해야 함
-4. **내용 이해**: 자막 내용을 이해하고 의미 있는 섹션으로 구조화
-5. **링크 연결**: 주요 인물/기관/개념에 내부 링크 적용
+1. **임시 폴더 사용**: 모든 중간 작업은 임시 폴더에서 수행
+2. **최종 파일만 이동**: 재구성 완료 후 `00_Inbox/`로 이동
+3. **VTT 삭제**: 변환 완료 후 원본 VTT 파일은 자동 삭제
+4. **재구성 필수**: 단순 변환이 아닌 Obsidian 스타일 재구성까지 완료해야 함
+5. **내용 이해**: 자막 내용을 이해하고 의미 있는 섹션으로 구조화
+6. **링크 연결**: 주요 인물/기관/개념에 내부 링크 적용
+7. **병렬 처리**: 여러 URL은 서브에이전트로 병렬 처리
 
 ## 오류 처리
 
 - yt-dlp가 설치되지 않은 경우: 설치 방법 안내
 - 자막이 없는 영상: 사용자에게 안내
 - 네트워크 오류: 재시도 또는 URL 확인 요청
+- 임시 폴더 생성 실패: 대체 경로 시도
