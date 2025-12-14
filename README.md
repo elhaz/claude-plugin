@@ -12,38 +12,15 @@ Claude Code용 개인 플러그인 모음입니다.
 
 ### 1. Marketplace 등록
 
-`~/.claude/settings.json`에 다음을 추가합니다:
+Claude Code에서 다음 명령어를 실행합니다:
 
-```json
-{
-  "extraKnownMarketplaces": {
-    "elhaz-plugins": {
-      "source": {
-        "source": "directory",
-        "path": "D:/source/claude-plugin"
-      }
-    }
-  }
-}
 ```
-
-> **참고**: `path`는 이 레포지토리를 clone한 로컬 경로로 변경하세요.
+/plugin elhaz/claude-plugin
+```
 
 ### 2. 플러그인 활성화
 
-같은 `settings.json`의 `enabledPlugins`에 사용할 플러그인을 추가합니다:
-
-```json
-{
-  "enabledPlugins": {
-    "youtube-to-obsidian@elhaz-plugins": true
-  }
-}
-```
-
-### 3. Claude Code 재시작
-
-설정 변경 후 Claude Code를 재시작하면 플러그인이 활성화됩니다.
+설치 프롬프트에서 원하는 플러그인을 선택하여 활성화합니다.
 
 ## 플러그인 구조
 
