@@ -13,7 +13,7 @@
       "name": "youtube-to-obsidian",
       "source": "./youtube-to-obsidian",
       "description": "YouTube 자막을 Obsidian 스타일 마크다운 문서로 변환하는 플러그인",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "keywords": ["youtube", "obsidian", "transcript", "vtt", "markdown", "yt-dlp"],
       "license": "MIT"
     }
