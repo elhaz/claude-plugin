@@ -1,7 +1,7 @@
 ---
 name: YouTube Transcript to Obsidian
 description: 이 스킬은 사용자가 "YouTube 자막 추출", "YouTube 영상을 마크다운으로", "yt-dlp 사용법", "VTT 변환", "YouTube 자막 다운로드", "vtt_to_markdown 사용법", "YouTube Obsidian 문서화"를 요청할 때 사용한다. YouTube 자막을 Obsidian 스타일 마크다운 문서로 변환하는 워크플로우 가이드를 제공한다.
-version: 1.0.1
+version: 1.0.2
 ---
 
 # YouTube 자막 → Obsidian 문서 변환 가이드
@@ -46,7 +46,8 @@ YouTube 영상의 자막(VTT)을 Obsidian 스타일 마크다운 문서로 변�
 
 1. **임시 폴더 생성**
    ```bash
-   WORK_DIR="$TEMP/youtube-obsidian-$(date +%s)"
+   # Windows 환경 (Git Bash/MSYS)
+   WORK_DIR="$USERPROFILE/AppData/Local/Temp/youtube-obsidian-$(date +%s)"
    mkdir -p "$WORK_DIR"
    ```
 
@@ -60,9 +61,17 @@ YouTube 영상의 자막(VTT)을 Obsidian 스타일 마크다운 문서로 변�
    ```
 
 3. **마크다운 변환** (임시 폴더에서)
+
+   **방법 A: Claude가 직접 VTT 파싱 (권장)**
+   - VTT 파일을 Read 도구로 읽어서 직접 마크다운으로 변환
+   - 타임스탬프 추출, 중복 제거, 노이즈 제거를 Claude가 처리
+
+   **방법 B: 변환 스크립트 사용**
    ```bash
    VTT_FILE=$(ls -t "$WORK_DIR"/*.vtt | head -1)
-   PYTHONIOENCODING=utf-8 uv run ${CLAUDE_PLUGIN_ROOT}/scripts/vtt_to_markdown.py "$VTT_FILE" --delete-vtt
+   # 스크립트 경로 탐색 (플러그인 설치 위치에 따라 다를 수 있음)
+   SCRIPT_PATH=$(find "$USERPROFILE/.claude" -name "vtt_to_markdown.py" 2>/dev/null | head -1)
+   PYTHONIOENCODING=utf-8 uv run "$SCRIPT_PATH" "$VTT_FILE" --delete-vtt
    ```
 
 4. **영어 자막 번역** (필요시)
@@ -235,7 +244,7 @@ VTT 자막의 특성상 발생하는 중복을 자동 제거:
 
 1. **yt-dlp 설치 확인**: `yt-dlp --version`
 2. **Python/uv 확인**: `uv --version`
-3. **임시 폴더 확인**: `ls "$TEMP/youtube-obsidian-*"`
+3. **임시 폴더 확인**: `ls "$USERPROFILE/AppData/Local/Temp/youtube-obsidian-"*`
 
 ## 참고 자료
 
@@ -247,4 +256,4 @@ VTT 자막의 특성상 발생하는 중복을 자동 제거:
 
 ### 스크립트
 
-- **`${CLAUDE_PLUGIN_ROOT}/scripts/vtt_to_markdown.py`** - VTT → 마크다운 변환 스크립트
+- **`scripts/vtt_to_markdown.py`** - VTT → 마크다운 변환 스크립트 (선택사항, Claude가 직접 파싱 가능)

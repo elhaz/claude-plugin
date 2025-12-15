@@ -45,8 +45,8 @@ Task 도구를 사용하여 각 URL을 별도의 서브에이전트에서 병렬
 Obsidian vault 외부의 임시 폴더를 생성한다:
 
 ```bash
-# 임시 작업 폴더 생성 (Windows)
-WORK_DIR="$TEMP/youtube-obsidian-$(date +%s)"
+# 임시 작업 폴더 생성 (Windows - Git Bash/MSYS 호환)
+WORK_DIR="$USERPROFILE/AppData/Local/Temp/youtube-obsidian-$(date +%s)"
 mkdir -p "$WORK_DIR"
 echo "작업 폴더: $WORK_DIR"
 ```
@@ -77,14 +77,24 @@ yt-dlp --write-sub --write-auto-sub --sub-lang en --sub-format vtt --skip-downlo
 
 ### 4단계: VTT를 마크다운으로 변환 (임시 폴더에서)
 
-임시 폴더의 VTT 파일을 찾아 변환 스크립트를 실행한다:
+임시 폴더의 VTT 파일을 찾아 변환한다.
 
+**권장 방법: Claude가 직접 VTT 파싱**
+1. VTT 파일을 Read 도구로 읽는다
+2. 타임스탬프와 텍스트를 추출한다
+3. 중복 텍스트, 노이즈(`[음악]`, `[Music]` 등)를 제거한다
+4. 마크다운 형식으로 변환한다
+
+**대안: 변환 스크립트 사용**
 ```bash
 # VTT 파일 찾기 (임시 폴더에서)
 VTT_FILE=$(ls -t "$WORK_DIR"/*.vtt | head -1)
 
-# 마크다운 변환 (VTT 파일 삭제 포함) - 결과물도 임시 폴더에 생성됨
-PYTHONIOENCODING=utf-8 uv run ${CLAUDE_PLUGIN_ROOT}/scripts/vtt_to_markdown.py "$VTT_FILE" --delete-vtt
+# 스크립트 경로 탐색
+SCRIPT_PATH=$(find "$USERPROFILE/.claude" -name "vtt_to_markdown.py" 2>/dev/null | head -1)
+
+# 마크다운 변환 (VTT 파일 삭제 포함)
+PYTHONIOENCODING=utf-8 uv run "$SCRIPT_PATH" "$VTT_FILE" --delete-vtt
 ```
 
 ### 5단계: 영어 자막 번역 (필요시)
@@ -213,15 +223,13 @@ rm -rf "$WORK_DIR"
     작업 디렉토리: <현재 작업 디렉토리>
 
     다음 단계를 따르세요:
-    1. 임시 폴더 생성: WORK_DIR="$TEMP/youtube-obsidian-$(date +%s)"
+    1. 임시 폴더 생성: WORK_DIR="$USERPROFILE/AppData/Local/Temp/youtube-obsidian-$(date +%s)"
     2. 자막 다운로드 (한국어 우선, 없으면 영어)
-    3. VTT를 마크다운으로 변환
+    3. VTT 파일을 Read로 읽어서 직접 마크다운으로 변환
     4. 영어인 경우 번역
     5. Obsidian 스타일로 재구성 (콜아웃, 표, 내부링크, 개요, 태그)
     6. 최종 파일을 00_Inbox/로 이동
     7. 완료 시 파일명 보고
-
-    스크립트 경로: ${CLAUDE_PLUGIN_ROOT}/scripts/vtt_to_markdown.py
 
 모든 서브에이전트 완료 후 TaskOutput으로 결과 수집하여 사용자에게 보고한다.
 ```
