@@ -247,4 +247,4 @@ VTT 자막의 특성상 발생하는 중복을 자동 제거:
 
 ### 스크립트
 
-- **`scripts/vtt_to_markdown.py`** - VTT → 마크다운 변환 스크립트
+- **`${CLAUDE_PLUGIN_ROOT}/scripts/vtt_to_markdown.py`** - VTT → 마크다운 변환 스크립트

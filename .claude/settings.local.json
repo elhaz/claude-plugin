@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"D:/source/claude-plugin\" log --oneline -5)",
+      "Bash(git -C \"D:/source/claude-plugin\" add -A)",
+      "Bash(git -C \"D:/source/claude-plugin\" commit -m \"$(cat <<''EOF''\n멀티 플러그인 저장소 구조로 변경\n\n- youtube-to-obsidian/.claude-plugin/plugin.json 매니페스트 추가\n- SKILL.md를 skills/youtube-obsidian/ 하위로 이동\n- references 폴더를 skills/youtube-obsidian/ 하위로 이동\n- README.md 플러그인 구조 설명 업데이트\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n)\")"
+    ]
+  }
+}

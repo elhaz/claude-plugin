@@ -24,13 +24,22 @@ Claude Code에서 다음 명령어를 실행합니다:
 
 ## 플러그인 구조
 
-각 플러그인은 다음 구조를 따릅니다:
+멀티 플러그인 저장소 구조:
 
 ```
-plugin-name/
-├── SKILL.md             # 스킬 정의
-├── scripts/             # 헬퍼 스크립트
-└── commands/            # 슬래시 커맨드 정의
+claude-plugin/                          # 저장소 루트
+├── .claude-plugin/
+│   └── marketplace.json                # 마켓플레이스 메타데이터
+├── youtube-to-obsidian/                # 개별 플러그인
+│   ├── .claude-plugin/
+│   │   └── plugin.json                 # 플러그인 매니페스트
+│   ├── skills/
+│   │   └── youtube-obsidian/
+│   │       ├── SKILL.md                # 스킬 정의
+│   │       └── references/             # 참조 문서
+│   ├── commands/                       # 슬래시 커맨드
+│   └── scripts/                        # 헬퍼 스크립트
+└── README.md
 ```
 
 ## 라이선스
