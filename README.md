@@ -28,12 +28,9 @@ Claude Code에서 다음 명령어를 실행합니다:
 
 ```
 plugin-name/
-├── .claude-plugin/
-│   └── plugin.json      # 플러그인 매니페스트
-├── commands/            # 슬래시 커맨드 정의
-├── skills/              # 스킬 정의
+├── SKILL.md             # 스킬 정의
 ├── scripts/             # 헬퍼 스크립트
-└── README.md            # 플러그인별 문서
+└── commands/            # 슬래시 커맨드 정의
 ```
 
 ## 라이선스

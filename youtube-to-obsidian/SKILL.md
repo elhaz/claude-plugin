@@ -1,7 +1,7 @@
 ---
 name: YouTube Transcript to Obsidian
 description: 이 스킬은 사용자가 "YouTube 자막 추출", "YouTube 영상을 마크다운으로", "yt-dlp 사용법", "VTT 변환", "YouTube 자막 다운로드", "vtt_to_markdown 사용법", "YouTube Obsidian 문서화"를 요청할 때 사용한다. YouTube 자막을 Obsidian 스타일 마크다운 문서로 변환하는 워크플로우 가이드를 제공한다.
-version: 1.0.0
+version: 1.0.1
 ---
 
 # YouTube 자막 → Obsidian 문서 변환 가이드
