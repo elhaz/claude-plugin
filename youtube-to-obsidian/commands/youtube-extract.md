@@ -77,15 +77,11 @@ yt-dlp --write-sub --write-auto-sub --sub-lang en --sub-format vtt --skip-downlo
 
 ### 4단계: VTT를 마크다운으로 변환 (임시 폴더에서)
 
-임시 폴더의 VTT 파일을 찾아 변환한다.
+임시 폴더의 VTT 파일을 찾아 파이썬 스크립트로 변환한다.
 
-**권장 방법: Claude가 직접 VTT 파싱**
-1. VTT 파일을 Read 도구로 읽는다
-2. 타임스탬프와 텍스트를 추출한다
-3. 중복 텍스트, 노이즈(`[음악]`, `[Music]` 등)를 제거한다
-4. 마크다운 형식으로 변환한다
+> [!important] VTT 파일은 Read 도구로 직접 읽지 않는다
+> VTT 파일은 토큰 제한을 초과할 수 있으므로, 반드시 파이썬 스크립트를 사용하여 변환한다.
 
-**대안: 변환 스크립트 사용**
 ```bash
 # VTT 파일 찾기 (임시 폴더에서)
 VTT_FILE=$(ls -t "$WORK_DIR"/*.vtt | head -1)
@@ -96,6 +92,8 @@ SCRIPT_PATH=$(find "$USERPROFILE/.claude" -name "vtt_to_markdown.py" 2>/dev/null
 # 마크다운 변환 (VTT 파일 삭제 포함)
 PYTHONIOENCODING=utf-8 uv run "$SCRIPT_PATH" "$VTT_FILE" --delete-vtt
 ```
+
+스크립트 실행 후 생성된 마크다운 파일을 Read 도구로 읽어서 다음 단계를 진행한다.
 
 ### 5단계: 영어 자막 번역 (필요시)
 
@@ -225,7 +223,7 @@ rm -rf "$WORK_DIR"
     다음 단계를 따르세요:
     1. 임시 폴더 생성: WORK_DIR="$USERPROFILE/AppData/Local/Temp/youtube-obsidian-$(date +%s)"
     2. 자막 다운로드 (한국어 우선, 없으면 영어)
-    3. VTT 파일을 Read로 읽어서 직접 마크다운으로 변환
+    3. 파이썬 스크립트로 VTT를 마크다운으로 변환 (VTT 파일 직접 Read 금지)
     4. 영어인 경우 번역
     5. Obsidian 스타일로 재구성 (콜아웃, 표, 내부링크, 개요, 태그)
     6. 최종 파일을 00_Inbox/로 이동
