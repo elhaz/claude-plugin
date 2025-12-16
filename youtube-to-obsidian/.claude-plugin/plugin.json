@@ -1,6 +1,6 @@
 {
   "name": "youtube-to-obsidian",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "YouTube 자막을 Obsidian 스타일 마크다운 문서로 변환하는 플러그인",
   "author": {
     "name": "elhaz"
