@@ -45,8 +45,8 @@ Task 도구를 사용하여 각 URL을 별도의 서브에이전트에서 병렬
 Obsidian vault 외부의 임시 폴더를 생성한다:
 
 ```bash
-# 임시 작업 폴더 생성 (Windows - Git Bash/MSYS 호환)
-WORK_DIR="$USERPROFILE/AppData/Local/Temp/youtube-obsidian-$(date +%s)"
+# 임시 작업 폴더 생성 (현재 디렉토리 기준)
+WORK_DIR="./_youtube_work_$(date +%s)"
 mkdir -p "$WORK_DIR"
 echo "작업 폴더: $WORK_DIR"
 ```
@@ -221,7 +221,7 @@ rm -rf "$WORK_DIR"
     작업 디렉토리: <현재 작업 디렉토리>
 
     다음 단계를 따르세요:
-    1. 임시 폴더 생성: WORK_DIR="$USERPROFILE/AppData/Local/Temp/youtube-obsidian-$(date +%s)"
+    1. 임시 폴더 생성: WORK_DIR="./_youtube_work_$(date +%s)"
     2. 자막 다운로드 (한국어 우선, 없으면 영어)
     3. 파이썬 스크립트로 VTT를 마크다운으로 변환 (VTT 파일 직접 Read 금지)
     4. 영어인 경우 번역

@@ -22,6 +22,7 @@ Thumbs.db
 *.tmp
 *.bak
 *.vtt
+_youtube_work_*
 
 # Claude Code
 .claude/
