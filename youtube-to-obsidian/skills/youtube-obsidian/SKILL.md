@@ -1,7 +1,7 @@
 ---
 name: YouTube Transcript to Obsidian
 description: 이 스킬은 사용자가 "YouTube 자막 추출", "YouTube 영상을 마크다운으로", "yt-dlp 사용법", "VTT 변환", "YouTube 자막 다운로드", "vtt_to_markdown 사용법", "YouTube Obsidian 문서화"를 요청할 때 사용한다. YouTube 자막을 Obsidian 스타일 마크다운 문서로 변환하는 워크플로우 가이드를 제공한다.
-version: 1.0.4
+version: 1.0.6
 ---
 
 # YouTube 자막 → Obsidian 문서 변환 가이드
@@ -69,8 +69,8 @@ YouTube 영상의 자막(VTT)을 Obsidian 스타일 마크다운 문서로 변�
    **방법 B: 변환 스크립트 사용**
    ```bash
    VTT_FILE=$(ls -t "$WORK_DIR"/*.vtt | head -1)
-   # 스크립트 경로 탐색 (플러그인 설치 위치에 따라 다를 수 있음)
-   SCRIPT_PATH=$(find "$USERPROFILE/.claude" -name "vtt_to_markdown.py" 2>/dev/null | head -1)
+   # 스크립트 경로 (플러그인 루트 변수 사용)
+   SCRIPT_PATH="${CLAUDE_PLUGIN_ROOT}/scripts/vtt_to_markdown.py"
    PYTHONIOENCODING=utf-8 uv run "$SCRIPT_PATH" "$VTT_FILE" --delete-vtt
    ```
 

@@ -94,8 +94,8 @@ yt-dlp --write-sub --write-auto-sub --sub-lang en --sub-format vtt --skip-downlo
 # VTT 파일 찾기 (임시 폴더에서)
 VTT_FILE=$(ls -t "$WORK_DIR"/*.vtt | head -1)
 
-# 스크립트 경로 탐색
-SCRIPT_PATH=$(find "$USERPROFILE/.claude" -name "vtt_to_markdown.py" 2>/dev/null | head -1)
+# 스크립트 경로 (플러그인 루트 변수 사용 - find 탐색 불필요)
+SCRIPT_PATH="${CLAUDE_PLUGIN_ROOT}/scripts/vtt_to_markdown.py"
 
 # 마크다운 변환 (VTT 파일 삭제 포함)
 PYTHONIOENCODING=utf-8 uv run "$SCRIPT_PATH" "$VTT_FILE" --delete-vtt
