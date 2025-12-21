@@ -1,0 +1,9 @@
+{
+  "name": "stock-analysis",
+  "version": "1.1.0",
+  "description": "주식 종목분석 워크플로우 자동화 플러그인 - 자유 조사, 템플릿 적용, 업종별 핵심지표 분석",
+  "author": {
+    "name": "elhaz"
+  },
+  "keywords": ["stock", "investment", "analysis", "finance", "research"]
+}
