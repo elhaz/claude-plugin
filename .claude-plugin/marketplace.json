@@ -13,8 +13,16 @@
       "name": "youtube-to-obsidian",
       "source": "./youtube-to-obsidian",
       "description": "YouTube 자막을 Obsidian 스타일 마크다운 문서로 변환하는 플러그인",
-      "version": "1.0.3",
+      "version": "1.0.6",
       "keywords": ["youtube", "obsidian", "transcript", "vtt", "markdown", "yt-dlp"],
+      "license": "MIT"
+    },
+    {
+      "name": "stock-analysis",
+      "source": "./stock-analysis",
+      "description": "주식 종목분석 워크플로우 자동화 플러그인 - 자유 조사, 템플릿 적용, 업종별 핵심지표 분석",
+      "version": "1.1.0",
+      "keywords": ["stock", "investment", "analysis", "finance", "research"],
       "license": "MIT"
     }
   ]
