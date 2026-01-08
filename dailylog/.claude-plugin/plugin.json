@@ -1,0 +1,9 @@
+{
+  "name": "dailylog",
+  "version": "0.1.0",
+  "description": "Obsidian 데일리로그 관리를 위한 Claude Code 플러그인 - 날짜별 읽기, 항목 추가, 요약 기능 제공",
+  "author": {
+    "name": "xhhan",
+    "email": "xhhan@example.com"
+  }
+}

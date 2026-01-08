@@ -24,6 +24,14 @@
       "version": "1.1.0",
       "keywords": ["stock", "investment", "analysis", "finance", "research"],
       "license": "MIT"
+    },
+    {
+      "name": "dailylog",
+      "source": "./dailylog",
+      "description": "Obsidian 데일리로그 관리 플러그인 - 날짜별 읽기, 항목 추가, 통계 요약",
+      "version": "0.1.0",
+      "keywords": ["obsidian", "dailylog", "journal", "markdown", "productivity"],
+      "license": "MIT"
     }
   ]
 }
