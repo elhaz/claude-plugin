@@ -33,15 +33,16 @@
 
 ```
 {topic_slug}/
-├── outline.yaml       # 연구 항목 목록 + 실행 설정
-├── fields.yaml        # 필드 정의 (required/fallback 지원)
-├── progress.json      # 진행 상황 추적
-├── results/           # 항목별 JSON 결과
+├── outline.yaml              # 연구 항목 목록 + 실행 설정
+├── fields.yaml               # 필드 정의 (required/fallback 지원)
+├── web_search_supplement.md  # 웹 검색 보충 결과 (Step 2)
+├── progress.json             # 진행 상황 추적
+├── results/                  # 항목별 JSON 결과
 │   ├── item1.json
 │   ├── item2.json
 │   └── ...
-├── generate_report.py # 보고서 생성 스크립트
-└── report.md          # 최종 보고서
+├── generate_report.py        # 보고서 생성 스크립트
+└── report.md                 # 최종 보고서
 ```
 
 ## 주요 기능

@@ -1,7 +1,7 @@
 {
   "name": "research",
   "description": "체계적인 심층 연구 워크플로우. 예비 조사(outline) → 심층 조사(deep) → 보고서 생성(report) 단계 지원. 기술 조사, 벤치마크 연구, 학술 연구 등에 활용.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "elhaz (forked from Weizhena)",
     "url": "https://github.com/Weizhena/Deep-Research-skills"

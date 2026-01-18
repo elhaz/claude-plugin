@@ -23,11 +23,16 @@ Output {step1_output}, use AskUserQuestion to confirm:
 ### Step 2: Web Search Supplement
 Use AskUserQuestion to ask for time range (e.g., last 6 months, since 2024, unlimited).
 
+**Pre-requisite**: Create output directory `./{topic_slug}/` BEFORE launching web-search-agent.
+- 한글 파일명 지원: 한글 토픽은 그대로 유지 (예: "AI_코딩_도구" O, "ai_coding_tools" X)
+- 공백만 언더스코어로 변환, 특수문자 제거
+
 **Parameter Retrieval**:
 - `{topic}`: User input research topic
 - `{YYYY-MM-DD}`: Current date
 - `{step1_output}`: Complete output from Step 1
 - `{time_range}`: User specified time range
+- `{output_path}`: Absolute path to `{topic_slug}/web_search_supplement.md`
 
 **Hard Constraint**: The following prompt must be strictly reproduced, only replacing variables in {xxx}, do not modify structure or wording.
 
@@ -49,7 +54,7 @@ Based on the following initial framework, supplement latest items and recommende
 4. Supplement new fields
 
 ## Output Requirements
-Return structured results directly (do not write files):
+Write results to {output_path} (MUST save file, not just return content):
 
 ### Supplementary Items
 - item_name: Brief explanation (why it should be added)
@@ -91,7 +96,7 @@ Based on the following initial framework, supplement latest items and recommende
 4. Supplement new fields
 
 ## Output Requirements
-Return structured results directly (do not write files):
+Write results to /path/to/AI_Coding_History/web_search_supplement.md (MUST save file, not just return content):
 
 ### Supplementary Items
 - item_name: Brief explanation (why it should be added)
@@ -110,6 +115,8 @@ Return structured results directly (do not write files):
 Use AskUserQuestion to ask if user has existing field definition file, if so read and merge.
 
 ### Step 4: Generate Outline (Separate Files)
+**Pre-requisite**: Wait for web-search-agent to complete, then read `{topic_slug}/web_search_supplement.md` to get {step2_output}.
+
 Merge {step1_output}, {step2_output} and user's existing fields, generate two files:
 
 **outline.yaml** (items + config):
@@ -138,17 +145,16 @@ Merge {step1_output}, {step2_output} and user's existing fields, generate two fi
 - source_url (출처)
 
 ### Step 5: Output and Confirm
-- Create directory: `./{topic_slug}/`
-  - 한글 파일명 지원: 한글 토픽은 그대로 유지 (예: "AI_코딩_도구" O, "ai_coding_tools" X)
-  - 공백만 언더스코어로 변환, 특수문자 제거
-- Save: `outline.yaml` and `fields.yaml`
+- Directory `./{topic_slug}/` was already created in Step 2
+- Save: `outline.yaml` and `fields.yaml` to the same directory
 - Show to user for confirmation
 
 ## Output Path
 ```
 {current_working_directory}/{topic_slug}/
-  ├── outline.yaml    # items list + execution config
-  └── fields.yaml     # field definitions
+  ├── outline.yaml              # items list + execution config
+  ├── fields.yaml               # field definitions
+  └── web_search_supplement.md  # web search results (Step 2)
 ```
 
 ## Follow-up Commands
