@@ -32,6 +32,14 @@
       "version": "0.1.0",
       "keywords": ["obsidian", "dailylog", "journal", "markdown", "productivity"],
       "license": "MIT"
+    },
+    {
+      "name": "research",
+      "source": "./research",
+      "description": "체계적인 심층 연구 워크플로우 플러그인 - 예비 조사, 병렬 심층 조사, 보고서 생성",
+      "version": "1.0.0",
+      "keywords": ["research", "analysis", "web-search", "parallel-agents", "markdown"],
+      "license": "MIT"
     }
   ]
 }
