@@ -40,6 +40,14 @@
       "version": "1.0.0",
       "keywords": ["research", "analysis", "web-search", "parallel-agents", "markdown"],
       "license": "MIT"
+    },
+    {
+      "name": "nanobanana",
+      "source": "./nanobanana",
+      "description": "Gemini AI 이미지 생성 플러그인 - Google Gemini 모델을 사용한 이미지 생성",
+      "version": "1.0.0",
+      "keywords": ["image", "generation", "gemini", "ai", "design"],
+      "license": "MIT"
     }
   ]
 }
