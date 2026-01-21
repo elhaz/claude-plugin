@@ -10,10 +10,16 @@
 Generate images using Google's Gemini image models.
 
 Usage:
-    uv run generate_image.py --prompt "A colorful abstract pattern" --output "./hero.png"
-    uv run generate_image.py --prompt "Minimalist icon" --output "./icon.png" --aspect landscape
-    uv run generate_image.py --prompt "Similar style image" --output "./new.png" --reference "./existing.png"
-    uv run generate_image.py --prompt "High quality art" --output "./art.png" --model pro --size 2K
+    uv run image.py --prompt "A colorful abstract pattern" --output "./hero.png"
+    uv run image.py --prompt "Minimalist icon" --output "./icon.png" --aspect landscape
+    uv run image.py --prompt "Wide banner" --output "./banner.png" --aspect 21:9
+    uv run image.py --prompt "Instagram post" --output "./post.png" --aspect 4:5
+    uv run image.py --prompt "Similar style image" --output "./new.png" --reference "./existing.png"
+    uv run image.py --prompt "High quality art" --output "./art.png" --model pro --size 2K
+
+Supported aspect ratios:
+    Aliases: square (1:1), landscape (16:9), portrait (9:16), wide (21:9), photo (4:3), photo-portrait (3:4)
+    Direct:  1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9
 """
 
 import argparse
@@ -29,15 +35,35 @@ MODEL_IDS = {
     "pro": "gemini-3-pro-image-preview",
 }
 
+# API 지원 종횡비 전체 + 편의 별칭
+ASPECT_RATIOS = {
+    # 별칭 (편의용)
+    "square": "1:1",
+    "landscape": "16:9",
+    "portrait": "9:16",
+    "wide": "21:9",
+    "photo": "4:3",
+    "photo-portrait": "3:4",
+    # 직접 비율 값
+    "1:1": "1:1",
+    "2:3": "2:3",
+    "3:2": "3:2",
+    "3:4": "3:4",
+    "4:3": "4:3",
+    "4:5": "4:5",
+    "5:4": "5:4",
+    "9:16": "9:16",
+    "16:9": "16:9",
+    "21:9": "21:9",
+}
+
+ASPECT_CHOICES = list(ASPECT_RATIOS.keys())
+
 
 def get_aspect_instruction(aspect: str) -> str:
     """Return aspect ratio instruction for the prompt."""
-    aspects = {
-        "square": "Generate a square image (1:1 aspect ratio).",
-        "landscape": "Generate a landscape/wide image (16:9 aspect ratio).",
-        "portrait": "Generate a portrait/tall image (9:16 aspect ratio).",
-    }
-    return aspects.get(aspect, aspects["square"])
+    ratio = ASPECT_RATIOS.get(aspect, "1:1")
+    return f"Generate an image with {ratio} aspect ratio."
 
 
 def generate_image(
@@ -74,11 +100,10 @@ def generate_image(
 
     # Pro model supports additional config for resolution
     if model == "pro":
-        aspect_ratios = {"square": "1:1", "landscape": "16:9", "portrait": "9:16"}
         config = types.GenerateContentConfig(
             response_modalities=["TEXT", "IMAGE"],
             image_config=types.ImageConfig(
-                aspect_ratio=aspect_ratios.get(aspect, "1:1"),
+                aspect_ratio=ASPECT_RATIOS.get(aspect, "1:1"),
                 image_size=size,
             ),
         )
@@ -128,9 +153,9 @@ def main():
     )
     parser.add_argument(
         "--aspect",
-        choices=["square", "landscape", "portrait"],
+        choices=ASPECT_CHOICES,
         default="square",
-        help="Aspect ratio (default: square)",
+        help="Aspect ratio: square, landscape, portrait, wide, photo, photo-portrait, or direct ratios like 1:1, 16:9, 9:16, 4:3, 3:4, 3:2, 2:3, 5:4, 4:5, 21:9 (default: square)",
     )
     parser.add_argument(
         "--reference",

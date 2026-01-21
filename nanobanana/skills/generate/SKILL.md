@@ -35,7 +35,9 @@ Where `${SKILL_DIR}` is the directory containing this SKILL.md file.
 Options:
 - `--prompt` (required): Detailed description of the image to generate
 - `--output` (required): Output file path (PNG format)
-- `--aspect` (optional): Aspect ratio - "square", "landscape", "portrait" (default: square)
+- `--aspect` (optional): Aspect ratio (default: square)
+  - **Aliases**: `square` (1:1), `landscape` (16:9), `portrait` (9:16), `wide` (21:9), `photo` (4:3), `photo-portrait` (3:4)
+  - **Direct ratios**: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`
 - `--reference` (optional): Path to a reference image for style, composition, or content guidance
 - `--model` (optional): Model to use - "flash" (fast) or "pro" (high-quality) (default: flash)
 - `--size` (optional): Image resolution for pro model - "1K", "2K", "4K" (default: 1K, ignored for flash)
@@ -57,6 +59,32 @@ uv run "${SKILL_DIR}/scripts/image.py" \
   --output "/path/to/hero.png" \
   --model pro \
   --size 2K
+```
+
+### Using Different Aspect Ratios
+
+**Wide banner (21:9)** - Ultra-wide for hero sections:
+```bash
+uv run "${SKILL_DIR}/scripts/image.py" \
+  --prompt "Abstract gradient waves for website header" \
+  --output "/path/to/banner.png" \
+  --aspect wide
+```
+
+**Social media post (4:5)** - Instagram-style vertical:
+```bash
+uv run "${SKILL_DIR}/scripts/image.py" \
+  --prompt "Product showcase with clean background" \
+  --output "/path/to/post.png" \
+  --aspect 4:5
+```
+
+**Photo format (4:3)** - Traditional camera ratio:
+```bash
+uv run "${SKILL_DIR}/scripts/image.py" \
+  --prompt "Landscape photography style scene" \
+  --output "/path/to/photo.png" \
+  --aspect photo
 ```
 
 ### Using a Reference Image
