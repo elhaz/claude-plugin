@@ -168,6 +168,58 @@ Edit mode supports various transformations:
 - **Object manipulation**: remove, add, move elements
 - **Enhancement**: sharpen, denoise, upscale appearance
 
+### Multi-turn Image Editing (Chat Mode)
+
+Use `scripts/chat.py` for iterative editing with conversation context preserved:
+
+**단일 턴 편집:**
+```bash
+uv run "${SKILL_DIR}/scripts/chat.py" \
+  --image "/path/to/photo.png" \
+  --output "/path/to/edited.png" \
+  --prompt "배경을 흐리게 해줘"
+```
+
+**다중 턴 편집 (순차 적용):**
+```bash
+uv run "${SKILL_DIR}/scripts/chat.py" \
+  --image "/path/to/photo.png" \
+  --output "/path/to/final.png" \
+  --prompt "만화 스타일로 변환" \
+  --prompt "배경을 파란색으로 변경" \
+  --prompt "밝기를 높여줘"
+```
+
+**중간 결과 모두 저장:**
+```bash
+uv run "${SKILL_DIR}/scripts/chat.py" \
+  --image "/path/to/photo.png" \
+  --output-dir "/path/to/edits" \
+  --prompt "스케치 스타일로" \
+  --prompt "색상 추가"
+# 결과: edits/edit_001.png, edits/edit_002.png
+```
+
+**세션 저장 및 이어서 편집:**
+```bash
+# 첫 번째 세션
+uv run "${SKILL_DIR}/scripts/chat.py" \
+  --image "/path/to/photo.png" \
+  --session "/path/to/session.json" \
+  --prompt "만화 스타일로"
+
+# 이어서 편집 (이전 컨텍스트 유지)
+uv run "${SKILL_DIR}/scripts/chat.py" \
+  --session "/path/to/session.json" \
+  --prompt "배경 제거"
+```
+
+Chat mode advantages:
+- **Context preservation**: Each edit builds on the previous result
+- **Iterative refinement**: Gradually improve the image
+- **Session persistence**: Save and resume editing sessions
+- **Intermediate outputs**: Save all versions for comparison
+
 ### Step 2: Integrate with Frontend Design
 
 After generating images, incorporate them into frontend code:

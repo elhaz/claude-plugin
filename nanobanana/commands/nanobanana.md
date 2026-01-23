@@ -82,6 +82,12 @@ uv run "${CLAUDE_PLUGIN_ROOT}/skills/generate/scripts/image.py" \
 /nanobanana "배경을 흐리게 해줘" --edit ./photo.png --output ./blurred.png
 /nanobanana "만화 스타일로 변환" --edit ./photo.png
 /nanobanana "빨간색을 파란색으로 바꿔줘" --edit ./image.png
+
+# Multi-turn 편집 (chat.py 사용)
+# 여러 편집을 순차 적용
+uv run "${CLAUDE_PLUGIN_ROOT}/skills/generate/scripts/chat.py" \
+  --image ./photo.png --output ./final.png \
+  --prompt "만화 스타일로" --prompt "배경 파란색으로" --prompt "밝기 높이기"
 ```
 
 ## 프롬프트 작성 팁
