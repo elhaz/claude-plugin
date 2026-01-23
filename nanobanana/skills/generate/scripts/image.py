@@ -7,15 +7,21 @@
 # ]
 # ///
 """
-Generate images using Google's Gemini image models.
+Generate and edit images using Google's Gemini image models.
 
 Usage:
+    # 이미지 생성
     uv run image.py --prompt "A colorful abstract pattern" --output "./hero.png"
     uv run image.py --prompt "Minimalist icon" --output "./icon.png" --aspect landscape
     uv run image.py --prompt "Wide banner" --output "./banner.png" --aspect 21:9
     uv run image.py --prompt "Instagram post" --output "./post.png" --aspect 4:5
     uv run image.py --prompt "Similar style image" --output "./new.png" --reference "./existing.png"
     uv run image.py --prompt "High quality art" --output "./art.png" --model pro --size 2K
+
+    # 이미지 편집 (--edit 모드)
+    uv run image.py --prompt "배경을 흐리게 해줘" --output "./edited.png" --edit "./original.png"
+    uv run image.py --prompt "만화 스타일로 변환" --output "./cartoon.png" --edit "./photo.png"
+    uv run image.py --prompt "빨간색을 파란색으로 바꿔줘" --output "./recolored.png" --edit "./image.png"
 
 Supported aspect ratios:
     Aliases: square (1:1), landscape (16:9), portrait (9:16), wide (21:9), photo (4:3), photo-portrait (3:4)
@@ -71,6 +77,7 @@ def generate_image(
     output_path: str,
     aspect: str = "square",
     reference: str | None = None,
+    edit: str | None = None,
     model: str = "flash",
     size: str = "1K",
 ) -> None:
@@ -82,19 +89,32 @@ def generate_image(
 
     client = genai.Client(api_key=api_key)
 
-    aspect_instruction = get_aspect_instruction(aspect)
-    full_prompt = f"{aspect_instruction} {prompt}"
-
-    # Build contents with optional reference image
+    # Build contents based on mode
     contents: list = []
-    if reference:
-        if not os.path.exists(reference):
-            print(f"Error: Reference image not found: {reference}", file=sys.stderr)
+
+    # Edit mode: 기존 이미지를 편집
+    if edit:
+        if not os.path.exists(edit):
+            print(f"Error: Edit target image not found: {edit}", file=sys.stderr)
             sys.exit(1)
-        ref_image = Image.open(reference)
-        contents.append(ref_image)
-        full_prompt = f"{full_prompt} Use the provided image as a reference for style, composition, or content."
-    contents.append(full_prompt)
+        edit_image = Image.open(edit)
+        contents.append(edit_image)
+        full_prompt = f"Edit this image: {prompt}"
+        contents.append(full_prompt)
+    else:
+        # Generate mode: 새 이미지 생성
+        aspect_instruction = get_aspect_instruction(aspect)
+        full_prompt = f"{aspect_instruction} {prompt}"
+
+        # Optional reference image for style guidance
+        if reference:
+            if not os.path.exists(reference):
+                print(f"Error: Reference image not found: {reference}", file=sys.stderr)
+                sys.exit(1)
+            ref_image = Image.open(reference)
+            contents.append(ref_image)
+            full_prompt = f"{full_prompt} Use the provided image as a reference for style, composition, or content."
+        contents.append(full_prompt)
 
     model_id = MODEL_IDS[model]
 
@@ -162,6 +182,10 @@ def main():
         help="Path to a reference image for style/composition guidance (optional)",
     )
     parser.add_argument(
+        "--edit",
+        help="Path to an image to edit (enables edit mode instead of generation)",
+    )
+    parser.add_argument(
         "--model",
         choices=["flash", "pro"],
         default="flash",
@@ -175,7 +199,7 @@ def main():
     )
 
     args = parser.parse_args()
-    generate_image(args.prompt, args.output, args.aspect, args.reference, args.model, args.size)
+    generate_image(args.prompt, args.output, args.aspect, args.reference, args.edit, args.model, args.size)
 
 
 if __name__ == "__main__":

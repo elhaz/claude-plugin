@@ -1,9 +1,9 @@
 {
   "name": "nanobanana",
-  "version": "1.2.0",
-  "description": "Gemini AI 이미지 생성 플러그인 - Google Gemini 모델을 사용한 이미지 생성",
+  "version": "1.2.1",
+  "description": "Gemini AI 이미지 생성/편집 플러그인 - Google Gemini 모델을 사용한 이미지 생성 및 편집",
   "author": {
     "name": "elhaz"
   },
-  "keywords": ["image", "generation", "gemini", "ai", "design"]
+  "keywords": ["image", "generation", "editing", "gemini", "ai", "design"]
 }

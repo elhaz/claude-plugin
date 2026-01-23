@@ -25,10 +25,11 @@ Google Gemini 모델을 사용하여 이미지를 생성한다.
 | 옵션 | 설명 | 기본값 |
 |------|------|--------|
 | `--output` | 출력 파일 경로 (PNG) | `./generated-image.png` |
-| `--aspect` | 비율: square, landscape, portrait | square |
+| `--aspect` | 비율: square, landscape, portrait, wide, photo 등 | square |
 | `--model` | 모델: flash (빠름), pro (고품질) | flash |
 | `--size` | 해상도 (pro만): 1K, 2K, 4K | 1K |
-| `--reference` | 참조 이미지 경로 | - |
+| `--reference` | 참조 이미지 경로 (스타일 가이드) | - |
+| `--edit` | 편집할 이미지 경로 (편집 모드 활성화) | - |
 
 ## 실행 방법
 
@@ -36,10 +37,11 @@ Google Gemini 모델을 사용하여 이미지를 생성한다.
 uv run "${CLAUDE_PLUGIN_ROOT}/skills/generate/scripts/image.py" \
   --prompt "프롬프트" \
   --output "출력경로.png" \
-  [--aspect square|landscape|portrait] \
+  [--aspect square|landscape|portrait|wide|photo] \
   [--model flash|pro] \
   [--size 1K|2K|4K] \
-  [--reference "참조이미지.png"]
+  [--reference "참조이미지.png"] \
+  [--edit "편집할이미지.png"]
 ```
 
 ## 처리 워크플로우
@@ -71,6 +73,11 @@ uv run "${CLAUDE_PLUGIN_ROOT}/skills/generate/scripts/image.py" \
 
 # 참조 이미지 기반 생성
 /nanobanana "비슷한 스타일로 따뜻한 색상" --reference ./reference.png
+
+# 이미지 편집 (--edit 모드)
+/nanobanana "배경을 흐리게 해줘" --edit ./photo.png --output ./blurred.png
+/nanobanana "만화 스타일로 변환" --edit ./photo.png
+/nanobanana "빨간색을 파란색으로 바꿔줘" --edit ./image.png
 ```
 
 ## 프롬프트 작성 팁

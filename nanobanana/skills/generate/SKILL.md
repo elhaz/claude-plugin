@@ -33,12 +33,13 @@ uv run "${SKILL_DIR}/scripts/image.py" \
 Where `${SKILL_DIR}` is the directory containing this SKILL.md file.
 
 Options:
-- `--prompt` (required): Detailed description of the image to generate
+- `--prompt` (required): Detailed description of the image to generate or edit instruction
 - `--output` (required): Output file path (PNG format)
 - `--aspect` (optional): Aspect ratio (default: square)
   - **Aliases**: `square` (1:1), `landscape` (16:9), `portrait` (9:16), `wide` (21:9), `photo` (4:3), `photo-portrait` (3:4)
   - **Direct ratios**: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`
 - `--reference` (optional): Path to a reference image for style, composition, or content guidance
+- `--edit` (optional): Path to an image to edit (enables edit mode instead of generation)
 - `--model` (optional): Model to use - "flash" (fast) or "pro" (high-quality) (default: flash)
 - `--size` (optional): Image resolution for pro model - "1K", "2K", "4K" (default: 1K, ignored for flash)
 
@@ -99,6 +100,43 @@ uv run "${SKILL_DIR}/scripts/image.py" \
 ```
 
 The reference image helps Gemini understand the desired style, composition, or visual elements you want in the generated image.
+
+### Editing an Existing Image
+
+Use `--edit` to modify an existing image with natural language instructions:
+
+```bash
+# 배경 흐리게
+uv run "${SKILL_DIR}/scripts/image.py" \
+  --prompt "Blur the background" \
+  --output "/path/to/blurred.png" \
+  --edit "/path/to/original.png"
+
+# 스타일 변환
+uv run "${SKILL_DIR}/scripts/image.py" \
+  --prompt "Convert to cartoon style" \
+  --output "/path/to/cartoon.png" \
+  --edit "/path/to/photo.png"
+
+# 색상 변경
+uv run "${SKILL_DIR}/scripts/image.py" \
+  --prompt "Change the red elements to blue" \
+  --output "/path/to/recolored.png" \
+  --edit "/path/to/image.png"
+
+# 객체 제거
+uv run "${SKILL_DIR}/scripts/image.py" \
+  --prompt "Remove the person in the background" \
+  --output "/path/to/cleaned.png" \
+  --edit "/path/to/photo.png"
+```
+
+Edit mode supports various transformations:
+- **Style transfer**: cartoon, oil painting, sketch, etc.
+- **Color adjustments**: change colors, add warmth/coolness
+- **Background modifications**: blur, remove, replace
+- **Object manipulation**: remove, add, move elements
+- **Enhancement**: sharpen, denoise, upscale appearance
 
 ### Step 2: Integrate with Frontend Design
 
