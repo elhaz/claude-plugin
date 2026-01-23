@@ -16,6 +16,7 @@ Usage:
     uv run image.py --prompt "Wide banner" --output "./banner.png" --aspect 21:9
     uv run image.py --prompt "Instagram post" --output "./post.png" --aspect 4:5
     uv run image.py --prompt "Similar style image" --output "./new.png" --reference "./existing.png"
+    uv run image.py --prompt "Group photo of these people" --output "./group.png" --reference "./p1.png" --reference "./p2.png" --reference "./p3.png"
     uv run image.py --prompt "High quality art" --output "./art.png" --model pro --size 2K
 
     # 이미지 편집 (--edit 모드)
@@ -72,11 +73,14 @@ def get_aspect_instruction(aspect: str) -> str:
     return f"Generate an image with {ratio} aspect ratio."
 
 
+MAX_REFERENCE_IMAGES = 14  # API 제한: 최대 14개 참조 이미지
+
+
 def generate_image(
     prompt: str,
     output_path: str,
     aspect: str = "square",
-    reference: str | None = None,
+    references: list[str] | None = None,
     edit: str | None = None,
     model: str = "flash",
     size: str = "1K",
@@ -106,14 +110,23 @@ def generate_image(
         aspect_instruction = get_aspect_instruction(aspect)
         full_prompt = f"{aspect_instruction} {prompt}"
 
-        # Optional reference image for style guidance
-        if reference:
-            if not os.path.exists(reference):
-                print(f"Error: Reference image not found: {reference}", file=sys.stderr)
-                sys.exit(1)
-            ref_image = Image.open(reference)
-            contents.append(ref_image)
-            full_prompt = f"{full_prompt} Use the provided image as a reference for style, composition, or content."
+        # Optional reference images for style/composition/content guidance
+        if references:
+            if len(references) > MAX_REFERENCE_IMAGES:
+                print(f"Warning: Too many reference images ({len(references)}). Using first {MAX_REFERENCE_IMAGES}.", file=sys.stderr)
+                references = references[:MAX_REFERENCE_IMAGES]
+
+            for ref_path in references:
+                if not os.path.exists(ref_path):
+                    print(f"Error: Reference image not found: {ref_path}", file=sys.stderr)
+                    sys.exit(1)
+                ref_image = Image.open(ref_path)
+                contents.append(ref_image)
+
+            if len(references) == 1:
+                full_prompt = f"{full_prompt} Use the provided image as a reference for style, composition, or content."
+            else:
+                full_prompt = f"{full_prompt} Use all {len(references)} provided images as references. Blend their styles, compositions, or include their subjects as appropriate."
         contents.append(full_prompt)
 
     model_id = MODEL_IDS[model]
@@ -179,7 +192,10 @@ def main():
     )
     parser.add_argument(
         "--reference",
-        help="Path to a reference image for style/composition guidance (optional)",
+        action="append",
+        dest="references",
+        metavar="IMAGE",
+        help="Path to a reference image (can be used multiple times, max 14 images)",
     )
     parser.add_argument(
         "--edit",
@@ -199,7 +215,7 @@ def main():
     )
 
     args = parser.parse_args()
-    generate_image(args.prompt, args.output, args.aspect, args.reference, args.edit, args.model, args.size)
+    generate_image(args.prompt, args.output, args.aspect, args.references, args.edit, args.model, args.size)
 
 
 if __name__ == "__main__":

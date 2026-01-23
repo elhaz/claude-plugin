@@ -38,7 +38,7 @@ Options:
 - `--aspect` (optional): Aspect ratio (default: square)
   - **Aliases**: `square` (1:1), `landscape` (16:9), `portrait` (9:16), `wide` (21:9), `photo` (4:3), `photo-portrait` (3:4)
   - **Direct ratios**: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`
-- `--reference` (optional): Path to a reference image for style, composition, or content guidance
+- `--reference` (optional): Path to a reference image (can be used multiple times, max 14 images)
 - `--edit` (optional): Path to an image to edit (enables edit mode instead of generation)
 - `--model` (optional): Model to use - "flash" (fast) or "pro" (high-quality) (default: flash)
 - `--size` (optional): Image resolution for pro model - "1K", "2K", "4K" (default: 1K, ignored for flash)
@@ -88,10 +88,11 @@ uv run "${SKILL_DIR}/scripts/image.py" \
   --aspect photo
 ```
 
-### Using a Reference Image
+### Using Reference Images
 
-To generate an image based on an existing reference:
+Use one or more reference images for style, composition, or content guidance:
 
+**Single reference image:**
 ```bash
 uv run "${SKILL_DIR}/scripts/image.py" \
   --prompt "Create a similar abstract pattern with warmer colors" \
@@ -99,7 +100,36 @@ uv run "${SKILL_DIR}/scripts/image.py" \
   --reference "/path/to/reference.png"
 ```
 
-The reference image helps Gemini understand the desired style, composition, or visual elements you want in the generated image.
+**Multiple reference images (up to 14):**
+```bash
+# 여러 사람을 조합한 단체 사진
+uv run "${SKILL_DIR}/scripts/image.py" \
+  --prompt "A group photo of these people at a party" \
+  --output "/path/to/group.png" \
+  --reference "/path/to/person1.png" \
+  --reference "/path/to/person2.png" \
+  --reference "/path/to/person3.png"
+
+# 여러 스타일 블렌딩
+uv run "${SKILL_DIR}/scripts/image.py" \
+  --prompt "Blend these artistic styles into a landscape" \
+  --output "/path/to/blended.png" \
+  --reference "/path/to/style1.png" \
+  --reference "/path/to/style2.png"
+
+# 캐릭터 일관성 유지
+uv run "${SKILL_DIR}/scripts/image.py" \
+  --prompt "The same character in a different pose, standing on a mountain" \
+  --output "/path/to/character.png" \
+  --reference "/path/to/char_ref1.png" \
+  --reference "/path/to/char_ref2.png"
+```
+
+Reference images help Gemini understand:
+- **Style**: artistic style, color palette, mood
+- **Composition**: layout, framing, perspective
+- **Subjects**: people, objects, characters to include
+- **Character consistency**: maintain same person/character across images
 
 ### Editing an Existing Image
 

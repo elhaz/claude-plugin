@@ -28,7 +28,7 @@ Google Gemini 모델을 사용하여 이미지를 생성한다.
 | `--aspect` | 비율: square, landscape, portrait, wide, photo 등 | square |
 | `--model` | 모델: flash (빠름), pro (고품질) | flash |
 | `--size` | 해상도 (pro만): 1K, 2K, 4K | 1K |
-| `--reference` | 참조 이미지 경로 (스타일 가이드) | - |
+| `--reference` | 참조 이미지 경로 (여러 번 사용 가능, 최대 14개) | - |
 | `--edit` | 편집할 이미지 경로 (편집 모드 활성화) | - |
 
 ## 실행 방법
@@ -73,6 +73,10 @@ uv run "${CLAUDE_PLUGIN_ROOT}/skills/generate/scripts/image.py" \
 
 # 참조 이미지 기반 생성
 /nanobanana "비슷한 스타일로 따뜻한 색상" --reference ./reference.png
+
+# 다중 참조 이미지 (최대 14개)
+/nanobanana "이 사람들의 단체 사진" --reference ./p1.png --reference ./p2.png --reference ./p3.png
+/nanobanana "두 스타일을 블렌딩한 풍경화" --reference ./style1.png --reference ./style2.png
 
 # 이미지 편집 (--edit 모드)
 /nanobanana "배경을 흐리게 해줘" --edit ./photo.png --output ./blurred.png
