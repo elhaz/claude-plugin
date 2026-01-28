@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "개인 Claude Code 플러그인 모음",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "plugins": [
     {
@@ -29,23 +29,15 @@
       "name": "dailylog",
       "source": "./dailylog",
       "description": "Obsidian 데일리로그 관리 플러그인 - 날짜별 읽기, 항목 추가, 통계 요약",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "keywords": ["obsidian", "dailylog", "journal", "markdown", "productivity"],
-      "license": "MIT"
-    },
-    {
-      "name": "research",
-      "source": "./research",
-      "description": "체계적인 심층 연구 워크플로우 플러그인 - 예비 조사, 병렬 심층 조사, 보고서 생성",
-      "version": "1.0.0",
-      "keywords": ["research", "analysis", "web-search", "parallel-agents", "markdown"],
       "license": "MIT"
     },
     {
       "name": "nanobanana",
       "source": "./nanobanana",
       "description": "Gemini AI 이미지 생성/편집 플러그인 - Google Gemini 모델을 사용한 이미지 생성 및 편집",
-      "version": "1.2.3",
+      "version": "1.3.0",
       "keywords": ["image", "generation", "editing", "gemini", "ai", "design"],
       "license": "MIT"
     }
