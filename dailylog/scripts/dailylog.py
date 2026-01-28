@@ -340,9 +340,13 @@ def add_item(vault_path: Path, date: datetime, section: str, item: str) -> str:
         else:
             break
 
-    # 항목 형식 정리
-    if not item.startswith("-"):
-        item = f"- {item}"
+    # 현재 시간 타임스탬프 생성
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # 항목 형식 정리 (타임스탬프 포함)
+    if item.startswith("-"):
+        item = item[1:].strip()  # 앞의 - 제거
+    item = f"- {timestamp} {item}"
 
     lines.insert(insert_idx, item)
 
