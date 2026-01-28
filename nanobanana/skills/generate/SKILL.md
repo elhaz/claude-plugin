@@ -40,12 +40,12 @@ Options:
   - **Direct ratios**: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`
 - `--reference` (optional): Path to a reference image (can be used multiple times, max 14 images)
 - `--edit` (optional): Path to an image to edit (enables edit mode instead of generation)
-- `--model` (optional): Model to use - "flash" (fast) or "pro" (high-quality) (default: flash)
+- `--model` (optional): Model to use - "flash" (fast) or "pro" (high-quality) (default: pro)
 - `--size` (optional): Image resolution for pro model - "1K", "2K", "4K" (default: 1K, ignored for flash)
 
 ### Using Different Models
 
-**Flash model (default)** - Fast generation, good for iterations:
+**Flash model** - Fast generation, good for iterations:
 ```bash
 uv run "${SKILL_DIR}/scripts/image.py" \
   --prompt "A minimalist logo design" \
@@ -53,7 +53,7 @@ uv run "${SKILL_DIR}/scripts/image.py" \
   --model flash
 ```
 
-**Pro model** - Higher quality for final assets:
+**Pro model (default)** - Higher quality for final assets:
 ```bash
 uv run "${SKILL_DIR}/scripts/image.py" \
   --prompt "A detailed hero illustration for a tech landing page" \

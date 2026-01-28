@@ -26,7 +26,7 @@ Google Gemini 모델을 사용하여 이미지를 생성한다.
 |------|------|--------|
 | `--output` | 출력 파일 경로 (PNG) | `./generated-image.png` |
 | `--aspect` | 비율: square, landscape, portrait, wide, photo 등 | square |
-| `--model` | 모델: flash (빠름), pro (고품질) | flash |
+| `--model` | 모델: flash (빠름), pro (고품질) | pro |
 | `--size` | 해상도 (pro만): 1K, 2K, 4K | 1K |
 | `--reference` | 참조 이미지 경로 (여러 번 사용 가능, 최대 14개) | - |
 | `--edit` | 편집할 이미지 경로 (편집 모드 활성화) | - |

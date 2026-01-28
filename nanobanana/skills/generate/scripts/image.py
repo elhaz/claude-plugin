@@ -82,7 +82,7 @@ def generate_image(
     aspect: str = "square",
     references: list[str] | None = None,
     edit: str | None = None,
-    model: str = "flash",
+    model: str = "pro",
     size: str = "1K",
 ) -> None:
     """Generate an image using Gemini and save to output_path."""
@@ -204,8 +204,8 @@ def main():
     parser.add_argument(
         "--model",
         choices=["flash", "pro"],
-        default="flash",
-        help="Model: flash (fast, 1024px) or pro (high-quality, up to 4K) (default: flash)",
+        default="pro",
+        help="Model: flash (fast, 1024px) or pro (high-quality, up to 4K) (default: pro)",
     )
     parser.add_argument(
         "--size",
