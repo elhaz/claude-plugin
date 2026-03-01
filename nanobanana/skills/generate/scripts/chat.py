@@ -41,8 +41,8 @@ from google.genai import types
 from PIL import Image
 
 MODEL_IDS = {
-    "flash": "gemini-2.5-flash-image",
-    "pro": "gemini-3-pro-image-preview",
+    "flash": "gemini-3.1-flash-image-preview",  # Nano Banana 2
+    "pro": "gemini-3-pro-image-preview",         # Nano Banana Pro
 }
 
 
@@ -73,6 +73,7 @@ def run_chat_session(
     session_file: str | None,
     model: str = "flash",
     interactive: bool = False,
+    thinking: str | None = None,
 ) -> None:
     """Multi-turn 이미지 편집 세션 실행"""
     api_key = os.environ.get("GEMINI_API_KEY")
@@ -100,11 +101,20 @@ def run_chat_session(
     if output_dir:
         os.makedirs(output_dir, exist_ok=True)
 
+    # ThinkingConfig 설정 (flash 모델에서 지원)
+    thinking_config = None
+    if thinking and model == "flash":
+        thinking_config = types.ThinkingConfig(
+            thinking_level=thinking.capitalize(),
+            include_thoughts=False,
+        )
+
     # 채팅 세션 생성
     chat = client.chats.create(
         model=model_id,
         config=types.GenerateContentConfig(
             response_modalities=["TEXT", "IMAGE"],
+            thinking_config=thinking_config,
         ),
     )
 
@@ -245,7 +255,13 @@ def main():
         "--model",
         choices=["flash", "pro"],
         default="flash",
-        help="Model: flash (fast) or pro (high-quality) (default: flash)",
+        help="Model: flash (Nano Banana 2, fast) or pro (Nano Banana Pro, high-quality) (default: flash)",
+    )
+    parser.add_argument(
+        "--thinking",
+        choices=["minimal", "high"],
+        default=None,
+        help="Thinking level for flash model: minimal or high (default: off)",
     )
     parser.add_argument(
         "--interactive", "-i",
@@ -271,6 +287,7 @@ def main():
         session_file=args.session,
         model=args.model,
         interactive=args.interactive,
+        thinking=args.thinking,
     )
 
 

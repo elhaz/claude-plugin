@@ -18,6 +18,8 @@ Usage:
     uv run image.py --prompt "Similar style image" --output "./new.png" --reference "./existing.png"
     uv run image.py --prompt "Group photo of these people" --output "./group.png" --reference "./p1.png" --reference "./p2.png" --reference "./p3.png"
     uv run image.py --prompt "High quality art" --output "./art.png" --model pro --size 2K
+    uv run image.py --prompt "Tall banner" --output "./tall.png" --aspect 1:4
+    uv run image.py --prompt "Detailed scene" --output "./detail.png" --thinking high
 
     # 이미지 편집 (--edit 모드)
     uv run image.py --prompt "배경을 흐리게 해줘" --output "./edited.png" --edit "./original.png"
@@ -26,7 +28,7 @@ Usage:
 
 Supported aspect ratios:
     Aliases: square (1:1), landscape (16:9), portrait (9:16), wide (21:9), photo (4:3), photo-portrait (3:4)
-    Direct:  1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9
+    Direct:  1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9, 1:4, 4:1, 1:8, 8:1
 """
 
 import argparse
@@ -38,8 +40,8 @@ from google.genai import types
 from PIL import Image
 
 MODEL_IDS = {
-    "flash": "gemini-2.5-flash-image",
-    "pro": "gemini-3-pro-image-preview",
+    "flash": "gemini-3.1-flash-image-preview",  # Nano Banana 2
+    "pro": "gemini-3-pro-image-preview",         # Nano Banana Pro
 }
 
 # API 지원 종횡비 전체 + 편의 별칭
@@ -62,6 +64,11 @@ ASPECT_RATIOS = {
     "9:16": "9:16",
     "16:9": "16:9",
     "21:9": "21:9",
+    # Nano Banana 2 신규 지원 종횡비
+    "1:4": "1:4",
+    "4:1": "4:1",
+    "1:8": "1:8",
+    "8:1": "8:1",
 }
 
 ASPECT_CHOICES = list(ASPECT_RATIOS.keys())
@@ -73,7 +80,7 @@ def get_aspect_instruction(aspect: str) -> str:
     return f"Generate an image with {ratio} aspect ratio."
 
 
-MAX_REFERENCE_IMAGES = 14  # API 제한: 최대 14개 참조 이미지
+MAX_REFERENCE_IMAGES = 10  # API 제한: 최대 10개 참조 이미지
 
 
 def generate_image(
@@ -82,8 +89,9 @@ def generate_image(
     aspect: str = "square",
     references: list[str] | None = None,
     edit: str | None = None,
-    model: str = "pro",
+    model: str = "flash",
     size: str = "1K",
+    thinking: str | None = None,
 ) -> None:
     """Generate an image using Gemini and save to output_path."""
     api_key = os.environ.get("GEMINI_API_KEY")
@@ -131,25 +139,27 @@ def generate_image(
 
     model_id = MODEL_IDS[model]
 
-    # Pro model supports additional config for resolution
-    if model == "pro":
-        config = types.GenerateContentConfig(
-            response_modalities=["TEXT", "IMAGE"],
-            image_config=types.ImageConfig(
-                aspect_ratio=ASPECT_RATIOS.get(aspect, "1:1"),
-                image_size=size,
-            ),
+    # ThinkingConfig 설정 (flash 모델에서 지원)
+    thinking_config = None
+    if thinking and model == "flash":
+        thinking_config = types.ThinkingConfig(
+            thinking_level=thinking.capitalize(),
+            include_thoughts=False,
         )
-        response = client.models.generate_content(
-            model=model_id,
-            contents=contents,
-            config=config,
-        )
-    else:
-        response = client.models.generate_content(
-            model=model_id,
-            contents=contents,
-        )
+
+    config = types.GenerateContentConfig(
+        response_modalities=["TEXT", "IMAGE"],
+        image_config=types.ImageConfig(
+            aspect_ratio=ASPECT_RATIOS.get(aspect, "1:1"),
+            image_size=size,
+        ),
+        thinking_config=thinking_config,
+    )
+    response = client.models.generate_content(
+        model=model_id,
+        contents=contents,
+        config=config,
+    )
 
     # Ensure output directory exists
     output_dir = os.path.dirname(output_path)
@@ -195,7 +205,7 @@ def main():
         action="append",
         dest="references",
         metavar="IMAGE",
-        help="Path to a reference image (can be used multiple times, max 14 images)",
+        help="Path to a reference image (can be used multiple times, max 10 images)",
     )
     parser.add_argument(
         "--edit",
@@ -205,17 +215,23 @@ def main():
         "--model",
         choices=["flash", "pro"],
         default="pro",
-        help="Model: flash (fast, 1024px) or pro (high-quality, up to 4K) (default: pro)",
+        help="Model: flash (Nano Banana 2, fast) or pro (Nano Banana Pro, high-quality, up to 4K) (default: flash)",
     )
     parser.add_argument(
         "--size",
-        choices=["1K", "2K", "4K"],
+        choices=["0.5K", "1K", "2K", "4K"],
         default="1K",
-        help="Image resolution for pro model (default: 1K, ignored for flash)",
+        help="Image resolution (default: 1K). flash: 0.5K/1K, pro: 1K/2K/4K",
+    )
+    parser.add_argument(
+        "--thinking",
+        choices=["minimal", "high"],
+        default=None,
+        help="Thinking level for flash model: minimal or high (default: off)",
     )
 
     args = parser.parse_args()
-    generate_image(args.prompt, args.output, args.aspect, args.references, args.edit, args.model, args.size)
+    generate_image(args.prompt, args.output, args.aspect, args.references, args.edit, args.model, args.size, args.thinking)
 
 
 if __name__ == "__main__":
