@@ -51,14 +51,6 @@ claude --plugin-dir /path/to/stock-analysis
 - 변경된 섹션만 선택적 업데이트
 - 업데이트 이력 추적
 
-### `/stock-analysis:report [ticker] [output-path]`
-
-수집된 데이터를 표준 템플릿으로 문서화합니다.
-
-```bash
-/stock-analysis:report NVDA ./analysis
-```
-
 ## Skills
 
 ### stock-analysis-workflow
@@ -126,7 +118,7 @@ claude --plugin-dir /path/to/stock-analysis
    ↓
 4. 템플릿 적용 (stock-analysis-workflow 스킬)
    ↓
-5. 문서 생성 (/stock-analysis:report)
+5. 문서 생성
 ```
 
 ### 기존 분석 갱신
@@ -151,7 +143,7 @@ stock-analysis/
 │   └── plugin.json
 ├── commands/
 │   ├── analyze.md
-│   └── report.md
+│   └── update.md
 ├── agents/
 │   └── stock-researcher.md
 ├── skills/
@@ -174,6 +166,8 @@ stock-analysis/
 
 ## Version History
 
+- **1.3.1** - report 커맨드 제거 (analyze가 리서치+문서화 통합 수행)
+
 - **1.3.0** - 리서치 품질 강화 (Investing.com Pro Research 수준 대응)
   - 에이전트/체크리스트: 분기별 재무 추이, GAAP/Non-GAAP EPS 병기, 재무 건전성 지표, 지역별 매출 비중
   - 에이전트/템플릿: 어닝콜 Q&A 핵심 (Bullish/Bearish/Misses), SWOT 분석 섹션
@@ -191,13 +185,13 @@ stock-analysis/
   - 지원 방법론: DCF, rNPV, P/E Comp, EV/Sales, DDM, Backward DCF 등
 
 - **1.1.0** - Update command 추가
-  - 3 Commands: analyze, update, report
+  - 3 Commands: analyze, update, report (report는 1.3.1에서 제거)
   - 기존 분석 문서 갱신 워크플로우 지원
   - 업데이트 이력 추적 기능
 
 - **1.0.0** - Initial release
   - 2 Skills: stock-analysis-workflow, sector-metrics-guide
-  - 2 Commands: analyze, report
+  - 2 Commands: analyze, report (report는 1.3.1에서 제거)
   - 1 Agent: stock-researcher
 
 ## Author
