@@ -166,6 +166,11 @@ stock-analysis/
 
 ## Version History
 
+- **1.3.2** - analyze 커맨드에 분기재무/어닝콜Q&A/SWOT Phase 동기화
+  - analyze Phase 1: 분기별 재무 추이, GAAP/Non-GAAP EPS, 재무 건전성, 지역별 매출 필수 수집
+  - analyze Phase 1: 어닝콜 Q&A 핵심 (Bullish/Bearish/Misses)
+  - analyze Phase 4: SWOT 분석 구조화 추가
+
 - **1.3.1** - report 커맨드 제거 (analyze가 리서치+문서화 통합 수행)
 
 - **1.3.0** - 리서치 품질 강화 (Investing.com Pro Research 수준 대응)

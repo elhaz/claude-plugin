@@ -32,13 +32,22 @@ Use WebSearch and WebFetch to investigate:
    - Search: "{Company} business model revenue segments"
    - Understand what the company does and how it makes money
 
-2. **Recent Developments**
-   - Search: "{Ticker} earnings Q4 2024 guidance outlook"
+2. **Recent Developments & Earnings Call**
+   - Search: "{Ticker} earnings Q4 {latest year} guidance outlook"
+   - Search: "{Ticker} earnings call Q&A transcript key takeaways"
    - Search: "{Company} news announcements {current month} {year}"
+   - **어닝콜 Q&A 핵심**: Bullish/Bearish 하이라이트, 경영진 답변 회피 항목(Misses)
 
 3. **Financial Data**
    - Search: "{Ticker} stock price market cap valuation 2025"
    - Search: "{Company} financial statements revenue earnings"
+   - Search: "{Ticker} quarterly revenue earnings history"
+   - Search: "{Ticker} balance sheet current ratio cash debt"
+   - **필수 수집 항목**:
+     - GAAP EPS + Non-GAAP EPS 병기 (차이 설명)
+     - 분기별 재무 추이 (최근 4~5분기 매출, 영업이익, EPS, EBITDA)
+     - 재무 건전성: Current Ratio, FCF Yield, 부채비율, 현금 보유
+     - 지역별 매출 비중 (해외 매출 비율, 성장률)
 
 4. **Ownership & Sentiment**
    - Search: "{Ticker} insider buying selling transactions"
@@ -64,7 +73,7 @@ Research main competitors:
 - Relative valuation
 - Competitive advantages/disadvantages
 
-### Phase 4: Risk Assessment
+### Phase 4: Risk Assessment & SWOT
 
 Identify and document:
 - Business model risks
@@ -72,6 +81,7 @@ Identify and document:
 - Regulatory risks
 - Management risks
 - Macro risks
+- **SWOT 분석**: Strengths, Weaknesses, Opportunities, Threats 구조화
 
 ### Phase 5: CEO Evaluation
 
