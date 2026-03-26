@@ -43,8 +43,11 @@ Focus on changes **since the last analysis date**:
 
 1. **Price & Valuation Changes**
    - Search: "{Ticker} stock price {current date}"
+   - Search: "{Ticker} forward PE PEG EV/EBITDA"
    - Compare to previous analysis price
    - Calculate % change
+   - **핵심 밸류에이션 세트 갱신**: P/E(TTM), Forward P/E, PEG, EV/EBITDA, FCF Yield, Beta
+   - **Peer 정량 비교 갱신** (변동 시)
 
 2. **Earnings & Financials**
    - Search: "{Company} earnings {quarter} {year}"

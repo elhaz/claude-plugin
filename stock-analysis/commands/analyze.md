@@ -43,11 +43,17 @@ Use WebSearch and WebFetch to investigate:
    - Search: "{Company} financial statements revenue earnings"
    - Search: "{Ticker} quarterly revenue earnings history"
    - Search: "{Ticker} balance sheet current ratio cash debt"
+   - Search: "{Ticker} forward PE PEG EV/EBITDA beta dividend yield"
+   - Search: "{Ticker} historical PE valuation 3 year"
+   - Search: "{Ticker} vs competitors valuation comparison"
    - **필수 수집 항목**:
-     - GAAP EPS + Non-GAAP EPS 병기 (차이 설명)
+     - **핵심 밸류에이션 세트**: P/E(TTM), Forward P/E, PEG, EV/EBITDA, EV/Sales, FCF Yield, Beta, Div Yield
+     - GAAP EPS + Non-GAAP EPS 병기, Forward EPS Estimate
      - 분기별 재무 추이 (최근 4~5분기 매출, 영업이익, EPS, EBITDA)
      - 재무 건전성: Current Ratio, FCF Yield, 부채비율, 현금 보유
      - 지역별 매출 비중 (해외 매출 비율, 성장률)
+     - **연도별 밸류에이션 추이** (과거 3~5년 P/E, EV/Revenue 변화)
+     - **Peer 정량 비교** (경쟁사 2~3개와 P/E, EV/Sales, 매출성장률, Gross Margin 테이블)
 
 4. **Ownership & Sentiment**
    - Search: "{Ticker} insider buying selling transactions"

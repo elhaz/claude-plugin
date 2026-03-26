@@ -66,12 +66,20 @@ Follow this systematic process for each stock:
 - Search: "{Ticker} PE ratio valuation metrics"
 - Search: "{Ticker} quarterly revenue earnings history"
 - Search: "{Ticker} balance sheet current ratio cash debt"
+- Search: "{Ticker} forward PE PEG EV/EBITDA beta dividend yield"
+- Search: "{Ticker} historical PE valuation 3 year"
+- Search: "{Ticker} vs competitors valuation comparison"
 - Collect:
-  - Price, market cap, P/E, P/S, PEG, EV/EBITDA
-  - **GAAP EPS + Non-GAAP EPS 병기** (차이 설명)
+  - Price, market cap, 52-week range
+  - **핵심 밸류에이션 세트 (전부 필수)**:
+    - P/E (TTM), Forward P/E, PEG, P/S, EV/EBITDA, EV/Sales
+    - FCF Yield, Beta, Div Yield
+  - **EPS**: GAAP EPS + Non-GAAP EPS 병기 (차이 설명), Forward EPS Estimate
   - **분기별 재무 추이** (최근 4~5분기 매출, 영업이익, EPS, EBITDA)
   - **재무 건전성**: Current Ratio, FCF Yield, 부채비율, 현금 보유
   - **지역별 매출 비중** (해외 매출 비율, 성장률)
+  - **연도별 밸류에이션 추이** (과거 3~5년 P/E, EV/Revenue 변화)
+  - **Peer 정량 비교** (경쟁사 2~3개와 P/E, EV/Sales, 매출성장률, Gross Margin 테이블)
 
 ### Phase 3: Recent Developments & Earnings Call
 - Search: "{Company} news {current month} {year}"
@@ -152,9 +160,17 @@ Provide a structured research summary:
 | Current Price | $ |
 | Market Cap | $ |
 | 52-Week Range | $ - $ |
+| P/E (TTM) | |
 | P/E (Forward) | |
-| P/S | |
 | PEG | |
+| P/S | |
+| EV/EBITDA | |
+| EV/Sales | |
+| FCF Yield | |
+| Beta | |
+| Div Yield | |
+| EPS Actual (GAAP / Non-GAAP) | |
+| EPS Estimate (Forward) | |
 
 ### Quarterly Financial Trends (최근 4~5분기)
 | 분기 | 매출 | 영업이익 | GAAP EPS | Non-GAAP EPS | EBITDA |
@@ -168,6 +184,14 @@ Provide a structured research summary:
 | 부채비율 | |
 | 현금 보유 | |
 | 해외 매출 비중 | |
+
+### Valuation History (3-5 Years)
+| 연도 | P/E | EV/Revenue | EV/EBITDA |
+|------|-----|-----------|-----------|
+
+### Peer Comparison
+| 기업 | 시총 | 매출성장률 | P/E (Fwd) | EV/Sales | Gross Margin |
+|------|-----|---------|----------|---------|-------------|
 
 ### Industry-Specific Metrics
 [Relevant sector metrics]

@@ -25,11 +25,17 @@ Pre-analysis checklist to ensure comprehensive coverage.
 
 ## Phase 3: Valuation
 
-- [ ] P/E ratio (trailing and forward)
-- [ ] P/S ratio
-- [ ] PEG ratio
-- [ ] EV/EBITDA
-- [ ] Comparison to industry peers
+- [ ] **핵심 밸류에이션 세트 (전부 필수)**:
+  - [ ] P/E (TTM) + Forward P/E
+  - [ ] PEG
+  - [ ] P/S + EV/Sales
+  - [ ] EV/EBITDA
+  - [ ] FCF Yield
+  - [ ] Beta
+  - [ ] Div Yield
+- [ ] EPS Actual (GAAP + Non-GAAP) + Forward EPS Estimate
+- [ ] **연도별 밸류에이션 추이** (과거 3~5년 P/E, EV/Revenue)
+- [ ] **Peer 정량 비교** (경쟁사 2~3개: P/E, EV/Sales, 매출성장률, Gross Margin 테이블)
 - [ ] Historical valuation range
 
 ## Phase 4: Industry-Specific Metrics

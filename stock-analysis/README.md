@@ -218,6 +218,13 @@ stock-analysis/
 
 ## Version History
 
+- **1.4.0** - 핵심 밸류에이션 세트 확장 및 Peer/연도별 추이 추가
+  - 필수 수집: P/E(TTM), Forward P/E, PEG, EV/EBITDA, EV/Sales, FCF Yield, Beta, Div Yield
+  - Forward EPS Estimate 필수 포함
+  - 연도별 밸류에이션 추이 (3~5년 P/E, EV/Revenue)
+  - Peer 정량 비교 테이블 (경쟁사 2~3개)
+  - 에이전트/analyze/update/템플릿/체크리스트 5곳 동기화
+
 - **1.3.2** - analyze 커맨드에 분기재무/어닝콜Q&A/SWOT Phase 동기화
   - analyze Phase 1: 분기별 재무 추이, GAAP/Non-GAAP EPS, 재무 건전성, 지역별 매출 필수 수집
   - analyze Phase 1: 어닝콜 Q&A 핵심 (Bullish/Bearish/Misses)

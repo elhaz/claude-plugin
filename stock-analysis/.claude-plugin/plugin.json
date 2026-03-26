@@ -1,6 +1,6 @@
 {
   "name": "stock-analysis",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "description": "주식 종목분석 워크플로우 자동화 플러그인 - 자유 조사, 템플릿 적용, 업종별 핵심지표 분석, 밸류에이션 적정가 산출",
   "author": {
     "name": "elhaz"

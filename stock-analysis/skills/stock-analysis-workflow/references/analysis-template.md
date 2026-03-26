@@ -77,11 +77,31 @@ updated: YYYY-MM-DD
 - **핵심 지표 2**: [지표명]: [값]
 - **GAAP vs Non-GAAP 차이**: [해당 시 설명]
 
-### 밸류에이션 지표
-- **P/E**: XX배 (업종 평균: XX배)
-- **P/S**: XX배
-- **PEG**: X.XX
-- **EV/EBITDA**: XX배
+### 핵심 밸류에이션 지표
+
+| 지표 | 값 | 업종 평균 |
+|------|---|---------|
+| **P/E (TTM)** | | |
+| **P/E (Forward)** | | |
+| **PEG** | | |
+| **P/S** | | |
+| **EV/EBITDA** | | |
+| **EV/Sales** | | |
+| **FCF Yield** | | |
+| **Beta** | | |
+| **Div Yield** | | |
+| **EPS (GAAP / Non-GAAP)** | | |
+| **Forward EPS Estimate** | | |
+
+### 연도별 밸류에이션 추이
+
+| 연도 | P/E | EV/Revenue | EV/EBITDA | Price/Book |
+|------|-----|-----------|-----------|-----------|
+
+### Peer 정량 비교
+
+| 기업 | 시총 | 매출성장률 | P/E (Fwd) | EV/Sales | Gross Margin |
+|------|-----|---------|----------|---------|-------------|
 
 ### 적정가 산출 (YYYY-MM-DD 기준)
 
