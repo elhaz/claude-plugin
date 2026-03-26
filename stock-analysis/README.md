@@ -105,6 +105,7 @@ claude --plugin-dir /path/to/stock-analysis
 - 최근 뉴스 및 발표
 - 내부자 거래 및 애널리스트 의견
 - 경쟁사 비교
+- 밸류에이션 적정가 산출 (기업 유형별 방법론 자동 선택)
 
 **사용 예시:**
 ```
@@ -172,6 +173,11 @@ stock-analysis/
 ```
 
 ## Version History
+
+- **1.2.1** - stock-researcher 에이전트에 밸류에이션 적정가 산출 단계 추가
+  - 에이전트 Phase 8: 기업 유형별 방법론 자동 선택 및 적정가 범위 산출
+  - 에이전트 Output Format에 Fair Value Estimation 섹션 추가
+  - rNPV 가이드 (프리레버뉴/바이오 기업용) 포함
 
 - **1.2.0** - 밸류에이션 적정가 산출 기능 추가
   - analyze: Phase 6 — 기업 유형별 방법론 자동 선택 및 적정가 범위 산출

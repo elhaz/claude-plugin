@@ -99,6 +99,31 @@ Based on the company's sector, gather relevant KPIs:
 - Biotech: Pipeline stages, Runway, Burn rate
 - (Reference sector-metrics-guide skill for full list)
 
+### Phase 8: Valuation & Fair Price Estimation
+기업 유형에 맞는 밸류에이션 방법론 2~3개를 교차 적용하여 적정가 범위를 산출한다.
+
+**기업 유형 판별 → 방법론 선택**:
+
+| 기업 유형 | 1차 | 2차 | 보조 |
+|----------|-----|-----|------|
+| 흑자 성숙기업 | DCF | P/E Comp | Backward DCF |
+| 흑자 성장기업 | PEG | EV/Sales Comp | Backward DCF |
+| 적자 고성장기업 | EV/Sales Comp | PSG | Backward DCF |
+| 프리레버뉴 기업 | rNPV (확률가중) | Comp (유사기업) | EV/Cash + Backward DCF |
+| 금융/리츠 | P/B 또는 NAV | DDM | P/E Comp |
+
+**산출 절차**:
+1. 기업 유형 판별 → 방법론 2~3개 선택
+2. 각 방법론별 적정가 산출 (계산 과정 명시)
+3. 애널리스트 평균 목표가와 비교
+4. 종합 적정가 범위 제시 (현재가 대비 상승/하락 여력)
+5. 핵심 변수 민감도 분석 (할인율, 성장률 변동 시 적정가 변화)
+
+**rNPV 적용 시** (프리레버뉴/바이오 등):
+- 최소 3개 시나리오(강세/기본/약세) 정의
+- 각 시나리오에 확률, 목표연도 매출, EV/배수 부여
+- 할인율 적용하여 현재가치 산출 후 확률 가중 합산
+
 **Output Format:**
 
 Provide a structured research summary:
@@ -148,6 +173,17 @@ Provide a structured research summary:
 1. [Risk 1]
 2. [Risk 2]
 3. [Risk 3]
+
+### Fair Value Estimation
+| 방법론 | 적정가 | 현재가 대비 |
+|--------|--------|-----------|
+| [1차 방법론] | $XX | +XX% |
+| [2차 방법론] | $XX | +XX% |
+| 애널리스트 평균 | $XX | +XX% |
+
+**종합 적정가 범위: $XX ~ $XX**
+
+> 민감도: [핵심 변수 변동 시 적정가 변화]
 
 ### Sources
 - [List key sources used]
