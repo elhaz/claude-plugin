@@ -164,6 +164,58 @@ stock-analysis/
 └── README.md
 ```
 
+## 사용 패턴
+
+이 플러그인은 두 가지 커맨드로만 사용합니다:
+
+| 커맨드 | 용도 | 빈도 |
+|--------|------|------|
+| `/stock-analysis:analyze [ticker] [path]` | 신규 종목분석 문서 생성 | 새 종목 발견 시 |
+| `/stock-analysis:update [ticker] [path]` | 기존 분석 문서 갱신 | 실적 발표/이벤트 시 |
+
+스킬(`stock-analysis-workflow`, `sector-metrics-guide`)은 커맨드 실행 중 자동으로 참조됩니다.
+
+## 개발 가이드 — 수정 시 동기화 체크리스트
+
+이 플러그인은 **동일한 리서치 Phase가 여러 파일에 분산**되어 있습니다. 리서치 항목을 추가/변경할 때 아래 파일을 **모두** 동기화해야 합니다.
+
+### 리서치 Phase 변경 시 (필수 동기화)
+
+| 순서 | 파일 | 역할 | 왜 필요한가 |
+|------|------|------|-----------|
+| 1 | `agents/stock-researcher.md` | 에이전트 시스템 프롬프트 | 에이전트가 실제 리서치할 때 따르는 지침 |
+| 2 | `commands/analyze.md` | analyze 커맨드 워크플로우 | 커맨드 실행 시 에이전트에 전달되는 Phase 정의 |
+| 3 | `commands/update.md` | update 커맨드 워크플로우 | 갱신 시 리서치 범위 정의 |
+
+> **핵심 규칙**: 에이전트에만 Phase를 추가하고 커맨드에 누락하면, 커맨드 경유 실행 시 해당 Phase가 무시됩니다.
+
+### 출력 형식 변경 시 (필수 동기화)
+
+| 순서 | 파일 | 역할 |
+|------|------|------|
+| 1 | `agents/stock-researcher.md` → Output Format | 에이전트가 생성하는 문서 구조 |
+| 2 | `skills/stock-analysis-workflow/references/analysis-template.md` | 표준 분석 템플릿 |
+
+### 체크 항목 변경 시
+
+| 파일 | 역할 |
+|------|------|
+| `skills/stock-analysis-workflow/references/research-checklist.md` | 리서치 완료 전 검증용 체크리스트 |
+
+### 섹터별 지표 변경 시
+
+| 파일 | 역할 |
+|------|------|
+| `skills/sector-metrics-guide/references/*.md` | 섹터별 KPI 정의 (6개 파일) |
+
+### 버전 업데이트 시 (3곳)
+
+| 파일 | 필드 |
+|------|------|
+| `.claude-plugin/plugin.json` | `version` |
+| `../../.claude-plugin/marketplace.json` | stock-analysis → `version` |
+| `README.md` | Version History 섹션 |
+
 ## Version History
 
 - **1.3.2** - analyze 커맨드에 분기재무/어닝콜Q&A/SWOT Phase 동기화
