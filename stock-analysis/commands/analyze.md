@@ -24,6 +24,14 @@ Conduct comprehensive stock analysis following the research-first workflow.
 
 ## Workflow
 
+### Phase 0: Market Detection
+
+티커 형식으로 시장을 감지하고 해당 가이드를 로드한다:
+- **미국** (영문 티커): `references/us-market-guide.md` 참조
+- **한국** (6자리 숫자): `references/kr-market-guide.md` 참조
+
+가이드의 회계 기준, EPS 기준, 공시 체계, 밸류에이션 특수성을 이후 모든 Phase에 적용.
+
 ### Phase 1: Free-Form Research
 
 Use WebSearch and WebFetch to investigate:
@@ -48,7 +56,7 @@ Use WebSearch and WebFetch to investigate:
    - Search: "{Ticker} vs competitors valuation comparison"
    - **필수 수집 항목**:
      - **핵심 밸류에이션 세트**: P/E(TTM), Forward P/E, PEG, EV/EBITDA, EV/Sales, FCF Yield, Beta, Div Yield
-     - GAAP EPS + Non-GAAP EPS 병기, Forward EPS Estimate
+     - EPS 시장별 기준 병기 (미국: GAAP+Non-GAAP / 한국: 연결+별도), Forward EPS Estimate
      - 분기별 재무 추이 (최근 4~5분기 매출, 영업이익, EPS, EBITDA)
      - 재무 건전성: Current Ratio, FCF Yield, 부채비율, 현금 보유
      - 지역별 매출 비중 (해외 매출 비율, 성장률)

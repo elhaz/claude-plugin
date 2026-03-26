@@ -152,7 +152,9 @@ stock-analysis/
 │   │   └── references/
 │   │       ├── analysis-template.md
 │   │       ├── chart-templates.md
-│   │       └── research-checklist.md
+│   │       ├── research-checklist.md
+│   │       ├── us-market-guide.md
+│   │       └── kr-market-guide.md
 │   └── sector-metrics-guide/
 │       ├── SKILL.md
 │       └── references/
@@ -203,6 +205,15 @@ stock-analysis/
 |------|------|
 | `skills/stock-analysis-workflow/references/research-checklist.md` | 리서치 완료 전 검증용 체크리스트 |
 
+### 시장별 가이드 변경 시
+
+| 파일 | 역할 |
+|------|------|
+| `skills/stock-analysis-workflow/references/us-market-guide.md` | 미국 시장 특수사항 (GAAP/Non-GAAP, SEC, 내부자, 공매도) |
+| `skills/stock-analysis-workflow/references/kr-market-guide.md` | 한국 시장 특수사항 (K-IFRS, 연결/별도, 지배구조, DART) |
+
+> 새 시장 추가 시: `references/{market}-market-guide.md` 파일 추가 + 에이전트/커맨드의 Market Detection 테이블에 행 추가
+
 ### 섹터별 지표 변경 시
 
 | 파일 | 역할 |
@@ -218,6 +229,13 @@ stock-analysis/
 | `README.md` | Version History 섹션 |
 
 ## Version History
+
+- **2.0.0** - 다국가 시장 지원 (Market Detection + 시장별 가이드 분리)
+  - 코어 파일 시장 중립화 (GAAP/Non-GAAP → 시장별 기준)
+  - us-market-guide.md: 미국 특수사항 (GAAP/Non-GAAP, SEC, Form 4, 어닝콜, 공매도)
+  - kr-market-guide.md: 한국 특수사항 (K-IFRS 연결/별도, DART, 지배구조 할인, SOTP, 보통주/우선주)
+  - 에이전트/analyze/update: Phase 0 Market Detection 추가 (티커 형식으로 자동 감지)
+  - 확장 가능: 새 시장 추가 시 {market}-market-guide.md만 추가
 
 - **1.5.0** - Plotly 차트 생성 Phase 추가 (6종)
   - 필수 3종: 분기별 매출/EPS 추이, 연간 매출/순이익, 매출 구성 도넛

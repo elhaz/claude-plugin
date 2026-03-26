@@ -17,7 +17,7 @@ Pre-analysis checklist to ensure comprehensive coverage.
 - [ ] Revenue growth (YoY, 3-year CAGR)
 - [ ] Profit margins (gross, operating, net)
 - [ ] **분기별 재무 추이** (최근 4~5분기 매출, 영업이익, EPS, EBITDA)
-- [ ] **GAAP EPS + Non-GAAP EPS** 병기 및 차이 설명
+- [ ] **EPS 시장별 기준 병기** (미국: GAAP+Non-GAAP / 한국: 연결+별도)
 - [ ] Balance sheet health (debt ratio, cash position)
 - [ ] **재무 건전성 지표**: Current Ratio, FCF Yield
 - [ ] Cash flow (operating, free cash flow)
@@ -42,7 +42,7 @@ Pre-analysis checklist to ensure comprehensive coverage.
 
 - [ ] Identify relevant sector from `sector-metrics-guide`
 - [ ] Collect industry-specific KPIs
-- [ ] Note GAAP vs Non-GAAP differences
+- [ ] EPS/회계 기준 차이 확인 (시장 가이드 참조)
 - [ ] Compare to industry benchmarks
 
 ## Phase 5: Ownership & Sentiment
@@ -88,7 +88,7 @@ Things frequently missed in template-driven analysis:
 | Category | What to Check |
 |----------|---------------|
 | Share dilution | YoY change in shares outstanding |
-| GAAP gaps | Difference between GAAP and adjusted earnings |
+| EPS 기준 차이 | 미국: GAAP vs Non-GAAP / 한국: 연결 vs 별도 |
 | Quarterly trends | 분기별 매출/이익 추이 (계절성, 가속/감속 패턴) |
 | Geographic mix | 지역별 매출 비중 및 성장률 차이 |
 | Sector context | Why is sector up/down right now? |
@@ -99,22 +99,10 @@ Things frequently missed in template-driven analysis:
 
 ## Research Sources
 
-### Primary Sources
-- Company investor relations website
-- SEC EDGAR (10-K, 10-Q, 8-K, proxy statements)
-- Earnings call transcripts
-
-### Secondary Sources
-- Financial news (Bloomberg, Reuters, WSJ)
-- Analyst reports
-- Industry publications
-- Competitor filings
-
-### Data Sources
-- Stock price and volume data
-- Insider transaction filings (Form 4)
-- Institutional holdings (13F filings)
-- Short interest data
+### Research Sources
+시장별 가이드 파일에 정의된 소스를 사용:
+- **미국**: `references/us-market-guide.md` (SEC EDGAR, Yahoo Finance, Finviz 등)
+- **한국**: `references/kr-market-guide.md` (DART, 네이버증권, FnGuide 등)
 
 ## Phase 9: Chart Generation
 

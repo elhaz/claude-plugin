@@ -37,6 +37,12 @@ Update an existing stock analysis document with recent developments and changes.
    - Identified risks and catalysts
    - Action items from last analysis
 
+### Phase 1.5: Market Detection
+
+기존 문서의 티커 형식으로 시장을 감지하고 해당 가이드 로드:
+- **미국** (영문 티커): `references/us-market-guide.md`
+- **한국** (6자리 숫자): `references/kr-market-guide.md`
+
 ### Phase 2: Research Recent Developments
 
 Focus on changes **since the last analysis date**:
@@ -54,7 +60,7 @@ Focus on changes **since the last analysis date**:
    - Check if new earnings released since last update
    - Note any guidance changes
    - **분기별 재무 추이 업데이트** (최신 분기 추가)
-   - **GAAP EPS + Non-GAAP EPS 병기**
+   - **EPS 시장별 기준 병기** (미국: GAAP+Non-GAAP / 한국: 연결+별도)
    - **재무 건전성 지표 갱신** (Current Ratio, FCF Yield)
    - **지역별 매출 비중 변동** 확인
 

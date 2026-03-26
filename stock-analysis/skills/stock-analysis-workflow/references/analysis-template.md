@@ -93,7 +93,7 @@ updated: YYYY-MM-DD
 | **FCF Yield** | | |
 | **Beta** | | |
 | **Div Yield** | | |
-| **EPS (GAAP / Non-GAAP)** | | |
+| **EPS (시장별 기준 병기)** | | |
 | **Forward EPS Estimate** | | |
 
 ### 연도별 밸류에이션 추이
