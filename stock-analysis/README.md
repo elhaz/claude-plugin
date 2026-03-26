@@ -85,24 +85,34 @@ claude --plugin-dir /path/to/stock-analysis
 - "GAAP vs Non-GAAP 차이"
 - "SaaS 회사 어떻게 평가해?"
 
-## Agent
+## Agents (2-Agent Pipeline)
 
-### stock-researcher
+### stock-data-collector (Sonnet)
 
-자동으로 종목 데이터를 수집하는 에이전트입니다.
+정량 데이터를 수집하는 경량 에이전트. 판단/분석 없이 데이터만 구조화하여 반환.
 
 **수집 항목:**
-- 기업 개요 및 사업모델
-- 재무 데이터 및 밸류에이션
-- 최근 뉴스 및 발표
-- 내부자 거래 및 애널리스트 의견
-- 경쟁사 비교
-- 밸류에이션 적정가 산출 (기업 유형별 방법론 자동 선택)
+- 기업 개요, 매출 구성, 지역별 매출
+- 밸류에이션 세트 (11개), 분기별 재무 (5분기)
+- 연도별 밸류에이션 추이, Peer 정량 비교
+- 애널리스트 컨센서스, 내부자 거래, 공매도
 
-**사용 예시:**
+### stock-analyst (Opus)
+
+data-collector의 데이터를 기반으로 분석/판단/문서 작성을 수행.
+
+**산출물:**
+- 경쟁 분석, 어닝콜 Q&A 해석
+- SWOT, 리스크 평가
+- 적정가 산출 (2~3개 방법론)
+- 최종 문서 + Plotly 차트
+
+### Pipeline 흐름
+
 ```
-"AAPL 리서치해줘"
-"Blue Owl Capital 정보 모아줘"
+analyze/update 커맨드
+  ├── Step 1: stock-data-collector (Sonnet) → 구조화된 데이터
+  └── Step 2: stock-analyst (Opus) → 완성된 분석 문서
 ```
 
 ## Workflow
@@ -145,7 +155,8 @@ stock-analysis/
 │   ├── analyze.md
 │   └── update.md
 ├── agents/
-│   └── stock-researcher.md
+│   ├── stock-data-collector.md  (Sonnet - 데이터 수집)
+│   └── stock-analyst.md         (Opus - 분석/문서 작성)
 ├── skills/
 │   ├── stock-analysis-workflow/
 │   │   ├── SKILL.md
@@ -186,18 +197,20 @@ stock-analysis/
 
 | 순서 | 파일 | 역할 | 왜 필요한가 |
 |------|------|------|-----------|
-| 1 | `agents/stock-researcher.md` | 에이전트 시스템 프롬프트 | 에이전트가 실제 리서치할 때 따르는 지침 |
-| 2 | `commands/analyze.md` | analyze 커맨드 워크플로우 | 커맨드 실행 시 에이전트에 전달되는 Phase 정의 |
-| 3 | `commands/update.md` | update 커맨드 워크플로우 | 갱신 시 리서치 범위 정의 |
+| 1 | `agents/stock-data-collector.md` | 데이터 수집 에이전트 (Sonnet) | 수집 항목/체크리스트 정의 |
+| 2 | `agents/stock-analyst.md` | 분석/문서 에이전트 (Opus) | 분석 Phase/문서 구조 정의 |
+| 3 | `commands/analyze.md` | analyze 커맨드 (오케스트레이터) | 2-Agent 파이프라인 조율 |
+| 4 | `commands/update.md` | update 커맨드 (오케스트레이터) | 갱신 파이프라인 조율 |
 
-> **핵심 규칙**: 에이전트에만 Phase를 추가하고 커맨드에 누락하면, 커맨드 경유 실행 시 해당 Phase가 무시됩니다.
+> **핵심 규칙**: 수집 항목 변경 → data-collector + analyze/update 동기화. 분석 항목 변경 → analyst + analyze/update 동기화.
 
 ### 출력 형식 변경 시 (필수 동기화)
 
 | 순서 | 파일 | 역할 |
 |------|------|------|
-| 1 | `agents/stock-researcher.md` → Output Format | 에이전트가 생성하는 문서 구조 |
-| 2 | `skills/stock-analysis-workflow/references/analysis-template.md` | 표준 분석 템플릿 |
+| 1 | `agents/stock-data-collector.md` → Output Format | data-collector 반환 구조 |
+| 2 | `agents/stock-analyst.md` → 문서 구조 | analyst가 생성하는 문서 구조 |
+| 3 | `skills/stock-analysis-workflow/references/analysis-template.md` | 표준 분석 템플릿 |
 
 ### 체크 항목 변경 시
 
@@ -229,6 +242,13 @@ stock-analysis/
 | `README.md` | Version History 섹션 |
 
 ## Version History
+
+- **2.1.0** - 2-Agent 파이프라인 아키텍처 (토큰 절감 + 일관성 향상)
+  - stock-researcher 단일 에이전트 → stock-data-collector (Sonnet) + stock-analyst (Opus) 분리
+  - data-collector: 정량 데이터만 수집 (판단 없음), 필수 항목 체크리스트로 누락 방지
+  - analyst: 수집 데이터 기반 분석/판단/문서 작성에 집중
+  - analyze/update 커맨드: 2-Agent 오케스트레이션으로 재작성
+  - 예상 효과: Opus 토큰 ~40% 절감, 후반 Phase 누락 문제 해소
 
 - **2.0.0** - 다국가 시장 지원 (Market Detection + 시장별 가이드 분리)
   - 코어 파일 시장 중립화 (GAAP/Non-GAAP → 시장별 기준)
