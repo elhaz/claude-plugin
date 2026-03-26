@@ -174,6 +174,11 @@ stock-analysis/
 
 ## Version History
 
+- **1.3.0** - 리서치 품질 강화 (Investing.com Pro Research 수준 대응)
+  - 에이전트/체크리스트: 분기별 재무 추이, GAAP/Non-GAAP EPS 병기, 재무 건전성 지표, 지역별 매출 비중
+  - 에이전트/템플릿: 어닝콜 Q&A 핵심 (Bullish/Bearish/Misses), SWOT 분석 섹션
+  - update 커맨드: 분기 재무 갱신, 어닝콜 Q&A, SWOT 업데이트 반영
+
 - **1.2.1** - stock-researcher 에이전트에 밸류에이션 적정가 산출 단계 추가
   - 에이전트 Phase 8: 기업 유형별 방법론 자동 선택 및 적정가 범위 산출
   - 에이전트 Output Format에 Fair Value Estimation 섹션 추가

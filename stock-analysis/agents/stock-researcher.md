@@ -62,15 +62,24 @@ Follow this systematic process for each stock:
 
 ### Phase 2: Financial Data
 - Search: "{Ticker} stock price market cap 52 week range"
-- Search: "{Company} earnings revenue growth Q4 2024"
+- Search: "{Company} earnings revenue growth Q4 {latest year}"
 - Search: "{Ticker} PE ratio valuation metrics"
-- Collect: Price, market cap, P/E, P/S, PEG, EV/EBITDA
+- Search: "{Ticker} quarterly revenue earnings history"
+- Search: "{Ticker} balance sheet current ratio cash debt"
+- Collect:
+  - Price, market cap, P/E, P/S, PEG, EV/EBITDA
+  - **GAAP EPS + Non-GAAP EPS 병기** (차이 설명)
+  - **분기별 재무 추이** (최근 4~5분기 매출, 영업이익, EPS, EBITDA)
+  - **재무 건전성**: Current Ratio, FCF Yield, 부채비율, 현금 보유
+  - **지역별 매출 비중** (해외 매출 비율, 성장률)
 
-### Phase 3: Recent Developments
+### Phase 3: Recent Developments & Earnings Call
 - Search: "{Company} news {current month} {year}"
 - Search: "{Ticker} earnings call highlights guidance"
+- Search: "{Ticker} earnings call Q&A transcript key takeaways"
 - Search: "{Company} announcements M&A strategic"
 - Note: Any material events, guidance changes, strategic shifts
+- **어닝콜 Q&A 핵심**: 경영진이 강조한 포인트, 애널리스트 질문 중 핵심 이슈, 미공개 정보
 
 ### Phase 4: Ownership & Sentiment
 - Search: "{Ticker} insider buying selling transactions"
@@ -147,13 +156,26 @@ Provide a structured research summary:
 | P/S | |
 | PEG | |
 
+### Quarterly Financial Trends (최근 4~5분기)
+| 분기 | 매출 | 영업이익 | GAAP EPS | Non-GAAP EPS | EBITDA |
+|------|------|---------|----------|-------------|--------|
+
+### Financial Health
+| 지표 | 값 |
+|------|---|
+| Current Ratio | |
+| FCF Yield | |
+| 부채비율 | |
+| 현금 보유 | |
+| 해외 매출 비중 | |
+
 ### Industry-Specific Metrics
 [Relevant sector metrics]
 
-### Recent Developments
+### Recent Developments & Earnings Call Q&A
 - [Key development 1]
 - [Key development 2]
-- [Key development 3]
+- **어닝콜 핵심 Q&A**: [경영진 강조 포인트, 애널리스트 핵심 질문]
 
 ### Ownership & Sentiment
 - Insider Activity: [Summary]
@@ -168,6 +190,12 @@ Provide a structured research summary:
 ### Management
 - CEO: [Name], [Tenure]
 - Notable: [Key points about leadership]
+
+### SWOT Analysis
+| | 긍정 | 부정 |
+|---|------|------|
+| **내부** | **Strengths**: [핵심 강점] | **Weaknesses**: [핵심 약점] |
+| **외부** | **Opportunities**: [기회 요인] | **Threats**: [위협 요인] |
 
 ### Key Risks
 1. [Risk 1]

@@ -50,8 +50,16 @@ Focus on changes **since the last analysis date**:
    - Search: "{Company} earnings {quarter} {year}"
    - Check if new earnings released since last update
    - Note any guidance changes
+   - **분기별 재무 추이 업데이트** (최신 분기 추가)
+   - **GAAP EPS + Non-GAAP EPS 병기**
+   - **재무 건전성 지표 갱신** (Current Ratio, FCF Yield)
+   - **지역별 매출 비중 변동** 확인
 
-3. **News & Announcements**
+3. **Earnings Call Q&A**
+   - Search: "{Ticker} earnings call transcript Q&A highlights"
+   - **경영진 강조 포인트, 애널리스트 핵심 질문, 답변 회피 항목** 정리
+
+4. **News & Announcements**
    - Search: "{Company} news {month} {year}"
    - Filter for material developments only
    - M&A, management changes, strategic shifts
@@ -114,6 +122,7 @@ Categorize findings by impact:
    - Only modify sections with material changes
    - Preserve unchanged content
    - Add notes for context
+   - **SWOT 분석**: 신규 이벤트 반영하여 갱신 (있는 경우)
 
 5. **Update "다음 액션" section**
    - Re-evaluate action items

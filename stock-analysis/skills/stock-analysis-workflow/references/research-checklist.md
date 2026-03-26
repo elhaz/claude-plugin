@@ -16,8 +16,12 @@ Pre-analysis checklist to ensure comprehensive coverage.
 - [ ] Market cap and enterprise value
 - [ ] Revenue growth (YoY, 3-year CAGR)
 - [ ] Profit margins (gross, operating, net)
+- [ ] **분기별 재무 추이** (최근 4~5분기 매출, 영업이익, EPS, EBITDA)
+- [ ] **GAAP EPS + Non-GAAP EPS** 병기 및 차이 설명
 - [ ] Balance sheet health (debt ratio, cash position)
+- [ ] **재무 건전성 지표**: Current Ratio, FCF Yield
 - [ ] Cash flow (operating, free cash flow)
+- [ ] **지역별 매출 비중** (해외 매출 비율 및 성장률)
 
 ## Phase 3: Valuation
 
@@ -43,10 +47,11 @@ Pre-analysis checklist to ensure comprehensive coverage.
 - [ ] Analyst ratings distribution
 - [ ] Average price target vs current price
 
-## Phase 6: Recent Developments
+## Phase 6: Recent Developments & Earnings Call
 
 - [ ] Latest earnings highlights
 - [ ] Management guidance
+- [ ] **어닝콜 Q&A 핵심** (경영진 강조 포인트, 애널리스트 핵심 질문)
 - [ ] Recent news and announcements
 - [ ] M&A activity
 - [ ] Product launches or strategic changes
@@ -78,10 +83,13 @@ Things frequently missed in template-driven analysis:
 |----------|---------------|
 | Share dilution | YoY change in shares outstanding |
 | GAAP gaps | Difference between GAAP and adjusted earnings |
+| Quarterly trends | 분기별 매출/이익 추이 (계절성, 가속/감속 패턴) |
+| Geographic mix | 지역별 매출 비중 및 성장률 차이 |
 | Sector context | Why is sector up/down right now? |
 | Management quality | Co-CEO structures, founder status |
 | Timing | Why now? What's the catalyst? |
 | Hidden risks | Off-balance sheet items, pension obligations |
+| Earnings call misses | 경영진이 답변 회피한 질문, 정량화 거부한 항목 |
 
 ## Research Sources
 
