@@ -1,9 +1,9 @@
 ---
 name: generate
-description: Nano Banana Pro (nano-banana-pro) image generation skill. Use this skill when the user asks to "generate an image", "generate images", "create an image", "make an image", uses "nano banana", or requests multiple images like "generate 5 images". Generates images using Google's Gemini 2.5 Flash for any purpose - frontend designs, web projects, illustrations, graphics, hero images, icons, backgrounds, or standalone artwork. Invoke this skill for ANY image generation request.
+description: Nano Banana 2 (nano-banana-2) image generation skill. Use this skill when the user asks to "generate an image", "generate images", "create an image", "make an image", uses "nano banana", or requests multiple images like "generate 5 images". Generates images using Google's Gemini 3.1 Flash (Nano Banana 2) or Gemini 3 Pro (Nano Banana Pro) for any purpose - frontend designs, web projects, illustrations, graphics, hero images, icons, backgrounds, or standalone artwork. Invoke this skill for ANY image generation request.
 ---
 
-# Nano Banana Pro - Gemini Image Generation
+# Nano Banana 2 - Gemini Image Generation
 
 Generate custom images using Google's Gemini models for integration into frontend designs.
 
@@ -15,8 +15,8 @@ Set the `GEMINI_API_KEY` environment variable with your Google AI API key.
 
 | Model | ID | Best For | Max Resolution |
 |-------|-----|----------|----------------|
-| **Flash** | `gemini-2.5-flash-image` | Speed, high-volume tasks | 1024px |
-| **Pro** | `gemini-3-pro-image-preview` | Professional quality, complex scenes | Up to 4K |
+| **Flash (Nano Banana 2)** | `gemini-3.1-flash-image-preview` | 속도, 대량 작업, thinking 지원 | 1K (1024px) |
+| **Pro (Nano Banana Pro)** | `gemini-3-pro-image-preview` | 전문 품질, 복잡한 장면 | 4K |
 
 ## Image Generation Workflow
 
@@ -38,14 +38,16 @@ Options:
 - `--aspect` (optional): Aspect ratio (default: square)
   - **Aliases**: `square` (1:1), `landscape` (16:9), `portrait` (9:16), `wide` (21:9), `photo` (4:3), `photo-portrait` (3:4)
   - **Direct ratios**: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`
-- `--reference` (optional): Path to a reference image (can be used multiple times, max 14 images)
+  - **Nano Banana 2 신규**: `1:4`, `4:1`, `1:8`, `8:1` (초세로/초가로 배너용)
+- `--reference` (optional): Path to a reference image (can be used multiple times, max 10 images)
 - `--edit` (optional): Path to an image to edit (enables edit mode instead of generation)
-- `--model` (optional): Model to use - "flash" (fast) or "pro" (high-quality) (default: pro)
-- `--size` (optional): Image resolution for pro model - "1K", "2K", "4K" (default: 1K, ignored for flash)
+- `--model` (optional): Model to use - "flash" (Nano Banana 2, fast) or "pro" (Nano Banana Pro, high-quality) (default: flash)
+- `--size` (optional): Image resolution - "0.5K", "1K", "2K", "4K" (default: 1K). flash: 0.5K/1K, pro: 1K/2K/4K
+- `--thinking` (optional): Thinking level for flash model - "minimal" or "high" (default: off, flash only)
 
 ### Using Different Models
 
-**Flash model** - Fast generation, good for iterations:
+**Flash model (Nano Banana 2)** - Fast generation, good for iterations:
 ```bash
 uv run "${SKILL_DIR}/scripts/image.py" \
   --prompt "A minimalist logo design" \
@@ -53,7 +55,16 @@ uv run "${SKILL_DIR}/scripts/image.py" \
   --model flash
 ```
 
-**Pro model (default)** - Higher quality for final assets:
+**Flash model with thinking** - 더 정교한 결과가 필요할 때:
+```bash
+uv run "${SKILL_DIR}/scripts/image.py" \
+  --prompt "A complex architectural diagram" \
+  --output "/path/to/arch.png" \
+  --model flash \
+  --thinking high
+```
+
+**Pro model (Nano Banana Pro, default)** - Higher quality for final assets:
 ```bash
 uv run "${SKILL_DIR}/scripts/image.py" \
   --prompt "A detailed hero illustration for a tech landing page" \
@@ -100,7 +111,7 @@ uv run "${SKILL_DIR}/scripts/image.py" \
   --reference "/path/to/reference.png"
 ```
 
-**Multiple reference images (up to 14):**
+**Multiple reference images (up to 10):**
 ```bash
 # 여러 사람을 조합한 단체 사진
 uv run "${SKILL_DIR}/scripts/image.py" \

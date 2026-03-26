@@ -81,6 +81,43 @@ Research leadership:
 - Recent insider transactions
 - Compensation alignment
 
+### Phase 6: Valuation & Fair Price Estimation
+
+기업 유형에 맞는 밸류에이션 방법론을 2~3개 교차 적용하여 적정가 범위를 산출.
+
+**방법론 참고**: Vault 내 `밸류에이션 적정가 산출 방법론` 문서가 있으면 Read하여 참고.
+
+**기업 유형별 추천 조합**:
+
+| 기업 유형 | 1차 | 2차 | 3차/보조 |
+|----------|-----|-----|---------|
+| 흑자 성숙기업 | DCF | P/E Comp | Backward DCF |
+| 적자 고성장기업 | EV/Sales Comp | PSG | Backward DCF |
+| 프리레버뉴 기업 | rNPV (확률가중) | Comp (유사기업) | EV/Cash + Backward DCF |
+| 금융/리츠 | P/B 또는 NAV | DDM | P/E Comp |
+
+**산출 절차**:
+1. 기업 유형 판별 → 적합한 방법론 2~3개 선택
+2. 각 방법론별 적정가 산출 (계산 과정 명시)
+3. 종합 적정가 범위 제시 (현재가 대비 상승/하락 여력)
+4. 핵심 변수 민감도 분석 (할인율, 성장률, 확률 변동 시 적정가 변화)
+
+**rNPV 적용 시** (프리레버뉴/바이오 등):
+- 최소 3개 시나리오(강세/기본/약세) 정의
+- 각 시나리오에 확률, 목표연도 매출, EV/배수 부여
+- 할인율 적용하여 현재가치 산출 후 확률 가중 합산
+
+**출력 형식**:
+```markdown
+### 적정가 산출 (YYYY-MM-DD 기준)
+#### 1차: [방법론명] — 핵심 산출
+[계산 과정]
+#### 2차: [방법론명]
+[계산 과정]
+#### 적정가 종합
+| 방법론 | 적정가 | 현재가 대비 |
+```
+
 ## Output
 
 After completing research, create the analysis document:

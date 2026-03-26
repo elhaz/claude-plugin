@@ -80,7 +80,24 @@ Apply the analysis template to ensure completeness:
 
 Reference: `references/analysis-template.md`
 
-### Step 4: Synthesis & Judgment
+### Step 4: Valuation & Fair Price Estimation
+
+기업 유형에 맞는 밸류에이션 방법론 2~3개를 교차 적용하여 적정가 범위 산출:
+
+| 기업 유형 | 1차 | 2차 | 보조 |
+|----------|-----|-----|------|
+| 흑자 성숙기업 | DCF | P/E Comp | Backward DCF |
+| 적자 고성장기업 | EV/Sales Comp | PSG | Backward DCF |
+| 프리레버뉴 기업 | rNPV (확률가중) | Comp | EV/Cash + Backward DCF |
+| 금융/리츠 | P/B 또는 NAV | DDM | P/E Comp |
+
+**산출 원칙**:
+- 단일 방법론에 의존하지 말 것 — 최소 2개 교차 적용
+- 계산 과정을 명시하여 추후 업데이트 시 재산출 용이하게
+- 핵심 변수 민감도 분석 포함 (할인율, 성장률, 확률 변동)
+- Vault 내 `밸류에이션 적정가 산출 방법론` 문서가 있으면 참조
+
+### Step 5: Synthesis & Judgment
 
 Form investment conclusions:
 

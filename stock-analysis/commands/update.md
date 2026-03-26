@@ -74,6 +74,26 @@ Categorize findings by impact:
 | **Medium** | Price movement >10%, analyst changes | Update metrics |
 | **Low** | Minor news, small price changes | Note in history |
 
+### Phase 3.5: Valuation & Fair Price Re-estimation
+
+기존 적정가 산출이 있으면 최신 데이터로 재산출, 없으면 신규 산출.
+
+**방법론 참고**: Vault 내 `밸류에이션 적정가 산출 방법론` 문서가 있으면 Read하여 참고.
+
+**재산출 트리거** (아래 중 하나라도 해당 시):
+- 주가 15%+ 변동
+- 새 실적 발표 (매출/이익 변동)
+- 시나리오 확률 변동이 필요한 중대 뉴스 (인증 진행, M&A 등)
+- 희석 이벤트 (유상증자, 전환사채 등)
+
+**재산출 절차**:
+1. 기존 적정가 산출 섹션 확인 (이전 방법론/수치 파악)
+2. 변경된 입력값 업데이트 (주가, EPS, 매출, 현금, 주식수, 시나리오 확률 등)
+3. 동일 방법론으로 재산출, 이전 적정가와 비교
+4. 적정가 종합 테이블 업데이트
+
+**적정가 섹션이 없는 기존 문서**: Phase 6 (analyze 커맨드) 절차를 따라 신규 산출 후 삽입. "밸류에이션 지표" 섹션 아래에 "적정가 산출" 서브섹션으로 추가.
+
 ### Phase 4: Update Document
 
 1. **Update frontmatter**

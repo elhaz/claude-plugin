@@ -6,6 +6,7 @@
 
 - **자유 조사 → 템플릿 보완** 워크플로우
 - **업종별 핵심지표 가이드** (10개 섹터)
+- **밸류에이션 적정가 산출** (기업 유형별 2~3개 방법론 교차 적용)
 - **자동화된 웹 리서치** 에이전트
 - **표준 분석 템플릿** 제공
 
@@ -31,6 +32,7 @@ claude --plugin-dir /path/to/stock-analysis
 - 웹 검색을 통한 기업 조사
 - 재무 데이터 수집
 - 업종별 핵심지표 적용
+- 밸류에이션 적정가 산출 (기업 유형별 방법론 자동 선택)
 - 분석 문서 생성
 
 ### `/stock-analysis:update [ticker] [existing-file-path]`
@@ -45,6 +47,7 @@ claude --plugin-dir /path/to/stock-analysis
 **기능:**
 - 기존 분석 문서 읽기 및 마지막 분석일 확인
 - 최근 뉴스, 실적, 가격 변동 조사
+- 적정가 재산출 (주가 15%+ 변동, 신규 실적 등 트리거 시)
 - 변경된 섹션만 선택적 업데이트
 - 업데이트 이력 추적
 
@@ -118,9 +121,11 @@ claude --plugin-dir /path/to/stock-analysis
    ↓
 2. 업종별 지표 확인 (sector-metrics-guide 스킬)
    ↓
-3. 템플릿 적용 (stock-analysis-workflow 스킬)
+3. 밸류에이션 적정가 산출 (기업 유형별 2~3개 방법론)
    ↓
-4. 문서 생성 (/stock-analysis:report)
+4. 템플릿 적용 (stock-analysis-workflow 스킬)
+   ↓
+5. 문서 생성 (/stock-analysis:report)
 ```
 
 ### 기존 분석 갱신
@@ -130,9 +135,11 @@ claude --plugin-dir /path/to/stock-analysis
    ↓
 2. 마지막 분석일 이후 변경사항 조사
    ↓
-3. 변경된 섹션만 업데이트
+3. 적정가 재산출 (트리거 조건 충족 시)
    ↓
-4. 업데이트 이력 기록
+4. 변경된 섹션만 업데이트
+   ↓
+5. 업데이트 이력 기록
 ```
 
 ## File Structure
@@ -165,6 +172,12 @@ stock-analysis/
 ```
 
 ## Version History
+
+- **1.2.0** - 밸류에이션 적정가 산출 기능 추가
+  - analyze: Phase 6 — 기업 유형별 방법론 자동 선택 및 적정가 범위 산출
+  - update: Phase 3.5 — 트리거 조건(주가 15%+, 신규 실적 등) 충족 시 적정가 재산출
+  - 분석 템플릿에 적정가 산출 섹션 추가
+  - 지원 방법론: DCF, rNPV, P/E Comp, EV/Sales, DDM, Backward DCF 등
 
 - **1.1.0** - Update command 추가
   - 3 Commands: analyze, update, report
