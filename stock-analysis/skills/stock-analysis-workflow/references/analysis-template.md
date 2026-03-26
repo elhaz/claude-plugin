@@ -58,6 +58,9 @@ updated: YYYY-MM-DD
 |------|------|---------|----------|-------------|--------|------|
 | YYYY Q4 | $XXX | $XXX | $X.XX | $X.XX | $XXX | [특이사항] |
 
+> [!note] 차트 삽입 위치
+> 이 테이블 아래에 **분기별 매출/EPS 추이 차트** (Plotly) 삽입. 템플릿: `references/chart-templates.md` #2
+
 ### 재무 건전성
 
 | 지표 | 값 | 비고 |
@@ -97,6 +100,9 @@ updated: YYYY-MM-DD
 
 | 연도 | P/E | EV/Revenue | EV/EBITDA | Price/Book |
 |------|-----|-----------|-----------|-----------|
+
+> [!note] 차트 삽입 위치
+> 이 테이블 아래에 **밸류에이션 추이 라인 차트** (Plotly) 삽입. 템플릿: `references/chart-templates.md` #4
 
 ### Peer 정량 비교
 

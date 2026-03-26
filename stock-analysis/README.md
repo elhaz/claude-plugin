@@ -151,6 +151,7 @@ stock-analysis/
 │   │   ├── SKILL.md
 │   │   └── references/
 │   │       ├── analysis-template.md
+│   │       ├── chart-templates.md
 │   │       └── research-checklist.md
 │   └── sector-metrics-guide/
 │       ├── SKILL.md
@@ -217,6 +218,12 @@ stock-analysis/
 | `README.md` | Version History 섹션 |
 
 ## Version History
+
+- **1.5.0** - Plotly 차트 생성 Phase 추가 (6종)
+  - 필수 3종: 분기별 매출/EPS 추이, 연간 매출/순이익, 매출 구성 도넛
+  - 조건부 3종: 손익 워터폴(흑자), 밸류에이션 추이(라인), 부채/레버리지
+  - chart-templates.md 레퍼런스 파일 추가
+  - 에이전트/analyze/update/템플릿/체크리스트 6곳 동기화
 
 - **1.4.0** - 핵심 밸류에이션 세트 확장 및 Peer/연도별 추이 추가
   - 필수 수집: P/E(TTM), Forward P/E, PEG, EV/EBITDA, EV/Sales, FCF Yield, Beta, Div Yield

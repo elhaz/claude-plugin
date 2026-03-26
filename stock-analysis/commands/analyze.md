@@ -134,6 +134,14 @@ Research leadership:
 | 방법론 | 적정가 | 현재가 대비 |
 ```
 
+### Phase 7: Chart Generation (Plotly)
+
+수집한 데이터로 Obsidian Plotly 차트를 생성하여 문서에 삽입.
+차트 템플릿 참고: `references/chart-templates.md`
+
+**필수 차트** (모든 기업): 분기별 매출/EPS 추이, 연간 매출/순이익, 매출 구성 도넛
+**조건부 차트**: 손익 워터폴(흑자), 밸류에이션 추이(데이터 있을 때), 부채/레버리지(고레버리지)
+
 ## Output
 
 After completing research, create the analysis document:

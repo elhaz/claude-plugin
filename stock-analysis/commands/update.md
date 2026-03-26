@@ -131,6 +131,11 @@ Categorize findings by impact:
    - Re-evaluate action items
    - Add new catalysts/deadlines
 
+6. **차트 갱신** (Plotly)
+   - 분기별 추이 차트에 최신 분기 데이터 추가
+   - 연간 차트에 최신 연도 반영
+   - 차트가 없는 기존 문서: 차트 신규 생성 (references/chart-templates.md 참고)
+
 ### Phase 5: Generate Update Summary
 
 At the end of the document or in a comment, add:

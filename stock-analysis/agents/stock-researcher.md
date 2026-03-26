@@ -141,6 +141,22 @@ Based on the company's sector, gather relevant KPIs:
 - 각 시나리오에 확률, 목표연도 매출, EV/배수 부여
 - 할인율 적용하여 현재가치 산출 후 확률 가중 합산
 
+### Phase 9: Chart Generation (Plotly)
+수집한 데이터로 Obsidian Plotly 차트를 생성하여 문서에 삽입한다.
+차트 템플릿 참고: `references/chart-templates.md`
+
+**필수 차트 (모든 기업)**:
+1. **분기별 매출/EPS 추이** — 막대(매출) + 라인(EPS) 이중축
+2. **연간 매출/순이익 성장** — 그룹 막대
+3. **매출 구성** — 세그먼트별 또는 지역별 도넛 차트
+
+**조건부 차트**:
+4. **손익 워터폴** — 흑자 기업만 (매출→원가→GP→판관비→R&D→영업이익→세금→순이익)
+5. **연도별 밸류에이션 추이** — P/E, EV/Revenue 라인 (데이터 있을 때)
+6. **부채/레버리지** — 고레버리지 기업만 (D/E + 이자보상배율)
+
+**삽입 위치**: 관련 데이터 테이블 바로 아래에 차트 배치.
+
 **Output Format:**
 
 Provide a structured research summary:

@@ -116,6 +116,17 @@ Things frequently missed in template-driven analysis:
 - Institutional holdings (13F filings)
 - Short interest data
 
+## Phase 9: Chart Generation
+
+- [ ] **필수**: 분기별 매출/EPS 추이 차트 (Plotly bar+line)
+- [ ] **필수**: 연간 매출/순이익 성장 차트 (Plotly grouped bar)
+- [ ] **필수**: 매출 구성 도넛 차트 (세그먼트 또는 지역)
+- [ ] **조건부**: 손익 워터폴 (흑자 기업)
+- [ ] **조건부**: 밸류에이션 추이 라인 차트 (데이터 있을 때)
+- [ ] **조건부**: 부채/레버리지 차트 (고레버리지)
+
+차트 템플릿: `references/chart-templates.md`
+
 ## Output Quality Check
 
 Before finalizing analysis:
