@@ -1,0 +1,9 @@
+{
+  "name": "macro-report",
+  "version": "1.0.0",
+  "description": "거시경제 종합 투자분석 보고서 자동화 플러그인 - 유동성/크로스에셋/내부자매매/애널리스트/시장주도업종 5개 보고서 수집·분석 및 종합 투자판단 보고서 생성",
+  "author": {
+    "name": "elhaz"
+  },
+  "keywords": ["macro", "market", "liquidity", "regime", "insider", "analyst", "investment", "report"]
+}

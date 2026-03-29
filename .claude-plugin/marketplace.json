@@ -40,6 +40,14 @@
       "version": "2.0.0",
       "keywords": ["image", "generation", "editing", "gemini", "ai", "design", "nano-banana-2"],
       "license": "MIT"
+    },
+    {
+      "name": "macro-report",
+      "source": "./macro-report",
+      "description": "거시경제 종합 투자분석 보고서 자동화 플러그인 - 3단계 파이프라인(Scanner Sonnet×5 + Writer Opus×5 + 종합 Opus×1), 유동성/크로스에셋/내부자매매/애널리스트/시장주도업종 5개 보고서 + 종합 투자판단",
+      "version": "1.0.0",
+      "keywords": ["macro", "market", "liquidity", "regime", "insider", "analyst", "investment", "report"],
+      "license": "MIT"
     }
   ]
 }
