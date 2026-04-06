@@ -51,7 +51,10 @@ allowed-tools:
 - 기존 문서 내용 (Read한 전문)
 - Step 1에서 수집된 델타 데이터
 - 갱신 지시:
-  - frontmatter `updated` 날짜 갱신
+  - frontmatter `updated` / `마지막수정일` 날짜 갱신
+  - frontmatter `현재가` 갱신 (분석 시점 주가, 숫자만, KRW는 정수/USD는 소수점 2자리)
+  - 적정가 재산출 시 frontmatter `적정가하단` / `적정가상단` 갱신
+  - frontmatter `sector` 값이 허용 목록(stock-analyst.md 참조)에 맞는지 확인, 불일치 시 수정
   - 밸류에이션 지표 갱신
   - 새 분기 데이터 추가 (테이블 + 차트)
   - SWOT 갱신 (신규 이벤트 반영)

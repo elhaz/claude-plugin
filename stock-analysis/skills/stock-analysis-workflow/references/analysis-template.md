@@ -13,6 +13,11 @@ ticker: TICK
 sector: 섹터명
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
+생성일: YYYY-MM-DD
+마지막수정일: YYYY-MM-DD
+현재가: 123.45
+적정가하단: 100
+적정가상단: 150
 ---
 
 # 종목명 (Company Name, TICK)
