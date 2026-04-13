@@ -7,6 +7,7 @@ tools:
   - WebSearch
   - WebFetch
   - Read
+  - Write
   - Grep
   - Glob
 ---
@@ -22,7 +23,8 @@ tools:
 1. **report_type**: `insider` | `analyst` | `sector` | `liquidity` | `regime`
 2. **previous_report_path** (선택): 이전 보고서 경로 — 있으면 베이스라인으로 활용
 3. **scan_results** (선택): 열린 스캔 결과 — generate 커맨드에서 사전 수행된 경우 전달됨
-4. **question_template**: 해당 보고서의 질문 템플릿 (references에서 로드)
+4. **question_template_path**: 해당 보고서의 질문 템플릿 파일 경로 (직접 Read하여 사용)
+5. **scan_data_path**: 수집 결과를 저장할 파일 경로
 
 ## 실행 프로세스
 
@@ -49,9 +51,13 @@ tools:
    - 발표 주기상 아직 업데이트 안 된 항목 (예: TIC는 월 1회)
    - 구조적 설명이 변하지 않는 항목
 
+### Phase 1.5: 질문 템플릿 로드
+
+question_template_path를 Read하여 수집 항목 목록을 파악한다.
+
 ### Phase 2: 데이터 수집
 
-question_template의 각 항목에 대해:
+질문 템플릿의 각 항목에 대해:
 
 1. **변경 필요 항목**: 웹 검색으로 최신 수치 수집
 2. **변경 불필요 항목**: 이전 보고서 수치를 그대로 표기하고 `[전회 유지]` 태그 부착
@@ -64,7 +70,8 @@ question_template의 각 항목에 대해:
 
 ### Phase 3: 출력
 
-**마크다운 구조로 반환한다.** 형식:
+**수집 데이터를 `scan_data_path`에 Write로 저장하고, 저장 경로만 보고한다.**
+오케스트레이터로 결과 전문을 반환하지 않는다. 형식:
 
 ```markdown
 # [report_type] 데이터 수집 결과
@@ -138,3 +145,5 @@ question_template의 각 항목에 대해:
 - 수치와 사실만 기재. "전월 대비 +X%" 같은 객관적 비교는 허용
 - 출처가 불분명한 수치는 `[미확인]` 태그 부착
 - 검색 실패 항목은 `[수집 실패]` 표기 후 진행 (중단하지 않음)
+- 수집 완료 후 반드시 `scan_data_path`에 Write하고, **"저장 완료: [경로]"** 한 줄만 보고한다
+- 오케스트레이터에게 수집 데이터 전문을 반환하지 않는다 (토큰 절약)

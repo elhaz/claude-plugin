@@ -23,22 +23,24 @@ macro-scanner가 수집한 데이터를 기반으로 **분석·판단·보고서
 
 1. **mode**: `individual` | `comprehensive`
 2. **report_type** (individual 모드): `insider` | `analyst` | `sector` | `liquidity` | `regime`
-3. **collected_data**: macro-scanner가 수집한 구조화된 데이터
+3. **scan_data_path**: macro-scanner가 저장한 수집 데이터 파일 경로 (Read하여 사용)
 4. **previous_report_path** (선택): 이전 보고서 경로
 5. **output_path**: 저장 경로
-6. **question_template**: 질문 템플릿 (references에서 로드)
+6. **question_template_path**: 질문 템플릿 파일 경로 (Read하여 사용)
 7. **report_date**: 보고서 날짜 (YYYY-MM-DD)
 
 ## 모드 1: individual (개별 보고서 작성)
 
 ### 실행 프로세스
 
-1. **질문 템플릿 로드**: question_template 읽기
-2. **이전 보고서 로드** (있는 경우): 문서 구조와 스타일 참조
-3. **수집 데이터 분석**: collected_data의 각 항목을 해석·판단
-4. **추가 조사** (필요 시): 수집 데이터에 `[수집 실패]` 또는 부족한 부분이 있으면 WebSearch로 보완
-5. **보고서 작성**: 질문 템플릿의 모든 항목을 커버하는 완전한 보고서 작성
-6. **파일 저장**: output_path에 Write
+1. **질문 템플릿 로드**: question_template_path를 Read
+2. **수집 데이터 로드**: scan_data_path를 Read
+3. **이전 보고서 로드** (있는 경우): 문서 구조와 스타일 참조
+4. **수집 데이터 분석**: 수집 데이터의 각 항목을 해석·판단
+5. **추가 조사** (필요 시): 수집 데이터에 `[수집 실패]` 또는 부족한 부분이 있으면 WebSearch로 보완
+6. **보고서 작성**: 질문 템플릿의 모든 항목을 커버하는 완전한 보고서 작성
+7. **종합보고서용 요약 추가**: 보고서 끝, 구분선·태그 앞에 요약 섹션 삽입
+8. **파일 저장**: output_path에 Write
 
 ### 보고서 유형별 작성 규칙
 
@@ -174,19 +176,51 @@ macro-scanner가 수집한 데이터를 기반으로 **분석·판단·보고서
 ---
 ```
 
+### 종합보고서용 요약 형식
+
+보고서 본문과 구분선(---) 사이에 다음 형식으로 20~30줄 요약을 추가한다. 종합보고서 Writer가 이 요약만 먼저 Read하여 토큰을 절약한다.
+
+```markdown
+## 종합보고서용 요약
+
+- **평가**: [긍정/혼조/부정] ([점수]/100 — liquidity만)
+- **전회 대비**: [개선/악화/유지] + 핵심 변화 3개
+- **Tier 1 후보**: [종목 (등급)] (insider/analyst)
+- **주요 리스크**: [1~2개]
+- **스코어카드**: 🟢 N개, 🟡 N개, 🔴 N개 (liquidity만)
+- **레짐 확률**: Stagflation N% / Risk-Off N% / Reflation N% / Risk-On N% / Goldilocks N% (regime만)
+- **Revision Ratio**: 최강 [섹터 +N] / 최약 [섹터 -N] (analyst만)
+- **자금흐름 핵심**: [유입/유출 Top 3 요약] (sector만)
+- **핵심 수치**: [보고서 유형별 가장 중요한 수치 3~5개]
+```
+
+> [!important] 요약 위치
+> `## 종합보고서용 요약` → `---` (구분선) → `**태그**:` 순서로 배치한다.
+
 ## 모드 2: comprehensive (종합보고서 작성)
 
 ### 입력
 
-- **report_paths**: 5개 개별 보고서 경로 (모두 Read)
-- **comprehensive_template**: 종합보고서 작성 지침 (references/comprehensive-template.md)
+- **report_paths**: 5개 개별 보고서 경로
+- **comprehensive_template_path**: 종합보고서 작성 지침 파일 경로 (Read하여 사용)
+- **scoring_criteria_path**: 스코어링 기준 파일 경로 (Read하여 사용)
 - **previous_comprehensive_path** (선택): 이전 종합보고서 경로
 
 ### 실행 프로세스
 
-1. **5개 보고서 Read**: 모든 개별 보고서를 읽음
-2. **종합보고서 지침 Read**: comprehensive-template.md 읽음
-3. **보고서 작성**: 지침에 따라 종합보고서 작성
+> [!important] 요약 우선 + 전문 후속 Read (토큰 최적화)
+> 5개 보고서를 한꺼번에 읽지 않는다. 요약으로 전체 구조를 먼저 파악한 뒤, 전문을 순차적으로 Read한다.
+
+1. **종합보고서 지침 Read**: comprehensive_template_path를 Read
+2. **스코어링 기준 Read**: scoring_criteria_path를 Read
+3. **5개 보고서 요약 Read**: 각 보고서에서 `## 종합보고서용 요약` 섹션만 먼저 Read
+   - 각 파일에서 Grep으로 `## 종합보고서용 요약` 위치를 찾고, 해당 줄부터 `---`(구분선)까지만 Read
+   - 이 단계에서 전체 구조, 교차 시그널 후보, 종합 점수 윤곽을 파악
+4. **5개 보고서 전문 Read**: 요약에서 파악한 구조를 기반으로 5개 보고서를 순차적으로 Read
+   - Plotly 차트에 필요한 수치 데이터 수집
+   - 교차 시그널 상세 검증 (종목 단위 3중 수렴 등)
+   - Tier 분류를 위한 종목별 상세 내역 확인
+5. **종합 분석 + 보고서 작성**: 지침에 따라 종합보고서 작성
 
 **종합보고서 필수 섹션:**
 - 현재 시장 환경 평가 (유동성, 시장주도업종, 크로스에셋, 내부자, 애널리스트)

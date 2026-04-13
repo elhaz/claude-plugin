@@ -26,7 +26,7 @@ allowed-tools:
 ### Step 0: 사전 준비
 
 1. 오늘 날짜 확인 → `report_date` 설정
-2. output-path 디렉토리 존재 확인
+2. output-path 디렉토리 존재 확인. `[output-path]/.scan/` 디렉토리도 확인 (없으면 생성)
 3. 이전 보고서 탐색: 각 유형별 가장 최근 보고서 경로 파악
    ```
    Glob: [output-path]/*내부자 매매 동향.md → 최신 1개
@@ -35,7 +35,9 @@ allowed-tools:
    Glob: [output-path]/*유동성 환경 분석.md → 최신 1개
    Glob: [output-path]/*크로스에셋 레짐 분석.md → 최신 1개
    ```
-4. 질문 템플릿 5개 로드 (skills/macro-report-workflow/references/question-*.md)
+
+> [!note] 질문 템플릿은 로드하지 않음
+> Scanner가 직접 Read하므로 오케스트레이터에서 질문 템플릿을 읽을 필요가 없다.
 
 ### Step 1: 데이터 수집 (macro-scanner × 5, 병렬)
 
@@ -46,13 +48,13 @@ Agent(macro-scanner) × 5 병렬:
   각각에 전달:
   - report_type: insider / analyst / sector / liquidity / regime
   - previous_report_path: Step 0에서 찾은 이전 보고서
-  - question_template: 해당 유형의 질문 템플릿
+  - question_template_path: 질문 템플릿 파일 경로
+  - scan_data_path: [output-path]/.scan/[report_type]_[report_date].md
 ```
 
-> [!important] 병렬 실행
+> [!important] 병렬 실행 + 파일 기반 핸드오프
 > 5개 에이전트를 **하나의 메시지에서 동시에** 호출한다. 각 에이전트는 독립 컨텍스트에서 실행되므로 토큰 누적이 발생하지 않는다.
-
-각 에이전트는 구조화된 데이터를 반환한다.
+> 각 에이전트는 수집 데이터를 **scan_data_path에 Write**하고, **저장 경로만 보고**한다. 오케스트레이터는 수집 데이터 전문을 수신하지 않는다.
 
 ### Step 2: 보고서 작성 (macro-writer × 5, 병렬)
 
@@ -63,10 +65,10 @@ Agent(macro-writer) × 5 병렬:
   각각에 전달:
   - mode: individual
   - report_type: insider / analyst / sector / liquidity / regime
-  - collected_data: Step 1에서 반환된 데이터
+  - scan_data_path: Step 1에서 저장된 파일 경로
   - previous_report_path: 이전 보고서
   - output_path: [output-path]/[report_date] [보고서명].md
-  - question_template: 질문 템플릿
+  - question_template_path: 질문 템플릿 파일 경로
   - report_date: 오늘 날짜
 ```
 
@@ -88,13 +90,22 @@ Agent(macro-writer) × 5 병렬:
 Agent(macro-writer):
   - mode: comprehensive
   - report_paths: Step 2에서 저장된 5개 파일 경로
-  - comprehensive_template: references/comprehensive-template.md 로드
+  - comprehensive_template_path: references/comprehensive-template.md 경로
+  - scoring_criteria_path: references/scoring-criteria.md 경로
   - previous_comprehensive_path: 이전 종합보고서 (있으면)
   - output_path: [output-path]/[report_date] 종합 분석 및 투자 판단.md
   - report_date: 오늘 날짜
 ```
 
-### Step 4: 완료 보고
+> [!important] 요약 우선 + 전문 후속 Read
+> 종합 Writer는 5개 보고서의 `## 종합보고서용 요약` 섹션을 먼저 Read하여 전체 구조를 파악한 뒤,
+> 5개 보고서 전문을 순차적으로 Read한다. 한꺼번에 읽지 않아 컨텍스트 효율이 높다.
+
+### Step 4: 임시 파일 정리 (선택)
+
+`.scan/` 디렉토리의 임시 파일을 삭제한다.
+
+### Step 5: 완료 보고
 
 생성된 6개 파일 경로와 각 보고서의 핵심 요약 1줄을 사용자에게 보고한다.
 

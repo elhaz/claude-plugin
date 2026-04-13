@@ -1,7 +1,7 @@
 ---
 name: Macro Report Workflow
 description: This skill should be used when the user asks to "generate macro report", "analyze market conditions", "create investment report", "run macro analysis", "거시경제 분석", "시장 환경 분석", "종합 투자 분석", "유동성 분석", "내부자 매매 분석", "크로스에셋 분석", "백테스트 갱신", "추천 이력 업데이트", "backtest update"
-version: 1.1.0
+version: 1.2.0
 ---
 
 # 거시경제 종합 투자분석 워크플로우
@@ -20,16 +20,28 @@ version: 1.1.0
 
 ```
 [1단계] macro-scanner (Sonnet) × 5 병렬
+  ├── 질문 템플릿 직접 Read (경로만 수신)
   ├── 열린 스캔: 새 이벤트 발견
   ├── 베이스라인: 이전 보고서 대비 변경분 식별
-  └── 데이터 수집: 항목별 최신 수치
+  ├── 데이터 수집: 항목별 최신 수치
+  └── 수집 결과를 .scan/ 파일로 Write (오케스트레이터에 전문 미반환)
 
 [2단계] macro-writer (Opus) × 5 병렬
-  └── 수집 데이터 → 개별 보고서 작성·저장
+  ├── .scan/ 파일에서 수집 데이터 Read
+  ├── 개별 보고서 작성·저장
+  └── 종합보고서용 요약 섹션 (20~30줄) 추가
 
 [3단계] macro-writer (Opus) × 1
-  └── 5개 보고서 → 종합보고서 작성
+  ├── 5개 보고서의 요약 섹션 먼저 Read (~150줄) → 전체 구조 파악
+  ├── 5개 보고서 전문을 순차적 Read → 상세 데이터 수집
+  └── 종합보고서 작성
 ```
+
+### 토큰 최적화 설계
+
+1. **파일 기반 핸드오프**: Scanner 결과를 오케스트레이터에 반환하지 않고 파일로 전달하여 동일 데이터 3회 처리 제거
+2. **경로 참조**: 질문 템플릿·스코어링 기준 등 참조 문서를 오케스트레이터가 로드하지 않고 에이전트가 직접 Read
+3. **요약 우선 읽기**: 종합 Writer가 요약(~150줄)으로 구조를 먼저 파악한 뒤 전문을 순차 Read
 
 ## 5개 보고서 구성
 

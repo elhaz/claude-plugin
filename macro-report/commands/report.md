@@ -38,7 +38,10 @@ allowed-tools:
 
 1. 오늘 날짜 → `report_date`
 2. 해당 type의 이전 보고서 탐색 (Glob)
-3. 질문 템플릿 로드
+3. `[output-path]/.scan/` 디렉토리 확인 (없으면 생성)
+
+> [!note] 질문 템플릿은 로드하지 않음
+> Scanner가 직접 Read하므로 오케스트레이터에서 읽을 필요가 없다.
 
 ### Step 1: 데이터 수집 (macro-scanner × 1)
 
@@ -46,8 +49,11 @@ allowed-tools:
 Agent(macro-scanner):
   - report_type: [type]
   - previous_report_path: 이전 보고서 (있으면)
-  - question_template: 질문 템플릿
+  - question_template_path: 질문 템플릿 파일 경로
+  - scan_data_path: [output-path]/.scan/[type]_[report_date].md
 ```
+
+Scanner는 수집 데이터를 scan_data_path에 Write하고 경로만 보고한다.
 
 ### Step 2: 보고서 작성 (macro-writer × 1)
 
@@ -55,10 +61,10 @@ Agent(macro-scanner):
 Agent(macro-writer):
   - mode: individual
   - report_type: [type]
-  - collected_data: Step 1 반환 데이터
+  - scan_data_path: Step 1에서 저장된 파일 경로
   - previous_report_path: 이전 보고서
   - output_path: [output-path]/[report_date] [보고서명].md
-  - question_template: 질문 템플릿
+  - question_template_path: 질문 템플릿 파일 경로
   - report_date: 오늘 날짜
 ```
 

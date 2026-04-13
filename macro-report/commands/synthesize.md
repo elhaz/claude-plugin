@@ -42,11 +42,16 @@ allowed-tools:
 Agent(macro-writer):
   - mode: comprehensive
   - report_paths: Step 0에서 확인된 5개 경로
-  - comprehensive_template: references/comprehensive-template.md
+  - comprehensive_template_path: references/comprehensive-template.md 경로
+  - scoring_criteria_path: references/scoring-criteria.md 경로
   - previous_comprehensive_path: 이전 종합보고서 (있으면)
   - output_path: [output-path]/[date] 종합 분석 및 투자 판단.md
   - report_date: [date]
 ```
+
+> [!important] 요약 우선 + 전문 후속 Read
+> 종합 Writer는 5개 보고서의 `## 종합보고서용 요약` 섹션을 먼저 Read하여 전체 구조를 파악한 뒤,
+> 5개 보고서 전문을 순차적으로 Read한다. 한꺼번에 읽지 않아 컨텍스트 효율이 높다.
 
 ### Step 2: 완료 보고
 
