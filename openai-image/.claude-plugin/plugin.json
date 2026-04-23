@@ -1,0 +1,9 @@
+{
+  "name": "openai-image",
+  "version": "1.0.0",
+  "description": "OpenAI 이미지 생성/편집 플러그인 - gpt-image-1.5(고품질) / gpt-image-1-mini(고속)",
+  "author": {
+    "name": "elhaz"
+  },
+  "keywords": ["image", "generation", "editing", "openai", "gpt-image", "design"]
+}
