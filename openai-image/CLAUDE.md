@@ -21,7 +21,7 @@ uv run skills/generate/scripts/generate.py \
 - `--size`: `1024x1024`(기본) / `1536x1024` / `1024x1536` / `auto`
 - `--quality`: `low` / `medium`(기본) / `high` / `auto`
 - `--background`: `auto`(기본) / `transparent` / `opaque`
-- `--format`: `png`(기본) / `jpeg` / `webp`
+- `--format`: `webp`(기본, 용량 절감) / `png` / `jpeg`
 - `--edit <image>`: 편집 모드. `--mask <image>` 선택적 동반
 - `--timeout <초>`: 기본 120초
 - `--stream`: partial_images로 중간 진행 알림

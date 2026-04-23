@@ -1,6 +1,6 @@
 ---
 name: generate
-version: 1.0.0
+version: 1.1.0
 description: OpenAI gpt-image-1.5 / gpt-image-1-mini 기반 이미지 생성 및 편집 스킬. 사용자가 "openai로 이미지 생성", "gpt-image", "빠른 이미지 생성", "투명 배경 로고/아이콘", "마스크 기반 이미지 편집", "inpaint", "outpaint", "duct tape" 이미지 모델을 언급하거나, Gemini/Nano Banana보다 더 빠른 응답과 정밀한 편집이 필요한 경우 호출한다.
 ---
 
@@ -46,7 +46,7 @@ uv run "${SKILL_DIR}/scripts/generate.py" \
   --output ./logo.png
 ```
 
-기본값: `--model fast`, `--size 1024x1024`, `--quality medium`, `--format png`.
+기본값: `--model fast`, `--size 1024x1024`, `--quality medium`, `--format webp` (용량이 작아 프론트엔드 에셋에 유리. 투명 배경이 필요하면 `--background transparent`는 webp에서도 동작).
 
 주요 옵션:
 
@@ -56,7 +56,7 @@ uv run "${SKILL_DIR}/scripts/generate.py" \
 | `--size` | `1024x1024` / `1536x1024` / `1024x1536` / `auto` |
 | `--quality` | `low` / `medium` / `high` / `auto` |
 | `--background` | `auto` / `transparent` / `opaque` |
-| `--format` | `png` / `jpeg` / `webp` |
+| `--format` | `png` / `jpeg` / `webp` (기본 `webp` — 용량 절감) |
 | `--n` | 1~4 |
 | `--timeout` | 초 단위 (기본 120) |
 | `--stream` | 중간 partial_images 로그 |

@@ -28,12 +28,12 @@ allowed-tools:
 
 | 옵션 | 값 | 기본값 |
 |------|-----|--------|
-| `--output` | PNG/JPEG/WebP 경로 | `./generated-image.png` |
+| `--output` | PNG/JPEG/WebP 경로 (확장자는 `--format`과 맞추는 것이 이상적) | `./generated-image.webp` |
 | `--model` | `fast`(mini) / `hq`(1.5) / 원시 ID | `fast` |
 | `--size` | `1024x1024` / `1536x1024` / `1024x1536` / `auto` | `1024x1024` |
 | `--quality` | `low` / `medium` / `high` / `auto` | `medium` |
 | `--background` | `auto` / `transparent` / `opaque` | `auto` |
-| `--format` | `png` / `jpeg` / `webp` | `png` |
+| `--format` | `png` / `jpeg` / `webp` | `webp` |
 | `--n` | 1~4 | 1 |
 | `--edit` | 편집 대상 원본 이미지 | - |
 | `--mask` | 편집 마스크 PNG (투명 영역이 대상) | - |
@@ -53,7 +53,7 @@ uv run "${CLAUDE_PLUGIN_ROOT}/skills/generate/scripts/generate.py" \
 ## 워크플로우
 
 1. 사용자 인자에서 프롬프트와 옵션 파싱
-2. `--output` 미지정 시 현재 디렉토리의 `generated-image.png`로 저장
+2. `--output` 미지정 시 현재 디렉토리의 `generated-image.webp`로 저장 (포맷을 바꾸면 확장자도 맞춰서 지정)
 3. **`--rewrite` 지정 또는 원본 프롬프트가 단순(예: 3단어 이하)한 경우**: Agent 도구로 `subagent_type: prompt-rewriter`를 호출해 상세 영문 프롬프트를 받는다. 에이전트 반환값을 실제 `--prompt` 값으로 사용
 4. `generate.py` 실행. stderr 진행 로그로 API 상태 확인
 5. 완료 후 저장된 파일 경로 안내

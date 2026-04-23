@@ -145,7 +145,7 @@ def main() -> None:
     parser.add_argument("--size", choices=SIZE_CHOICES, default="1024x1024")
     parser.add_argument("--quality", choices=QUALITY_CHOICES, default="medium")
     parser.add_argument("--background", choices=BACKGROUND_CHOICES, default="auto")
-    parser.add_argument("--format", choices=FORMAT_CHOICES, default="png")
+    parser.add_argument("--format", choices=FORMAT_CHOICES, default="webp")
     parser.add_argument("--n", type=int, default=1, help="생성 개수 (1~4)")
     parser.add_argument("--edit", help="편집 모드: 원본 이미지 경로")
     parser.add_argument("--mask", help="편집 시 마스크 PNG (투명 영역 = 편집 대상)")
