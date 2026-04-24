@@ -4,7 +4,7 @@
 
 ## 개요
 
-`openai-image`는 OpenAI 이미지 생성/편집 API(플래그십 `gpt-image-2`, 고속 `gpt-image-1-mini`, 기타 `gpt-image-1` · `gpt-image-1.5` · `gpt-image-2-2026-04-21` 스냅샷)를 사용하는 Claude Code 플러그인이다. `/openai-image` 슬래시 커맨드 또는 이미지 생성 요청을 통해 호출된다.
+`openai-image`는 OpenAI 이미지 생성/편집 API를 사용하는 Claude Code 플러그인이다. 기본 고품질 모델은 `gpt-image-1.5`(조직 인증 불필요), 고속은 `gpt-image-1-mini`. 조직 인증(신분증 촬영) 완료 계정은 `v2` 별칭으로 `gpt-image-2`를 호출할 수 있다. `/openai-image` 슬래시 커맨드 또는 이미지 생성 요청을 통해 호출된다.
 
 자매 플러그인 `nanobanana`(Google Gemini 기반)와 공존하며, **속도·마스크 기반 정밀 편집·투명 배경·조밀한 텍스트 렌더링**이 필요한 경우 이 플러그인을 사용한다.
 
@@ -17,7 +17,7 @@ uv run skills/generate/scripts/generate.py \
 ```
 
 주요 옵션:
-- `--model`: `fast`(기본, `gpt-image-1-mini`) 또는 `hq`(`gpt-image-2`). 원시 모델 ID 직접 지정 가능 (`gpt-image-1`, `gpt-image-1.5`, `gpt-image-2-2026-04-21` 등)
+- `--model`: `fast`(기본, `gpt-image-1-mini`) / `hq`(`gpt-image-1.5`, 인증 불필요) / `v2`(`gpt-image-2`, 조직 인증 필요). 원시 모델 ID 직접 지정 가능 (`gpt-image-1`, `gpt-image-2-2026-04-21` 등)
 - `--size`: `1024x1024`(기본) / `1536x1024` / `1024x1536` / `auto`
 - `--quality`: `low` / `medium`(기본) / `high` / `auto`
 - `--background`: `auto`(기본) / `transparent` / `opaque`

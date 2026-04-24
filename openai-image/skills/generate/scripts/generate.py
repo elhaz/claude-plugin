@@ -32,9 +32,10 @@ from openai import OpenAI
 
 MODEL_ALIASES = {
     "fast": "gpt-image-1-mini",
-    "hq": "gpt-image-2",
-    # 하위 호환/특정 버전 고정이 필요하면 원시 ID 직접 지정:
-    #   gpt-image-1 / gpt-image-1.5 / gpt-image-2-2026-04-21
+    "hq": "gpt-image-1.5",   # 조직 인증 불필요. 일반 용도 기본 고품질
+    "v2": "gpt-image-2",     # 조직 인증(신분증 촬영) 완료된 계정에서만 호출 가능
+    # 스냅샷 고정이 필요하면 원시 ID 직접 지정:
+    #   gpt-image-1 / gpt-image-2-2026-04-21
 }
 
 SIZE_CHOICES = ["1024x1024", "1536x1024", "1024x1536", "auto"]
