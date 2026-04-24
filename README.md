@@ -11,9 +11,9 @@
 | [macro-report](./macro-report/) | 1.2.0 | 거시경제 종합 투자분석 보고서 (5개 개별 분석 + 종합 투자판단 + 추천 종목 백테스트) | commands, skills, agents |
 | [dailylog](./dailylog/) | 0.2.0 | Obsidian 데일리로그 관리 (날짜별 읽기, 항목 추가, 통계 요약) | commands, skills, scripts |
 | [nanobanana](./nanobanana/) | 2.0.0 | Gemini AI 이미지 생성/편집 (Nano Banana 2 / Pro) | commands, skills |
-| [openai-image](./openai-image/) | 1.1.0 | OpenAI 이미지 생성/편집 (gpt-image-1.5 / gpt-image-1-mini, 마스크 편집, 투명 배경, prompt-rewriter 에이전트, 기본 webp) | commands, skills, agents |
+| [openai-image](./openai-image/) | 1.2.0 | OpenAI 이미지 생성/편집 (gpt-image-2 / gpt-image-1-mini, gpt-image-1/1.5/2 스냅샷 지원, 마스크 편집, 투명 배경, prompt-rewriter 에이전트, 기본 webp) | commands, skills, agents |
 
-마켓플레이스 메타데이터: `.claude-plugin/marketplace.json` (현재 v1.5.0)
+마켓플레이스 메타데이터: `.claude-plugin/marketplace.json` (현재 v1.6.0)
 
 ## 설치 방법
 

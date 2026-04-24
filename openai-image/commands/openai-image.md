@@ -11,7 +11,7 @@ allowed-tools:
 
 # /openai-image - OpenAI 이미지 생성 커맨드
 
-`gpt-image-1.5` / `gpt-image-1-mini`를 사용해 이미지를 생성하거나 편집한다.
+`gpt-image-2`(플래그십) / `gpt-image-1-mini`(고속)를 사용해 이미지를 생성하거나 편집한다. `gpt-image-1`, `gpt-image-1.5`, `gpt-image-2-2026-04-21` 스냅샷도 `--model`에 원시 ID로 지정 가능.
 
 ## 사용 방법
 
@@ -29,7 +29,7 @@ allowed-tools:
 | 옵션 | 값 | 기본값 |
 |------|-----|--------|
 | `--output` | PNG/JPEG/WebP 경로 (확장자는 `--format`과 맞추는 것이 이상적) | `./generated-image.webp` |
-| `--model` | `fast`(mini) / `hq`(1.5) / 원시 ID | `fast` |
+| `--model` | `fast`(mini) / `hq`(gpt-image-2) / 원시 ID | `fast` |
 | `--size` | `1024x1024` / `1536x1024` / `1024x1536` / `auto` | `1024x1024` |
 | `--quality` | `low` / `medium` / `high` / `auto` | `medium` |
 | `--background` | `auto` / `transparent` / `opaque` | `auto` |

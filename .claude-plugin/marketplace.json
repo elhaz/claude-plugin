@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "개인 Claude Code 플러그인 모음",
-    "version": "1.5.0"
+    "version": "1.6.0"
   },
   "plugins": [
     {
@@ -44,8 +44,8 @@
     {
       "name": "openai-image",
       "source": "./openai-image",
-      "description": "OpenAI 이미지 생성/편집 플러그인 - gpt-image-1.5(고품질) 및 gpt-image-1-mini(고속) 모델, 마스크 기반 정밀 편집(inpaint/outpaint), 투명 배경, 스트리밍 진행 로그, prompt-rewriter 서브에이전트 내장, 기본 출력 포맷 webp",
-      "version": "1.1.0",
+      "description": "OpenAI 이미지 생성/편집 플러그인 - gpt-image-2(플래그십) 및 gpt-image-1-mini(고속) 모델, gpt-image-1/1.5/2-2026-04-21 스냅샷 원시 ID 지정 지원, 마스크 기반 정밀 편집(inpaint/outpaint), 투명 배경, 스트리밍 진행 로그, prompt-rewriter 서브에이전트 내장, 기본 출력 포맷 webp",
+      "version": "1.2.0",
       "keywords": ["image", "generation", "editing", "openai", "gpt-image", "inpaint", "outpaint", "design"],
       "license": "MIT"
     },
