@@ -1,7 +1,7 @@
 ---
 name: Macro Report Workflow
 description: This skill should be used when the user asks to "generate macro report", "analyze market conditions", "create investment report", "run macro analysis", "거시경제 분석", "시장 환경 분석", "종합 투자 분석", "유동성 분석", "내부자 매매 분석", "크로스에셋 분석", "백테스트 갱신", "추천 이력 업데이트", "backtest update"
-version: 1.2.0
+version: 1.3.0
 ---
 
 # 거시경제 종합 투자분석 워크플로우
@@ -85,6 +85,8 @@ macro-scanner 는 두 가지 경로를 지원한다 (자세한 흐름은 `agents
 
 - **신규 경로 (default, B 모드)**: `https://stock.xhhan.com/api/meta/capabilities` 를 먼저 fetch 해 사용 가능한 데이터/엔드포인트를 동적으로 파악한 뒤, 매칭되는 항목은 financial-data-platform API 로, 못 하는 항목만 WebSearch fallback. **사전 매핑 금지** — 매핑은 매 실행마다 capabilities 응답이 결정한다.
 - **기존 경로 (A 모드)**: 전통적인 WebSearch-only. `--no-api` 인자 또는 `MACRO_SKIP_API=1` 환경변수로 강제.
+
+scanner 가 WebSearch 보강을 사용한 항목 중 fdp 가 차후 자동 채울 수 있을 데이터는 sidecar JSONL 로 누적되고, 오케스트레이터(command Bash) 가 `POST /api/meta/data-gaps` 로 일괄 전송 — `FDP_API_KEY` 미설정 시 graceful skip. 명명 규약은 [data-gaps-conventions.md](references/data-gaps-conventions.md) 단일 출처.
 
 토큰 절감 효과 측정 양식은 [token-savings.md](references/token-savings.md) 참고.
 

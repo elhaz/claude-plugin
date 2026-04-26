@@ -24,6 +24,7 @@ allowed-tools:
 - **output-path** (선택): 저장 경로. 기본값: `02_Areas/생활/재정관리/투자전략/투자 계획/AI 리포트/분석/`
 - **--no-api** (선택 플래그): financial-data-platform 우선 경로를 끄고 기존 WebSearch-only 경로(A 모드)로 강제. 환경변수 `MACRO_SKIP_API=1` 과 동등.
 - **--api-base=URL** (선택): financial-data-platform 베이스 URL 오버라이드. 우선순위는 `--api-base 인자 > $FDP_API_BASE > https://stock.xhhan.com`.
+- **`FDP_API_KEY` env** (선택): write 스코프 키. 설정되어 있으면 Step 1 종료 후 scanner 가 누적한 데이터 갭을 `POST /api/meta/data-gaps` 로 전송. 미설정/실패 시 graceful skip — 보고서 생성에는 영향 없음.
 
 ### type 매핑
 
@@ -76,7 +77,45 @@ Agent(macro-scanner):
   - api_base_url: Step 0에서 결정된 값
 ```
 
-Scanner는 수집 데이터를 scan_data_path에 Write하고 경로만 보고한다.
+Scanner는 수집 데이터를 scan_data_path에 Write하고 경로만 보고한다. 데이터 갭이 누적된 경우 sidecar `${scan_data_path%.md}_data_gaps.jsonl` 도 함께 생성한다.
+
+### Step 1.5: 데이터 갭 전송 (선택, graceful)
+
+Step 1 직후, sidecar JSONL 이 존재하고 `FDP_API_KEY` 가 설정되어 있으면 한 줄씩 fdp 에 POST. 실패는 모두 무시 (보고서 생성 차단 금지).
+
+```bash
+# 오케스트레이터가 다음을 채워 호출:
+#   SCAN_DATA_PATH = Step 1 의 scan_data_path
+# Step 0 의 USE_API/API_BASE 값을 동일 규칙으로 재유도 (셸 상태는 호출 간 비휘발).
+USE_API=true
+API_BASE="${FDP_API_BASE:-https://stock.xhhan.com}"
+[ "${MACRO_SKIP_API:-0}" = "1" ] && USE_API=false
+case " $ARGUMENTS " in *" --no-api "*) USE_API=false ;; esac
+for tok in $ARGUMENTS; do
+  case "$tok" in --api-base=*) API_BASE="${tok#--api-base=}" ;; esac
+done
+
+GAPS_FILE="${SCAN_DATA_PATH%.md}_data_gaps.jsonl"
+if [ -f "$GAPS_FILE" ] && [ -n "${FDP_API_KEY:-}" ] && [ "$USE_API" = "true" ]; then
+  posted=0; failed=0
+  while IFS= read -r line; do
+    [ -z "$line" ] && continue
+    if curl -fsS -m 5 -X POST "$API_BASE/api/meta/data-gaps" \
+        -H "Content-Type: application/json" \
+        -H "X-API-Key: $FDP_API_KEY" \
+        --data "$line" >/dev/null 2>&1; then
+      posted=$((posted+1))
+    else
+      failed=$((failed+1))
+    fi
+  done < "$GAPS_FILE"
+  echo "data_gaps: posted=$posted failed=$failed"
+elif [ -f "$GAPS_FILE" ]; then
+  echo "data_gaps: skipped (FDP_API_KEY 부재 또는 USE_API=false)"
+fi
+```
+
+> 명명 규약은 `skills/macro-report-workflow/references/data-gaps-conventions.md` 단일 출처.
 
 ### Step 2: 보고서 작성 (macro-writer × 1)
 
