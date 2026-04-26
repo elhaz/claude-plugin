@@ -1,8 +1,9 @@
 ---
 name: generate
 description: 5개 거시경제 분석 보고서 + 종합 투자판단 보고서를 일괄 생성합니다
-argument-hint: "[output-path]"
+argument-hint: "[output-path] [--no-api] [--api-base=URL]"
 allowed-tools:
+  - Bash
   - Read
   - Write
   - Edit
@@ -20,6 +21,10 @@ allowed-tools:
 ## Arguments
 
 - **output-path** (선택): 보고서 저장 디렉토리. 기본값: `02_Areas/생활/재정관리/투자전략/투자 계획/AI 리포트/분석/`
+- **--no-api** (선택 플래그): 모든 scanner 에 `use_api=false` 전파. 환경변수 `MACRO_SKIP_API=1` 과 동등.
+- **--api-base=URL** (선택): financial-data-platform 베이스 URL 오버라이드. 우선순위는 `--api-base 인자 > $FDP_API_BASE > https://stock.xhhan.com`.
+
+> 5종 중 시범 전환 대상은 현재 `liquidity` 한정. 나머지 4종은 scanner 가 Phase 0 에서 자동 A 모드로 처리되므로 토글은 사실상 liquidity 에만 영향.
 
 ## 실행 순서
 
@@ -35,6 +40,21 @@ allowed-tools:
    Glob: [output-path]/*유동성 환경 분석.md → 최신 1개
    Glob: [output-path]/*크로스에셋 레짐 분석.md → 최신 1개
    ```
+4. **데이터 수집 모드 결정** (Bash 한 번, 5개 scanner 가 공유):
+
+```bash
+USE_API=true
+API_BASE="${FDP_API_BASE:-https://stock.xhhan.com}"
+[ "${MACRO_SKIP_API:-0}" = "1" ] && USE_API=false
+case " $ARGUMENTS " in
+  *" --no-api "*) USE_API=false ;;
+esac
+for tok in $ARGUMENTS; do
+  case "$tok" in --api-base=*) API_BASE="${tok#--api-base=}" ;; esac
+done
+echo "use_api=$USE_API"
+echo "api_base_url=$API_BASE"
+```
 
 > [!note] 질문 템플릿은 로드하지 않음
 > Scanner가 직접 Read하므로 오케스트레이터에서 질문 템플릿을 읽을 필요가 없다.
@@ -50,6 +70,8 @@ Agent(macro-scanner) × 5 병렬:
   - previous_report_path: Step 0에서 찾은 이전 보고서
   - question_template_path: 질문 템플릿 파일 경로
   - scan_data_path: [output-path]/.scan/[report_type]_[report_date].md
+  - use_api: Step 0에서 결정된 값
+  - api_base_url: Step 0에서 결정된 값
 ```
 
 > [!important] 병렬 실행 + 파일 기반 핸드오프
@@ -120,4 +142,6 @@ Agent(macro-writer):
 ```
 /macro-report:generate
 /macro-report:generate 02_Areas/생활/재정관리/투자전략/투자 계획/AI 리포트/분석/
+/macro-report:generate --no-api
+/macro-report:generate --api-base=http://localhost:8000
 ```
