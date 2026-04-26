@@ -79,6 +79,15 @@ version: 1.2.0
 
 각 보고서의 질문 항목은 `references/question-*.md`에 정의되어 있으며, macro-scanner에게 전달되어 데이터 수집 가이드로 활용된다.
 
+## 데이터 수집 경로
+
+macro-scanner 는 두 가지 경로를 지원한다 (자세한 흐름은 `agents/macro-scanner.md`):
+
+- **신규 경로 (default, B 모드)**: `https://stock.xhhan.com/api/meta/capabilities` 를 먼저 fetch 해 사용 가능한 데이터/엔드포인트를 동적으로 파악한 뒤, 매칭되는 항목은 financial-data-platform API 로, 못 하는 항목만 WebSearch fallback. **사전 매핑 금지** — 매핑은 매 실행마다 capabilities 응답이 결정한다.
+- **기존 경로 (A 모드)**: 전통적인 WebSearch-only. `--no-api` 인자 또는 `MACRO_SKIP_API=1` 환경변수로 강제.
+
+토큰 절감 효과 측정 양식은 [token-savings.md](references/token-savings.md) 참고.
+
 ## 출력
 
 - Obsidian 호환 마크다운
