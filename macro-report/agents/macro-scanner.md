@@ -104,6 +104,17 @@ question_template_path를 Read하여 수집 항목 목록을 파악한다.
 
 **API 호출 결과 표기**: 항목 데이터에 `[출처: API /api/.../path?qs..., 날짜: YYYY-MM-DD]` 형식으로 명시. CompactSeries(`{columns, data, meta}`) 로 받은 raw 배열은 본문에 그대로 옮기지 말고 **필요한 한두 점만 발췌**.
 
+#### 데이터 갭 누적 (모든 모드 공통)
+
+WebSearch 보강을 사용한 항목, 또는 매칭 실패로 처리한 항목 중 **"fdp 가 차후 수집기를 추가하면 자동으로 채울 수 있을 만한 정기·구조화 데이터"** 라고 판단되면 한 줄 JSON 으로 누적해 Phase 3 에서 sidecar 파일로 저장한다.
+
+판단 기준과 topic/category/requester 명명 규약은 [`skills/macro-report-workflow/references/data-gaps-conventions.md`](../skills/macro-report-workflow/references/data-gaps-conventions.md) 가 단일 출처. 요지:
+
+- **기록함**: 정기 발표 시계열인데 fdp 미수집, 외부 차단으로 못 받은 항목, capabilities 에 카테고리는 있으나 symbol 비어 있는 경우
+- **기록 안 함**: 단발성 뉴스/이벤트, LLM 해석이 본질인 항목, 단순 컨텍스트 보강용 WebSearch
+- 페이로드: `topic`(필수, 200자), `category`(enum: liquidity/insider/sector/regime/analyst/news), `requester="macro-report:<report_type>"` 고정, `context`(권장 `"YYYY-MM-DD <주기>"`), `reason`(한 줄)
+- **같은 갭은 같은 topic 문자열** — 컨벤션 문서의 권장 표를 우선 사용. 새 topic 은 영문 소문자 + 명사구 + 주기성 접미사 규칙을 따른다.
+
 #### A 모드 — 기존 WebSearch 경로
 
 기존과 동일.
@@ -126,7 +137,11 @@ question_template_path를 Read하여 수집 항목 목록을 파악한다.
 ### Phase 3: 출력
 
 **수집 데이터를 `scan_data_path`에 Write로 저장하고, 저장 경로만 보고한다.**
-오케스트레이터로 결과 전문을 반환하지 않는다. 형식:
+오케스트레이터로 결과 전문을 반환하지 않는다.
+
+**데이터 갭 sidecar (선택)**: Phase 2 에서 누적한 갭이 1건 이상이면, `scan_data_path` 의 확장자 직전에 `_data_gaps` 를 붙인 경로(예: `.scan/liquidity_2026-04-27.md` → `.scan/liquidity_2026-04-27_data_gaps.jsonl`) 에 한 줄에 한 JSON 으로 Write 한다. 갭이 0건이면 파일을 만들지 않는다. 이 파일은 오케스트레이터(command Bash) 가 읽어 `POST /api/meta/data-gaps` 로 일괄 전송한다 — scanner 본인은 POST 하지 않는다.
+
+scan_data 형식:
 
 ```markdown
 # [report_type] 데이터 수집 결과

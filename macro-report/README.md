@@ -36,8 +36,10 @@
 | `MACRO_SKIP_API` env | `1` | 동일 |
 | `--api-base=URL` 인자 | URL | financial-data-platform 베이스 URL 오버라이드 (로컬/Tailscale 등) |
 | `FDP_API_BASE` env | URL | 동일 |
+| `FDP_API_KEY` env | `irp_…` | write 스코프 키. 설정 시 scanner 가 WebSearch 보강한 갭을 `POST /api/meta/data-gaps` 로 자동 누적. 미설정/실패 시 graceful skip — 보고서 생성 영향 없음 |
 
 토큰 절감 측정 양식: [skills/macro-report-workflow/references/token-savings.md](skills/macro-report-workflow/references/token-savings.md).
+데이터 갭 명명 규약: [skills/macro-report-workflow/references/data-gaps-conventions.md](skills/macro-report-workflow/references/data-gaps-conventions.md).
 
 ## 커맨드
 
@@ -72,6 +74,7 @@
 
 ## Version History
 
+- **1.5.0** (2026-04-27): data_gaps 짝꿍 활성화 — scanner sidecar JSONL + command Bash POST 훅, `FDP_API_KEY` 환경변수, [data-gaps-conventions.md](skills/macro-report-workflow/references/data-gaps-conventions.md) 추가. [claude-bridge #7](https://git.xhhan.com/xhh/claude-bridge/issues/7).
 - **1.4.0** (2026-04-26): financial-data-platform capabilities 우선 경로 시범 도입 (`liquidity` 한정, A/B 토글). [issue #6](https://git.xhhan.com/xhh/financial-data-platform/issues/6).
 - **1.3.0** (2026-04-25): 토큰 최적화 — 파일 기반 핸드오프, 경로 참조, 요약 우선 읽기.
 - **1.0.0** (2026-03-29): 초기 릴리즈. 3단계 파이프라인, 병렬 에이전트 구조
