@@ -74,6 +74,7 @@
 
 ## Version History
 
+- **1.5.1** (2026-04-27): Step 1.5 의 data_gaps POST 가 Windows mingw-bash 에서 한글 페이로드 cp949 트랜스코딩으로 100% 실패하던 결함 수정 — `--data "$line"` → 임시파일 + `--data-binary @file` 패턴. [#5](https://github.com/elhaz/claude-plugin/issues/5).
 - **1.5.0** (2026-04-27): data_gaps 짝꿍 활성화 — scanner sidecar JSONL + command Bash POST 훅, `FDP_API_KEY` 환경변수, [data-gaps-conventions.md](skills/macro-report-workflow/references/data-gaps-conventions.md) 추가. [claude-bridge #7](https://git.xhhan.com/xhh/claude-bridge/issues/7).
 - **1.4.0** (2026-04-26): financial-data-platform capabilities 우선 경로 시범 도입 (`liquidity` 한정, A/B 토글). [issue #6](https://git.xhhan.com/xhh/financial-data-platform/issues/6).
 - **1.3.0** (2026-04-25): 토큰 최적화 — 파일 기반 핸드오프, 경로 참조, 요약 우선 읽기.
