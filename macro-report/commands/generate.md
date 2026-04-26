@@ -84,6 +84,10 @@ Agent(macro-scanner) × 5 병렬:
 
 5개 scanner 가 모두 종료된 후, 존재하는 sidecar JSONL 들을 모아 한 줄씩 fdp 에 POST. `FDP_API_KEY` 미설정 또는 `USE_API=false` 면 전체 skip. 실패는 모두 무시 (보고서 생성 차단 금지).
 
+> [!important] Windows mingw-bash 의 cp949 트랜스코딩 우회
+> `curl --data "$line"` 은 Windows mingw-bash 에서 한글 페이로드를 cp949 로 변환해 fdp 가 invalid UTF-8 → HTTP 400 으로 거부 ([#5](https://github.com/elhaz/claude-plugin/issues/5)).
+> 한 줄을 임시파일에 `printf` 로 쓰고 `--data-binary @file` 로 보내야 UTF-8 보존.
+
 ```bash
 # 오케스트레이터가 다음을 채워 호출:
 #   OUTPUT_PATH   = Step 0 의 output-path (scan 디렉토리의 부모)
@@ -98,16 +102,19 @@ for tok in $ARGUMENTS; do
 done
 
 if [ -n "${FDP_API_KEY:-}" ] && [ "$USE_API" = "true" ]; then
+  TMP_GAP="${TMPDIR:-/tmp}/_macro_gap_$$.json"
+  trap 'rm -f "$TMP_GAP"' EXIT
   posted=0; failed=0
   for type in insider analyst sector liquidity regime; do
     GAPS_FILE="${OUTPUT_PATH}/.scan/${type}_${REPORT_DATE}_data_gaps.jsonl"
     [ -f "$GAPS_FILE" ] || continue
     while IFS= read -r line; do
       [ -z "$line" ] && continue
+      printf '%s' "$line" > "$TMP_GAP"
       if curl -fsS -m 5 -X POST "$API_BASE/api/meta/data-gaps" \
           -H "Content-Type: application/json" \
           -H "X-API-Key: $FDP_API_KEY" \
-          --data "$line" >/dev/null 2>&1; then
+          --data-binary @"$TMP_GAP" >/dev/null 2>&1; then
         posted=$((posted+1))
       else
         failed=$((failed+1))
