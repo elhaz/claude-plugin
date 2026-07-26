@@ -1,14 +1,14 @@
 ---
 name: Macro Report Workflow
-description: This skill should be used when the user asks to "generate macro report", "analyze market conditions", "create investment report", "run macro analysis", "거시경제 분석", "시장 환경 분석", "종합 투자 분석", "유동성 분석", "내부자 매매 분석", "크로스에셋 분석", "백테스트 갱신", "추천 이력 업데이트", "backtest update"
-version: 1.3.0
+description: This skill should be used when the user asks to "generate macro report", "analyze market conditions", "create investment report", "run macro analysis", "거시경제 분석", "시장 환경 분석", "종합 투자 분석", "유동성 분석", "내부자 매매 분석", "크로스에셋 분석", "백테스트 갱신", "추천 이력 업데이트", "backtest update", "쉬운말 버전", "쉬운 설명", "평이판", "용어 쉽게"
+version: 1.4.0
 ---
 
 # 거시경제 종합 투자분석 워크플로우
 
 ## 개요
 
-5개 개별 분석 보고서를 수집·작성하고, 종합 투자판단 보고서를 생성하는 워크플로우.
+5개 개별 분석 보고서를 수집·작성하고, 종합 투자판단 보고서를 생성한 뒤, 전체의 쉬운말 버전을 만드는 워크플로우.
 
 ## 핵심 원칙: "Scan First, Baseline Second"
 
@@ -16,7 +16,7 @@ version: 1.3.0
 2. **베이스라인 활용**: 이전 보고서를 기준으로 변경분만 업데이트하여 토큰 절약
 3. **조사-작성 분리**: Sonnet(수집) → Opus(분석) 분리로 비용 최적화
 
-## 3단계 파이프라인
+## 4단계 파이프라인
 
 ```
 [1단계] macro-scanner (Sonnet) × 5 병렬
@@ -35,6 +35,12 @@ version: 1.3.0
   ├── 5개 보고서의 요약 섹션 먼저 Read (~150줄) → 전체 구조 파악
   ├── 5개 보고서 전문을 순차적 Read → 상세 데이터 수집
   └── 종합보고서 작성
+
+[4단계] macro-writer (Opus) × 6 병렬  ※ --no-plain 으로 생략 가능
+  ├── plain-language-guide.md 직접 Read (경로만 수신)
+  ├── 자기 원본 보고서 1개만 Read
+  ├── 쉬운말 버전 작성·저장
+  └── 원본의 `## 관련문서` 에 역링크 1줄 Edit 삽입
 ```
 
 ### 토큰 최적화 설계
@@ -71,9 +77,22 @@ version: 1.3.0
 
 | 커맨드 | 용도 |
 |--------|------|
-| `/macro-report:generate` | 전체 워크플로우 (5개 + 종합) |
-| `/macro-report:report [type]` | 개별 보고서 1개 |
-| `/macro-report:synthesize [date]` | 종합보고서만 (기존 5개 활용) |
+| `/macro-report:generate` | 전체 워크플로우 (5개 + 종합 + 쉬운말 6개) |
+| `/macro-report:report [type]` | 개별 보고서 1개 (+ 쉬운말) |
+| `/macro-report:synthesize [date]` | 종합보고서만 (기존 5개 활용, + 쉬운말) |
+| `/macro-report:plain [type] [date]` | 기존 보고서의 쉬운말 버전만 (소급 적용·재생성) |
+
+## 쉬운말 버전 (평이판)
+
+원본 보고서는 전문 용어로 압축돼 있어 금융 배경이 없으면 읽기 어렵다. 4단계는 같은 내용을 **용어를 풀어** 다시 쓴 문서를 원본 옆에 만든다.
+
+- **파일명**: 원본 + ` 쉬운 설명` (종합만 `종합 분석 쉬운 설명` 으로 축약)
+- **분량**: 종합 원본의 40~60%, 개별 원본의 30~45% — 요약이 아니라 **이해 비용을 줄이는 것**이 목적
+- **원칙**: 용어는 `쉬운 말(원어)` 병기 / 숫자는 한국어 단위 / 결론만 있는 곳에 인과 추가 / 독자 의문은 콜아웃으로 선점 / Plotly 차트는 표·불릿으로 대체
+- **금지**: 원본에 없는 종목·수치·판단 추가, 원본과 다른 결론 — plain 모드는 **번역이지 분석이 아니다**
+- **끄기**: `--no-plain` 인자 또는 `MACRO_SKIP_PLAIN=1` 환경변수
+
+작성 규칙의 단일 출처는 [plain-language-guide.md](references/plain-language-guide.md) 이며, 용어 사전(유동성·금리·시장국면·수급·실적·리스크 6개 분류)도 여기에 있다.
 
 ## 질문 템플릿
 
