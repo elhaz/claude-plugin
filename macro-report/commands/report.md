@@ -1,7 +1,7 @@
 ---
 name: report
 description: 개별 거시경제 분석 보고서 1개를 생성합니다
-argument-hint: "[type] [output-path] [--no-api] [--api-base=URL]"
+argument-hint: "[type] [output-path] [--no-api] [--no-plain] [--api-base=URL]"
 allowed-tools:
   - Bash
   - Read
@@ -23,6 +23,7 @@ allowed-tools:
 - **type** (필수): `insider` | `analyst` | `sector` | `liquidity` | `regime`
 - **output-path** (선택): 저장 경로. 기본값: `02_Areas/생활/재정관리/투자전략/투자 계획/AI 리포트/분석/`
 - **--no-api** (선택 플래그): financial-data-platform 우선 경로를 끄고 기존 WebSearch-only 경로(A 모드)로 강제. 환경변수 `MACRO_SKIP_API=1` 과 동등.
+- **--no-plain** (선택 플래그): Step 3(쉬운말 버전 생성)을 건너뛴다. 환경변수 `MACRO_SKIP_PLAIN=1` 과 동등.
 - **--api-base=URL** (선택): financial-data-platform 베이스 URL 오버라이드. 우선순위는 `--api-base 인자 > $FDP_API_BASE > https://stock.xhhan.com`.
 - **`FDP_API_KEY` env** (선택): write 스코프 키. 설정되어 있으면 Step 1 종료 후 scanner 가 누적한 데이터 갭을 `POST /api/meta/data-gaps` 로 전송. 미설정/실패 시 graceful skip — 보고서 생성에는 영향 없음.
 
@@ -50,15 +51,21 @@ allowed-tools:
 # --api-base=URL 또는 $FDP_API_BASE 가 있으면 그 값을 사용, 없으면 기본 prod URL
 # $ARGUMENTS 안의 토큰들을 점검
 USE_API=true
+USE_PLAIN=true
 API_BASE="${FDP_API_BASE:-https://stock.xhhan.com}"
 [ "${MACRO_SKIP_API:-0}" = "1" ] && USE_API=false
+[ "${MACRO_SKIP_PLAIN:-0}" = "1" ] && USE_PLAIN=false
 case " $ARGUMENTS " in
   *" --no-api "*) USE_API=false ;;
+esac
+case " $ARGUMENTS " in
+  *" --no-plain "*) USE_PLAIN=false ;;
 esac
 for tok in $ARGUMENTS; do
   case "$tok" in --api-base=*) API_BASE="${tok#--api-base=}" ;; esac
 done
 echo "use_api=$USE_API"
+echo "use_plain=$USE_PLAIN"
 echo "api_base_url=$API_BASE"
 ```
 
@@ -137,7 +144,25 @@ Agent(macro-writer):
   - report_date: 오늘 날짜
 ```
 
-### Step 3: 완료 보고
+### Step 3: 쉬운말 버전 작성 (macro-writer × 1)
+
+> Step 0 에서 `use_plain=false` 로 결정됐으면 이 단계를 건너뛴다.
+
+```
+Agent(macro-writer):
+  - mode: plain
+  - report_type: [type]
+  - source_report_path: Step 2에서 저장된 보고서 경로
+  - plain_guide_path: references/plain-language-guide.md 경로
+  - output_path: [output-path]/[report_date] [보고서명] 쉬운 설명.md
+  - report_date: 오늘 날짜
+```
+
+작성 규칙의 단일 출처는 `references/plain-language-guide.md` 이며, 오케스트레이터는 이 파일을 읽지 않고 **경로만 전달**한다. Writer 는 쉬운말 문서를 Write한 뒤 원본의 `## 관련문서` 맨 위에 역링크 1줄을 Edit로 삽입한다.
+
+이 단계가 실패해도 Step 2의 원본 보고서에는 영향이 없다. 나중에 `/macro-report:plain [type] [date]` 로 재생성할 수 있다.
+
+### Step 4: 완료 보고
 
 생성된 파일 경로와 핵심 요약을 사용자에게 보고. 보고 말미에 사용된 모드(A/B)와 capabilities_used 플래그를 한 줄 명시 (scan_data 의 `## 수집 메타` 섹션에서 발췌).
 
@@ -147,6 +172,7 @@ Agent(macro-writer):
 /macro-report:report insider
 /macro-report:report liquidity
 /macro-report:report liquidity --no-api
+/macro-report:report liquidity --no-plain
 /macro-report:report liquidity --api-base=http://localhost:8000
 /macro-report:report regime 03_Resources/기술문서/
 ```
