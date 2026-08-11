@@ -53,7 +53,7 @@
       "name": "macro-report",
       "source": "./macro-report",
       "description": "거시경제 종합 투자분석 보고서 자동화 플러그인 - 4단계 파이프라인(Scanner Sonnet×5 + Writer Opus×5 + 종합 Opus×1 + 쉬운말 Opus×6), 유동성/크로스에셋/내부자매매/애널리스트/시장주도업종 5개 보고서 + 종합 투자판단 + 쉬운말 버전(평이판) + 추천 종목 백테스트 + financial-data-platform capabilities 우선 경로(B 모드) + data_gaps 짝꿍 채널 + 개조식(불릿) 우선 작성 규칙",
-      "version": "1.6.0",
+      "version": "1.6.1",
       "keywords": ["macro", "market", "liquidity", "regime", "insider", "analyst", "investment", "report", "backtest", "plain-language"],
       "license": "MIT"
     }
