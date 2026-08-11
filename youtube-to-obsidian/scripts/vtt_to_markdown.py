@@ -46,14 +46,44 @@ def get_video_metadata(video_url):
 
 
 def sanitize_yaml_string(text):
-    """YAML 안전 문자열로 변환 (따옴표, 특수문자 제거)"""
+    """cardlink 블록용 YAML 안전 문자열로 변환
+
+    Auto Card Link 의 cardlink 블록은 값을 따옴표로 감싸지 않는 것이
+    Vault 컨벤션이므로, 감싸는 대신 위험 문자를 제거·치환한다.
+
+    YAML 은 대부분의 특수문자를 **값의 첫 글자일 때만** 특수하게 해석하지만
+    (`[` `{` `&` `*` `!` `%` `|` `>` `@` 백틱), `#` 은 앞에 공백이 오면
+    위치와 무관하게 주석으로 잘린다. 아래 처리는 그 두 경우를 모두 막는다.
+    """
     if not text:
         return ''
-    # 따옴표, 말줄임표 등 특수문자 제거
+
+    # 개행·따옴표·말줄임표 제거
     text = text.replace('"', '').replace("'", '').replace('...', '')
-    text = text.replace(':', ' -').replace('\n', ' ').replace('\r', '')
+    text = text.replace('\n', ' ').replace('\r', ' ')
+
+    # 괄호류는 위치와 무관하게 소괄호로 치환 (값 중간이라도 가독성 통일)
+    for src, dst in (('[', '('), (']', ')'), ('{', '('), ('}', ')')):
+        text = text.replace(src, dst)
+
+    # ':' 는 뒤에 공백이 오면 키-값 구분자로 오인되므로 '-' 로 치환
+    text = re.sub(r':(?=\s)', ' -', text)
+    text = text.replace(':', ' -')
+
+    # ' #' 는 위치와 무관하게 주석 시작이므로 '#' 를 제거
+    text = text.replace('#', '')
+
+    # 파이프·부등호는 블록 스칼라 오인 방지
+    text = text.replace('|', '/').replace('>', '').replace('<', '')
+
+    text = text.replace('&', 'and')
+
     # 연속 공백 정리
     text = re.sub(r'\s+', ' ', text).strip()
+
+    # 남은 선두 특수문자 제거 (값 첫 글자일 때만 의미를 갖는 문자들)
+    text = text.lstrip('*!%@`-? ').strip()
+
     return text
 
 
