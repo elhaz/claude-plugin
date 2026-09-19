@@ -10,6 +10,7 @@ Obsidian 데일리로그 파일을 파싱하고 조작하는 CLI 도구.
 """
 
 import argparse
+import os
 import re
 import sys
 from datetime import datetime, timedelta
@@ -473,8 +474,9 @@ def main():
 """
     )
 
-    parser.add_argument("--vault", type=str, default=".",
-                        help="Obsidian Vault 경로 (기본값: 현재 디렉토리)")
+    # Vault 루트: --vault 인자 > OBSIDIAN_VAULT 환경변수 > 현재 디렉토리
+    parser.add_argument("--vault", type=str, default=os.environ.get("OBSIDIAN_VAULT", "."),
+                        help="Obsidian Vault 경로 (기본값: $OBSIDIAN_VAULT, 미설정 시 현재 디렉토리)")
 
     subparsers = parser.add_subparsers(dest="command", help="명령어")
 

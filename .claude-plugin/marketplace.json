@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "개인 Claude Code 플러그인 모음",
-    "version": "1.9.1"
+    "version": "1.10.0"
   },
   "plugins": [
     {
@@ -21,7 +21,7 @@
       "name": "stock-analysis",
       "source": "./stock-analysis",
       "description": "주식 종목분석 워크플로우 자동화 플러그인 - 2-Agent 파이프라인(Sonnet+Opus), 다국가 지원(미국/한국), 밸류에이션 적정가 산출, Plotly 차트, frontmatter 현재가/적정가/섹터 규칙",
-      "version": "2.2.0",
+      "version": "2.3.0",
       "keywords": ["stock", "investment", "analysis", "finance", "research"],
       "license": "MIT"
     },
@@ -29,7 +29,7 @@
       "name": "dailylog",
       "source": "./dailylog",
       "description": "Obsidian 데일리로그 관리 플러그인 - 날짜별 읽기, 항목 추가, 통계 요약",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "keywords": ["obsidian", "dailylog", "journal", "markdown", "productivity"],
       "license": "MIT"
     },
@@ -53,7 +53,7 @@
       "name": "macro-report",
       "source": "./macro-report",
       "description": "거시경제 종합 투자분석 보고서 자동화 플러그인 - 4단계 파이프라인(Scanner Sonnet×5 + Writer Opus×5 + 종합 Opus×1 + 쉬운말 Opus×6), 유동성/크로스에셋/내부자매매/애널리스트/시장주도업종 5개 보고서 + 종합 투자판단 + 쉬운말 버전(평이판) + 추천 종목 백테스트 + financial-data-platform capabilities 우선 경로(B 모드) + data_gaps 짝꿍 채널 + 개조식(불릿) 우선 작성 규칙",
-      "version": "1.6.1",
+      "version": "1.7.0",
       "keywords": ["macro", "market", "liquidity", "regime", "insider", "analyst", "investment", "report", "backtest", "plain-language"],
       "license": "MIT"
     }

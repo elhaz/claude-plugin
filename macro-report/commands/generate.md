@@ -20,7 +20,7 @@ allowed-tools:
 
 ## Arguments
 
-- **output-path** (선택): 보고서 저장 디렉토리. 기본값: `02_Areas/생활/재정관리/투자전략/투자 계획/AI 리포트/분석/`
+- **output-path** (선택): 보고서 저장 디렉토리. 기본값: `$OBSIDIAN_VAULT/02_Areas/생활/재정관리/투자전략/투자 계획/AI 리포트/분석/` (`OBSIDIAN_VAULT` 미설정 시 현재 작업 디렉토리 기준 상대경로)
 - **--no-api** (선택 플래그): 모든 scanner 에 `use_api=false` 전파. 환경변수 `MACRO_SKIP_API=1` 과 동등.
 - **--no-plain** (선택 플래그): Step 4(쉬운말 버전 생성)를 건너뛴다. 환경변수 `MACRO_SKIP_PLAIN=1` 과 동등. 쉬운말 6개는 원본 대비 약 40~60% 분량이므로 토큰을 아껴야 할 때 사용.
 - **--api-base=URL** (선택): financial-data-platform 베이스 URL 오버라이드. 우선순위는 `--api-base 인자 > $FDP_API_BASE > https://stock.xhhan.com`.

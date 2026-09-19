@@ -90,7 +90,9 @@
 
 ## 출력 경로
 
-기본 출력 경로: `02_Areas/생활/재정관리/투자전략/투자 계획/AI 리포트/분석/`
+기본 출력 경로: `$OBSIDIAN_VAULT/02_Areas/생활/재정관리/투자전략/투자 계획/AI 리포트/분석/`
+
+`OBSIDIAN_VAULT` 환경변수가 Vault 루트를 가리키면 어떤 작업 디렉토리에서 실행해도 같은 위치에 저장된다. 미설정 시 현재 작업 디렉토리 기준 상대경로로 동작한다(기존 동작과 동일). `backtest` 의 대상 파일(`추천 종목 이력.md`)도 같은 규칙을 따른다.
 
 파일명 형식:
 
@@ -105,6 +107,7 @@
 
 ## Version History
 
+- **1.7.0** (2026-09-20): `OBSIDIAN_VAULT` 환경변수 지원 — 기본 출력 경로와 `backtest` 대상 파일을 Vault 루트 기준으로 해석. 미설정 시 기존처럼 cwd 상대경로. NAS 등 Vault 루트가 아닌 디렉토리에서 실행하는 환경 대응.
 - **1.6.0** (2026-07-27): 쉬운말 버전(평이판) 생성 기능 추가 — `macro-writer` 에 `plain` 모드 신설, `generate`/`report`/`synthesize` 에 자동 생성 단계 추가, 소급 적용용 `/macro-report:plain` 커맨드 신설, 작성 규칙·용어 사전 단일 출처 [plain-language-guide.md](skills/macro-report-workflow/references/plain-language-guide.md) 추가. `--no-plain` / `MACRO_SKIP_PLAIN=1` 로 비활성화 가능.
 - **1.5.1** (2026-04-27): Step 1.5 의 data_gaps POST 가 Windows mingw-bash 에서 한글 페이로드 cp949 트랜스코딩으로 100% 실패하던 결함 수정 — `--data "$line"` → 임시파일 + `--data-binary @file` 패턴. [#5](https://github.com/elhaz/claude-plugin/issues/5).
 - **1.5.0** (2026-04-27): data_gaps 짝꿍 활성화 — scanner sidecar JSONL + command Bash POST 훅, `FDP_API_KEY` 환경변수, [data-gaps-conventions.md](skills/macro-report-workflow/references/data-gaps-conventions.md) 추가. [claude-bridge #7](https://git.xhhan.com/xhh/claude-bridge/issues/7).

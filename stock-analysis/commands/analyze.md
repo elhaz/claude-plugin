@@ -19,7 +19,7 @@ allowed-tools:
 ## Arguments
 
 - `ticker` (required): Stock ticker symbol (e.g., AAPL, MSFT, 051910)
-- `output-path` (optional): Path to save the analysis document
+- `output-path` (optional): Path to save the analysis document. 생략 시 `$OBSIDIAN_VAULT/03_Resources/주식분석/종목분석/{회사명}.md` (`OBSIDIAN_VAULT` 미설정 시 현재 작업 디렉토리 기준 상대경로). 회사명은 해당 디렉토리의 기존 파일 관례를 따른다 (예: `AMD.md`, `ASML홀딩.md`)
 
 ## Workflow
 

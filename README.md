@@ -7,13 +7,13 @@
 | 플러그인 | 버전 | 설명 | 구성 |
 |---------|------|------|------|
 | [youtube-to-obsidian](./youtube-to-obsidian/) | 1.2.0 | YouTube 자막을 Obsidian 스타일 마크다운으로 변환, 핵심 장면 이미지 추출 | commands, skills, scripts |
-| [stock-analysis](./stock-analysis/) | 2.2.0 | 주식 종목분석 자동화 (2-Agent 파이프라인 Sonnet+Opus, 다국가, 밸류에이션, Plotly 차트) | commands, skills, agents |
-| [macro-report](./macro-report/) | 1.5.1 | 거시경제 종합 투자분석 보고서 (5개 개별 분석 + 종합 투자판단 + 추천 종목 백테스트, fdp capabilities 우선 + data_gaps 짝꿍) | commands, skills, agents |
-| [dailylog](./dailylog/) | 0.2.0 | Obsidian 데일리로그 관리 (날짜별 읽기, 항목 추가, 통계 요약) | commands, skills, scripts |
+| [stock-analysis](./stock-analysis/) | 2.3.0 | 주식 종목분석 자동화 (2-Agent 파이프라인 Sonnet+Opus, 다국가, 밸류에이션, Plotly 차트) | commands, skills, agents |
+| [macro-report](./macro-report/) | 1.7.0 | 거시경제 종합 투자분석 보고서 (5개 개별 분석 + 종합 투자판단 + 추천 종목 백테스트, fdp capabilities 우선 + data_gaps 짝꿍) | commands, skills, agents |
+| [dailylog](./dailylog/) | 0.3.0 | Obsidian 데일리로그 관리 (날짜별 읽기, 항목 추가, 통계 요약) | commands, skills, scripts |
 | [nanobanana](./nanobanana/) | 2.0.0 | Gemini AI 이미지 생성/편집 (Nano Banana 2 / Pro) | commands, skills |
 | [openai-image](./openai-image/) | 1.3.0 | OpenAI 이미지 생성/편집 (hq=gpt-image-1.5 인증불필요 / fast=gpt-image-1-mini / v2=gpt-image-2 인증필요, 마스크 편집, 투명 배경, prompt-rewriter 에이전트, 기본 webp) | commands, skills, agents |
 
-마켓플레이스 메타데이터: `.claude-plugin/marketplace.json` (현재 v1.9.1)
+마켓플레이스 메타데이터: `.claude-plugin/marketplace.json` (현재 v1.10.0)
 
 ## 설치 방법
 
@@ -39,6 +39,18 @@ source 레포에서 수정한 후 즉시 반영하려면:
 
 ```
 /reload-plugins
+```
+
+## 공통 환경변수
+
+| 변수 | 사용 플러그인 | 의미 |
+|------|---------------|------|
+| `OBSIDIAN_VAULT` | dailylog, macro-report, stock-analysis | Obsidian Vault 루트 절대경로. 설정하면 어떤 작업 디렉토리에서 실행해도 Vault 기준으로 읽고 쓴다. 미설정 시 현재 작업 디렉토리를 Vault 루트로 간주(기존 동작). |
+
+Claude Code `settings.json` 의 `env` 블록에 넣어두면 세션과 서브에이전트 모두에 상속된다:
+
+```json
+{ "env": { "OBSIDIAN_VAULT": "D:\\xvault" } }
 ```
 
 ## 저장소 구조

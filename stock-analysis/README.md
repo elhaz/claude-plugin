@@ -28,6 +28,8 @@ claude --plugin-dir /path/to/stock-analysis
 /stock-analysis:analyze OWL D:\Documents\StockAnalysis
 ```
 
+`output-path` 생략 시 `$OBSIDIAN_VAULT/03_Resources/주식분석/종목분석/{회사명}.md` 에 저장한다 (`OBSIDIAN_VAULT` 미설정 시 현재 작업 디렉토리 기준).
+
 **기능:**
 - 웹 검색을 통한 기업 조사
 - 재무 데이터 수집

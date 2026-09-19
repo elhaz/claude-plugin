@@ -21,7 +21,7 @@ allowed-tools:
 ## Arguments
 
 - **type** (필수): `insider` | `analyst` | `sector` | `liquidity` | `regime`
-- **output-path** (선택): 저장 경로. 기본값: `02_Areas/생활/재정관리/투자전략/투자 계획/AI 리포트/분석/`
+- **output-path** (선택): 저장 경로. 기본값: `$OBSIDIAN_VAULT/02_Areas/생활/재정관리/투자전략/투자 계획/AI 리포트/분석/` (`OBSIDIAN_VAULT` 미설정 시 현재 작업 디렉토리 기준 상대경로)
 - **--no-api** (선택 플래그): financial-data-platform 우선 경로를 끄고 기존 WebSearch-only 경로(A 모드)로 강제. 환경변수 `MACRO_SKIP_API=1` 과 동등.
 - **--no-plain** (선택 플래그): Step 3(쉬운말 버전 생성)을 건너뛴다. 환경변수 `MACRO_SKIP_PLAIN=1` 과 동등.
 - **--api-base=URL** (선택): financial-data-platform 베이스 URL 오버라이드. 우선순위는 `--api-base 인자 > $FDP_API_BASE > https://stock.xhhan.com`.

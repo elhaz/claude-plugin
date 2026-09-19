@@ -26,7 +26,7 @@ allowed-tools:
 
 - **type** (선택): `insider` | `analyst` | `sector` | `liquidity` | `regime` | `comprehensive` | `all`. 기본값: `all`
 - **date** (선택): 대상 보고서 날짜 (YYYY-MM-DD). 기본값: 오늘
-- **output-path** (선택): 보고서 디렉토리. 기본값: `02_Areas/생활/재정관리/투자전략/투자 계획/AI 리포트/분석/`
+- **output-path** (선택): 보고서 디렉토리. 기본값: `$OBSIDIAN_VAULT/02_Areas/생활/재정관리/투자전략/투자 계획/AI 리포트/분석/` (`OBSIDIAN_VAULT` 미설정 시 현재 작업 디렉토리 기준 상대경로)
 
 ### type 매핑
 
