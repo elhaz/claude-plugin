@@ -11,7 +11,7 @@ allowed-tools:
 
 # 데일리로그 관리 커맨드
 
-Obsidian Vault의 데일리로그 파일을 관리한다. 현재 작업 디렉토리가 Vault 루트라고 가정한다.
+Obsidian Vault의 데일리로그 파일을 관리한다. Vault 루트는 환경변수 `OBSIDIAN_VAULT` 로 결정되며, 미설정 시 현재 작업 디렉토리를 Vault 루트로 간주한다.
 
 ## 사용 방법
 
@@ -121,7 +121,7 @@ PYTHONIOENCODING=utf-8 uv run "$SCRIPT_PATH" <action> [options]
 
 ## 중요 사항
 
-1. **Vault 경로**: 현재 작업 디렉토리가 Obsidian Vault 루트여야 한다
+1. **Vault 경로**: 스크립트가 `$OBSIDIAN_VAULT` 를 자동으로 읽으므로 `--vault` 를 따로 넘길 필요 없다. 환경변수가 없으면 현재 작업 디렉토리가 Vault 루트여야 한다
 2. **파일 경로**: `02_Areas/일지/데일리로그 {year}.md` 패턴 사용
 3. **인코딩**: `PYTHONIOENCODING=utf-8` 필수 (한글 처리)
 4. **자동 생성**: add 시 해당 날짜 섹션이 없으면 템플릿 기반 자동 생성
