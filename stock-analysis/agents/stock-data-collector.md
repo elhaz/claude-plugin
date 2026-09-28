@@ -19,9 +19,9 @@ tools:
 
 ## Phase 0: Market Detection
 
-티커 형식으로 시장 감지 → 해당 가이드 Read:
-- 영문 티커 → `references/us-market-guide.md`
-- 6자리 숫자 → `references/kr-market-guide.md`
+티커 형식으로 시장 감지 → 해당 가이드 Read (경로: 오케스트레이터가 준 절대경로, 없으면 `${CLAUDE_PLUGIN_ROOT}/skills/stock-analysis-workflow/references/`):
+- 영문 티커 → `us-market-guide.md`
+- 6자리 숫자 → `kr-market-guide.md`
 
 ## Phase 1: Company Overview
 

@@ -99,7 +99,7 @@ claude --plugin-dir /path/to/stock-analysis
 - 연도별 밸류에이션 추이, Peer 정량 비교
 - 애널리스트 컨센서스, 내부자 거래, 공매도
 
-### stock-analyst (Opus)
+### stock-analyst (inherit — 세션 모델)
 
 data-collector의 데이터를 기반으로 분석/판단/문서 작성을 수행.
 
@@ -114,7 +114,7 @@ data-collector의 데이터를 기반으로 분석/판단/문서 작성을 수�
 ```
 analyze/update 커맨드
   ├── Step 1: stock-data-collector (Sonnet) → 구조화된 데이터
-  └── Step 2: stock-analyst (Opus) → 완성된 분석 문서
+  └── Step 2: stock-analyst (세션 모델) → 완성된 분석 문서
 ```
 
 ## Workflow
@@ -158,7 +158,7 @@ stock-analysis/
 │   └── update.md
 ├── agents/
 │   ├── stock-data-collector.md  (Sonnet - 데이터 수집)
-│   └── stock-analyst.md         (Opus - 분석/문서 작성)
+│   └── stock-analyst.md         (inherit - 분석/문서 작성)
 ├── skills/
 │   ├── stock-analysis-workflow/
 │   │   ├── SKILL.md
@@ -200,7 +200,7 @@ stock-analysis/
 | 순서 | 파일 | 역할 | 왜 필요한가 |
 |------|------|------|-----------|
 | 1 | `agents/stock-data-collector.md` | 데이터 수집 에이전트 (Sonnet) | 수집 항목/체크리스트 정의 |
-| 2 | `agents/stock-analyst.md` | 분석/문서 에이전트 (Opus) | 분석 Phase/문서 구조 정의 |
+| 2 | `agents/stock-analyst.md` | 분석/문서 에이전트 (inherit) | 분석 Phase/문서 구조 정의 |
 | 3 | `commands/analyze.md` | analyze 커맨드 (오케스트레이터) | 2-Agent 파이프라인 조율 |
 | 4 | `commands/update.md` | update 커맨드 (오케스트레이터) | 갱신 파이프라인 조율 |
 

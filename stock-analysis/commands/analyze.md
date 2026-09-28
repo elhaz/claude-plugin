@@ -27,21 +27,21 @@ allowed-tools:
 
 `stock-data-collector` 에이전트를 호출하여 정량 데이터를 수집한다.
 
-**에이전트 프롬프트에 반드시 포함할 내용**:
+**에이전트 프롬프트에 포함할 내용**:
 - 티커: {ticker}
-- 시장 가이드 참조 지시 (티커 형식에 따라 us/kr)
+- 시장 가이드 참조 지시 (티커 형식에 따라 us/kr, 절대경로로)
 - 필수 수집 항목 전체 나열 (밸류에이션 11개, 분기별 재무, 연도별 추이, Peer 비교, 수급)
 
 **에이전트 반환**: 구조화된 데이터 (테이블 형태)
 
-### Step 2: Analysis & Document (stock-analyst, Opus)
+### Step 2: Analysis & Document (stock-analyst, 세션 모델)
 
 `stock-analyst` 에이전트를 호출하여 분석 + 문서 작성한다.
 
-**에이전트 프롬프트에 반드시 포함할 내용**:
+**에이전트 프롬프트에 포함할 내용**:
 - Step 1에서 수집된 데이터 전체 (복사하여 전달)
 - 출력 파일 경로: {output-path}
-- 시장 가이드 참조 지시
+- 시장 가이드 참조 지시 (절대경로로)
 - 필수 산출물: 경쟁 분석, 어닝콜 Q&A, SWOT, 적정가, Plotly 차트
 
 **에이전트 산출물**: 완성된 종목분석 .md 파일
@@ -51,7 +51,7 @@ allowed-tools:
 ```
 1. stock-data-collector 호출:
    "Collect all quantitative data for {TICKER}.
-    Read references/us-market-guide.md (or kr-market-guide.md).
+    Read ${CLAUDE_PLUGIN_ROOT}/skills/stock-analysis-workflow/references/us-market-guide.md (or kr-market-guide.md).
     Return structured data including: valuation set (11 metrics),
     quarterly financials (5Q), valuation history (3-5Y),
     peer comparison (2-3 companies), analyst/insider/short interest."
@@ -65,7 +65,7 @@ allowed-tools:
     Write complete analysis to {output-path}.
     Include: competitive analysis, earnings call Q&A,
     SWOT, fair value estimation, Plotly charts (3+).
-    Read references/chart-templates.md for chart format."
+    Read ${CLAUDE_PLUGIN_ROOT}/skills/stock-analysis-workflow/references/chart-templates.md for chart format."
 ```
 
 ## Example Usage
