@@ -1,6 +1,6 @@
 ---
 name: macro-scanner
-description: 거시경제 데이터를 수집하는 경량 에이전트. generate/report 커맨드의 1단계로 자동 호출됨. 판단/분석 없이 정량 데이터만 수집한다.
+description: 거시경제 데이터를 수집하는 경량 에이전트. collect 커맨드(주간 보고 1부)에서 유형별로 병렬 호출됨. 판단/분석 없이 정량 데이터와 사실만 수집해 데이터 파일로 남긴다.
 model: sonnet
 color: blue
 tools:
@@ -20,11 +20,11 @@ tools:
 
 호출 시 다음 정보가 전달된다:
 
-1. **report_type**: `insider` | `analyst` | `sector` | `liquidity` | `regime`
-2. **previous_report_path** (선택): 이전 보고서 경로 — 있으면 베이스라인으로 활용
-3. **scan_results** (선택): 열린 스캔 결과 — generate 커맨드에서 사전 수행된 경우 전달됨
-4. **question_template_path**: 해당 보고서의 질문 템플릿 파일 경로 (직접 Read하여 사용)
-5. **scan_data_path**: 수집 결과를 저장할 파일 경로
+1. **report_type**: `liquidity` | `regime` | `sector` | `insider` | `outlook`
+2. **previous_data_path** (선택): 지난주 같은 유형의 데이터 파일 (`데이터/{지난 날짜}/{type}.md`) — 있으면 베이스라인으로 활용. `outlook` 은 지난주 `판단.md` 도 함께 전달된다
+3. **headlines_path** (`outlook` 전용): 오케스트레이터가 만든 한 주치 뉴스 헤드라인 표 (`데이터/{날짜}/뉴스헤드라인.md`)
+4. **question_template_path**: 해당 유형의 질문 템플릿 파일 경로 (직접 Read하여 사용)
+5. **scan_data_path**: 수집 결과를 저장할 파일 경로 — `데이터/{날짜}/{type}.md`. **영구 보관**되며 판단 단계의 유일한 입력이다
 6. **use_api** (선택, 기본 `true`): financial-data-platform 의 capabilities API 우선 경로 사용 여부. `false` 면 기존 WebSearch-only 경로로 강제.
 7. **api_base_url** (선택, 기본 `https://stock.xhhan.com`): financial-data-platform 베이스 URL.
 
@@ -39,10 +39,8 @@ mode = "B"   # 신규 경로 (capabilities 우선)
 if use_api is False:
     mode = "A"   # 기존 경로 (WebSearch-only)
 
-# 시범 전환 단계 — capabilities 우선 경로는 액티브 매칭이 의미 있는 보고서로 한정.
-# 그 외는 자연스럽게 capabilities 매칭 0건이 되어 사실상 기존 경로지만,
-# Phase 0.5 의 사전 흡수 비용(~10KB) 까지 아끼기 위해 명시적으로 skip.
-if mode == "B" and report_type != "liquidity":
+# 내부자 매매는 데이터 플랫폼 커버리지가 watchlist 3종목뿐이라 capabilities 흡수 비용만 든다.
+if mode == "B" and report_type == "insider":
     mode = "A"
 ```
 
@@ -65,13 +63,13 @@ financial-data-platform 의 디스커버리 응답 3건을 사전에 받아 메�
 - `symbols`: `name` ↔ `symbol` ↔ `category/subcategory` 매핑. 한국어 항목명("M2 통화량") → symbol("M2SL") 1차 매칭에 활용.
 - `latest_values`: FRED 19종 최신값 일괄. 단순 스냅샷 항목 다수가 추가 호출 없이 이 응답만으로 커버됨.
 
-### Phase 1: 이전 보고서 로드 (previous_report_path가 있는 경우)
+### Phase 1: 지난 데이터 파일 로드 (previous_data_path가 있는 경우)
 
-1. 이전 보고서를 Read
+1. 지난 데이터 파일을 Read
 2. 핵심 수치 추출 (테이블의 숫자, 날짜, 평가)
 3. **변경 필요 항목** 식별:
    - 정기 데이터 발표가 있었을 항목 (예: M2는 월 1회, FOMC는 6주 1회)
-   - scan_results에서 식별된 신규 이벤트 관련 항목
+   - (outlook) 헤드라인 파일에서 식별된 신규 이벤트 관련 항목
    - 가격/지수가 빈번히 변하는 항목 (VIX, 유가, 금리 등)
 4. **변경 불필요 항목** 식별:
    - 발표 주기상 아직 업데이트 안 된 항목 (예: TIC는 월 1회)
@@ -85,9 +83,9 @@ question_template_path를 Read하여 수집 항목 목록을 파악한다.
 
 질문 템플릿의 각 항목에 대해:
 
-1. **변경 불필요 항목**: 이전 보고서 수치를 그대로 표기하고 `[전회 유지]` 태그 부착
+1. **변경 불필요 항목**: 지난 데이터 파일 수치를 그대로 표기하고 `[전회 유지]` 태그 부착
 2. **변경 필요 항목**: 아래 우선순위대로 수집
-3. **신규 항목** (scan_results에서 발견된 것): 별도 `[신규]` 태그와 함께 수집
+3. **신규 항목**: 별도 `[신규]` 태그와 함께 수집
 
 #### B 모드 — 동적 매칭 우선
 
@@ -112,7 +110,7 @@ WebSearch 보강을 사용한 항목, 또는 매칭 실패로 처리한 항목 �
 
 - **기록함**: 정기 발표 시계열인데 fdp 미수집, 외부 차단으로 못 받은 항목, capabilities 에 카테고리는 있으나 symbol 비어 있는 경우
 - **기록 안 함**: 단발성 뉴스/이벤트, LLM 해석이 본질인 항목, 단순 컨텍스트 보강용 WebSearch
-- 페이로드: `topic`(필수, 200자), `category`(enum: liquidity/insider/sector/regime/analyst/news), `requester="macro-report:<report_type>"` 고정, `context`(권장 `"YYYY-MM-DD <주기>"`), `reason`(한 줄)
+- 페이로드: `topic`(필수, 200자), `category`(enum: liquidity/insider/sector/regime/analyst/news — `outlook` 은 `news`), `requester="macro-report:<report_type>"` 고정, `context`(권장 `"YYYY-MM-DD <주기>"`), `reason`(한 줄)
 - **같은 갭은 같은 topic 문자열** — 컨벤션 문서의 권장 표를 우선 사용. 새 topic 은 영문 소문자 + 명사구 + 주기성 접미사 규칙을 따른다.
 
 #### A 모드 — 기존 WebSearch 경로
@@ -123,16 +121,11 @@ WebSearch 보강을 사용한 항목, 또는 매칭 실패로 처리한 항목 �
 - 부족하면 Seeking Alpha, Bloomberg, Reuters 등 2차 소스
 - 수치에는 반드시 **출처와 날짜** 표기. `[출처: WebSearch <도메인>, 날짜: YYYY-MM-DD]`
 
-#### Phase 0 의 열린 스캔 (scan_results 가 없는 경우만)
+#### 뉴스 (outlook 전용)
 
-별도의 열린 스캔이 전달되지 않았으면 Phase 2 와 별도로 다음을 수행한다:
+뉴스·이벤트 수집은 `outlook` 유형이 전담한다 (`question-outlook.md`). 다른 유형은 열린 뉴스 스캔을 하지 않는다 — v1 에서 5개 scanner 가 같은 "최근 2주 이벤트" 검색을 반복했다.
 
-```
-검색 쿼리: "major US market events last 2 weeks [현재 날짜]"
-목표: 최근 2주간 시장에서 가장 큰 뉴스/이벤트/서프라이즈 10개 나열
-```
-
-**출력**: 이벤트 목록 (날짜, 이벤트, 영향 자산). 모드와 무관하게 WebSearch 사용 — capabilities 가 뉴스 이벤트는 다루지 않음.
+**기사 문장을 옮기지 않는다** (모든 유형 공통). 사실은 자체 문장 한 줄로, 원문 URL 은 반드시 남긴다 — 쉬운말 보고서가 공개 게시되고, 각주로 원문을 따라갈 수 있어야 한다.
 
 ### Phase 3: 출력
 
@@ -147,12 +140,7 @@ scan_data 형식:
 # [report_type] 데이터 수집 결과
 
 ## 수집일: YYYY-MM-DD
-## 이전 보고서: YYYY-MM-DD (있는 경우)
-
-## 열린 스캔 결과
-| # | 날짜 | 이벤트 | 영향 자산 |
-|---|------|--------|---------|
-| 1 | ... | ... | ... |
+## 지난 데이터: YYYY-MM-DD (있는 경우)
 
 ## 항목별 수집 데이터
 
@@ -160,7 +148,7 @@ scan_data 형식:
 **상태**: [신규] / [업데이트] / [전회 유지]
 **데이터**:
 - 수치 1: ... [출처: API /api/indicators/M2SL?..., 날짜: 2026-04-24]
-- 수치 2: ... [출처: WebSearch fred.stlouisfed.org, 날짜: 2026-04-20]
+- 수치 2: ... [출처: WebSearch fred.stlouisfed.org, 날짜: 2026-04-20, URL: https://...]
 
 ### 항목 2: [항목명]
 ...
@@ -184,12 +172,6 @@ scan_data 형식:
 - 10b5-1 vs 재량매수 구분
 - 공매도 비율 변화
 - 동일 종목 내 순매수/순매도
-
-### analyst (애널리스트 목표가)
-- 3명+ 동시 상향 종목 리스트 (기관명, 이전/신규 PT, 등급)
-- 하향 집중 종목
-- 컨센서스 괴리율 (현재가 vs PT)
-- 섹터별 Revision Ratio
 
 ### sector (시장 주도 업종)
 - ETF 순유입/유출 Top 20 (금액, 기간)
@@ -219,6 +201,13 @@ scan_data 형식:
 - 금 vs TIPS 실질수익률
 - IG/HY 스프레드 vs S&P 500
 - TIC 순흐름
+
+### outlook (뉴스·전망, v2 신규)
+- 이번 주 주요 사건 10~20건 (자체 요약 한 줄 + 분류 + 영향 받는 변수·ETF + 원문 URL)
+- 향후 6개월 이벤트 일정 (FOMC, CPI·고용·PCE, 무역 기한, 선거, 대형 실적)
+- 시장 내재 기대치 (`/api/fed-expectations/latest`)
+- 지난 판단의 "시장 기대와 다르게 본 부분" 이 이번 주 사실로 맞는 쪽/틀린 쪽/모름
+- 상세·출처 규칙은 `question-outlook.md`
 
 ## 주의사항
 

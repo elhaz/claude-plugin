@@ -59,8 +59,8 @@ scanner 가 한 항목에 대해 **WebSearch 보강을 사용했고**, 그 데�
 | `insider` | insider | |
 | `sector` | sector | |
 | `regime` | regime | |
-| `analyst` | analyst | |
-| `news` | (어디든) | 단발성 시장 이벤트 — 보통 기록 안 함 |
+| `analyst` | (v1 analyst) | v2 에서 analyst scanner 폐지 — 기존 갭 조회용으로만 유지 |
+| `news` | outlook (및 어디든) | v2 뉴스·전망 scanner 의 갭. 단발성 시장 이벤트는 기록 안 함 |
 
 scanner 의 `report_type` 과 1:1 매칭. 단 한 보고서가 다른 카테고리 갭을 발견할 수 있다 (예: regime scanner 가 ETF flows 갭 발견 → `category=sector`). report_type 강제 매칭이 아닌 **갭의 본질** 기준.
 
