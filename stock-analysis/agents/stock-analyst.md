@@ -139,6 +139,8 @@ updated: YYYY-MM-DD
 **태그**: #종목분석 #섹터 #산업
 ```
 
+보유 판단(보유 유형·투자 사유·훼손 조건)은 이 문서에 쓰지 않는다 — `/stock-analysis:classify` 가 `보유분류/` 노트에 쓴다. frontmatter `기업유형` 은 적어 둔다.
+
 ### Plotly 차트 (필수 3종 + 조건부 3종)
 
 차트 템플릿: `${CLAUDE_PLUGIN_ROOT}/skills/stock-analysis-workflow/references/chart-templates.md` (오케스트레이터가 절대경로를 넘기면 그것을 쓴다)

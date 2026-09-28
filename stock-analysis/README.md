@@ -53,6 +53,20 @@ claude --plugin-dir /path/to/stock-analysis
 - 변경된 섹션만 선택적 업데이트
 - 업데이트 이력 추적
 
+### `/stock-analysis:classify [TICKER ...] | --holdings [--only-missing]`
+
+보유 종목을 투자원칙 v2 보유 유형(인컴형·사유형·적정가형·재료형·지수ETF·비트코인)으로 분류하고,
+투자 사유·훼손 조건 **초안**이 담긴 보유분류 노트(`03_Resources/주식분석/보유분류/{회사명} 보유분류.md`)를 만든다.
+
+```bash
+/stock-analysis:classify PLTR KO
+/stock-analysis:classify --holdings --only-missing   # NAS: 토스 보유 중 노트 없는 종목
+```
+
+- 판정 기준 정본은 Vault `투자원칙 v2.md`, 노트 형식은 `references/holding-classification.md`
+- 사유형/적정가형 판정은 `scripts/reverse_dcf.py`(역산 DCF) 결과로
+- 사용자가 사유를 고치면 `판정: 확정` — 이후 재분류는 수치만 갱신하고 사유 본문은 건드리지 않는다
+
 ## Skills
 
 ### stock-analysis-workflow
@@ -188,6 +202,7 @@ stock-analysis/
 |--------|------|------|
 | `/stock-analysis:analyze [ticker] [path]` | 신규 종목분석 문서 생성 | 새 종목 발견 시 |
 | `/stock-analysis:update [ticker] [path]` | 기존 분석 문서 갱신 | 실적 발표/이벤트 시 |
+| `/stock-analysis:classify [ticker…] \| --holdings` | 보유 유형 분류·사유 초안 | 신규 편입, 분기 재분류 |
 
 스킬(`stock-analysis-workflow`, `sector-metrics-guide`)은 커맨드 실행 중 자동으로 참조됩니다.
 
@@ -244,6 +259,11 @@ stock-analysis/
 | `README.md` | Version History 섹션 |
 
 ## Version History
+
+- **2.4.0** - 보유 분류 모드
+  - `classify` 커맨드 + `stock-classifier` 에이전트(Sonnet): 보유 유형 판정·투자 사유 초안 노트
+  - `scripts/reverse_dcf.py`: 역산 DCF 요구 성장률과 v2 판정(1.5배 + 5%p), 테스트 포함
+  - `references/holding-classification.md`: 보유분류 노트 스키마
 
 - **2.1.0** - 2-Agent 파이프라인 아키텍처 (토큰 절감 + 일관성 향상)
   - stock-researcher 단일 에이전트 → stock-data-collector (Sonnet) + stock-analyst (Opus) 분리
