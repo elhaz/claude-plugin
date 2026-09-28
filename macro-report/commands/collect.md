@@ -20,7 +20,7 @@ allowed-tools:
 - **YYYY-MM-DD** (선택): 판단일. 기본 오늘
 - **--no-api**: scanner 에 `use_api=false` (`MACRO_SKIP_API=1` 과 같음)
 - **--api-base=URL**: 데이터 플랫폼 공개 주소 (기본 `$FDP_API_BASE` → `https://stock.xhhan.com`). scanner 의 WebFetch 용
-- **`FDP_API_KEY` env** (선택): 있으면 scanner 가 남긴 데이터 갭을 `POST /api/meta/data-gaps` 로 전송
+- **`FDP_API_KEY` 또는 `FDP_REPORTER_API_KEY` env** (선택): 있으면 scanner 가 남긴 데이터 갭을 `POST /api/meta/data-gaps` 로 전송
 
 ## Step 0: 준비 (Bash 한 번)
 
@@ -74,7 +74,9 @@ Agent 타입 `macro-report:macro-scanner` 가 없으면 `$P/agents/macro-scanner
 ## Step 3: 데이터 갭 전송 (선택, 실패 무시)
 
 ```bash
-if [ -n "${FDP_API_KEY:-}" ] && [ "$USE_API" = "true" ]; then
+# NAS 환경은 FDP_REPORTER_API_KEY 로 주입된다 (1.x 는 FDP_API_KEY 만 찾았다)
+KEY="${FDP_API_KEY:-${FDP_REPORTER_API_KEY:-}}"
+if [ -n "$KEY" ] && [ "$USE_API" = "true" ]; then
   TMP_GAP="${TMPDIR:-/tmp}/_macro_gap_$$.json"; posted=0; failed=0
   for f in "$DATA"/*_data_gaps.jsonl; do
     [ -f "$f" ] || continue
@@ -82,7 +84,7 @@ if [ -n "${FDP_API_KEY:-}" ] && [ "$USE_API" = "true" ]; then
       [ -z "$line" ] && continue
       printf '%s' "$line" > "$TMP_GAP"   # 한글 UTF-8 보존 (#5)
       if curl -fsS -m 5 -X POST "$API_BASE/api/meta/data-gaps" -H "Content-Type: application/json" \
-           -H "X-API-Key: $FDP_API_KEY" --data-binary @"$TMP_GAP" >/dev/null 2>&1
+           -H "X-API-Key: $KEY" --data-binary @"$TMP_GAP" >/dev/null 2>&1
       then posted=$((posted+1)); else failed=$((failed+1)); fi
     done < "$f"
   done

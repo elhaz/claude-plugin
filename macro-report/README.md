@@ -55,7 +55,7 @@
 | financial-data-platform ≥ v0.6.0 | 가격·FRED·FedWatch(`/api/fed-expectations/*`)·뉴스 헤드라인(`/api/news/headlines`, 내부망 전용) |
 | `FDP_API_BASE` | 채점·scanner 가 쓰는 데이터 플랫폼 주소 (채점 기본: `http://localhost:8000` → `https://stock.xhhan.com`) |
 | `FDP_INTERNAL_BASE` | 헤드라인 조회용 내부망 주소 (기본 `http://localhost:8000`) |
-| `FDP_API_KEY` | (선택) scanner 데이터 갭을 `POST /api/meta/data-gaps` 로 전송 |
+| `FDP_API_KEY` / `FDP_REPORTER_API_KEY` | (선택) scanner 데이터 갭을 `POST /api/meta/data-gaps` 로 전송 (앞의 것 우선) |
 | `--no-api` / `MACRO_SKIP_API=1` | scanner 를 WebSearch-only 로 |
 
 ## 출력 파일
@@ -70,7 +70,7 @@
 
 ## Version History
 
-- **2.0.0** (2026-09-28): 전면 개편 — 과거 데이터 요약 + 종목 추천(v1)을 **뉴스 기반 1·3·6개월 예측 + 채점**으로 교체. 개별 보고서 5종·종합·쉬운말 6종 → 데이터 파일 5종 + 판단 파일 + 주간 보고 1개. 애널리스트 목표가 보고서 제거, 뉴스·전망(`outlook`) 신설. 판단 파일 JSON 을 예측 원장으로 쓰고 `weekly_score.py` 가 매주 채점. 커맨드 `generate`/`report`/`synthesize`/`plain`/`backtest` 를 `collect`/`weekly` 로 교체 (v1 은 태그 `macro-report-v1.7.0`).
+- **2.0.0** (2026-09-28): 전면 개편 — 과거 데이터 요약 + 종목 추천(v1)을 **뉴스 기반 1·3·6개월 예측 + 채점**으로 교체. 개별 보고서 5종·종합·쉬운말 6종 → 데이터 파일 5종 + 판단 파일 + 주간 보고 1개. 애널리스트 목표가 보고서 제거, 뉴스·전망(`outlook`) 신설. 판단 파일 JSON 을 예측 원장으로 쓰고 `weekly_score.py` 가 매주 채점. 커맨드 `generate`/`report`/`synthesize`/`plain`/`backtest` 를 `collect`/`weekly` 로 교체 (v1 은 태그 `macro-report-v1.7.0`). 데이터 갭 전송 키에 `FDP_REPORTER_API_KEY` 대체 추가. 첫 실행(2026-09-28) 에이전트 토큰 547만 — v1(09-21) 2,102만 대비 약 74% 감소.
 - **1.7.0** (2026-09-20): `OBSIDIAN_VAULT` 환경변수 지원.
 - **1.6.0** (2026-07-27): 쉬운말 버전(평이판) 생성 기능 추가.
 - **1.5.1** (2026-04-27): data_gaps POST 의 Windows cp949 결함 수정 ([#5](https://github.com/elhaz/claude-plugin/issues/5)).
