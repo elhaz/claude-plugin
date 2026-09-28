@@ -1,117 +1,69 @@
 ---
 name: Macro Report Workflow
-description: This skill should be used when the user asks to "generate macro report", "analyze market conditions", "create investment report", "run macro analysis", "거시경제 분석", "시장 환경 분석", "종합 투자 분석", "유동성 분석", "내부자 매매 분석", "크로스에셋 분석", "백테스트 갱신", "추천 이력 업데이트", "backtest update", "쉬운말 버전", "쉬운 설명", "평이판", "용어 쉽게"
-version: 1.4.0
+description: This skill should be used when the user asks to "generate macro report", "weekly macro report", "run macro analysis", "거시경제 분석", "거시경제 주간 보고", "시장 전망", "1·3·6개월 전망", "예측 채점", "지난 예측 성적", "판단 파일", "뉴스 헤드라인 수집", "쉬운말 보고서", "시장 환경 분석", "유동성 분석", "크로스에셋 분석"
+version: 2.0.0
 ---
 
-# 거시경제 종합 투자분석 워크플로우
+# 거시경제 주간 보고 워크플로우 (v2)
 
 ## 개요
 
-5개 개별 분석 보고서를 수집·작성하고, 종합 투자판단 보고서를 생성한 뒤, 전체의 쉬운말 버전을 만드는 워크플로우.
+한 주치 세계 뉴스와 시장 데이터로 **1·3·6개월 뒤를 예측**하고, 그 예측을 **채점 가능한 원장**으로 남기며, 사람은 **쉬운말 주간 보고 하나**만 읽는다.
 
-## 핵심 원칙: "Scan First, Baseline Second"
+v1(1.7.0, 2025-10 ~ 2026-09-28)은 지난 데이터 요약 → 개별 종목 추천이었고, 백테스트 결과 S&P 500 대비 승률이 약 50%(동전던지기)였다. 사용자는 쉬운말 보고서만 읽는데 토큰은 대부분 사람이 읽지 않는 전문판·개별 보고서·차트에 쓰였다. v2 는 이 두 문제를 고친다. 설계 근거는 Vault `01_Projects/사이드프로젝트/거시경제 보고서 v2 설계.md`.
 
-1. **열린 스캔**: 최근 2주간 핵심 이벤트를 먼저 파악하여 새로운 것을 놓치지 않음
-2. **베이스라인 활용**: 이전 보고서를 기준으로 변경분만 업데이트하여 토큰 절약
-3. **조사-작성 분리**: Sonnet(수집) → Opus(분석) 분리로 비용 최적화
-
-## 4단계 파이프라인
+## 파이프라인
 
 ```
-[1단계] macro-scanner (Sonnet) × 5 병렬
-  ├── 질문 템플릿 직접 Read (경로만 수신)
-  ├── 열린 스캔: 새 이벤트 발견
-  ├── 베이스라인: 이전 보고서 대비 변경분 식별
-  ├── 데이터 수집: 항목별 최신 수치
-  └── 수집 결과를 .scan/ 파일로 Write (오케스트레이터에 전문 미반환)
+[1부] /macro-report:collect
+  ├── fetch_headlines.py — 데이터 플랫폼이 3시간마다 누적한 RSS 헤드라인 → 거시 관련 필터
+  └── macro-scanner (Sonnet) × 5 병렬: liquidity · regime · sector · insider · outlook
+        └── 데이터/{날짜}/{type}.md  (숫자·사실·출처만, 영구 보관)
 
-[2단계] macro-writer (Opus) × 5 병렬
-  ├── .scan/ 파일에서 수집 데이터 Read
-  ├── 개별 보고서 작성·저장
-  └── 종합보고서용 요약 섹션 (20~30줄) 추가
-
-[3단계] macro-writer (Opus) × 1
-  ├── 5개 보고서의 요약 섹션 먼저 Read (~150줄) → 전체 구조 파악
-  ├── 5개 보고서 전문을 순차적 Read → 상세 데이터 수집
-  └── 종합보고서 작성
-
-[4단계] macro-writer (Opus) × 6 병렬  ※ --no-plain 으로 생략 가능
-  ├── plain-language-guide.md 직접 Read (경로만 수신)
-  ├── 자기 원본 보고서 1개만 Read
-  ├── 쉬운말 버전 작성·저장
-  └── 원본의 `## 관련문서` 에 역링크 1줄 Edit 삽입
+[2부] /macro-report:weekly
+  └── macro-writer (Opus) × 1
+        ├── 데이터 파일 5개 + 지난주 판단 → 판단.md (예측 원장 JSON)
+        ├── weekly_score.py validate → score (만기 예측 채점 + 차트 2개 → 채점.md)
+        └── {날짜} 거시경제 주간 보고.md (쉬운말, 공개 게시 대상)
 ```
 
-### 토큰 최적화 설계
+## 예측과 채점
 
-1. **파일 기반 핸드오프**: Scanner 결과를 오케스트레이터에 반환하지 않고 파일로 전달하여 동일 데이터 3회 처리 제거
-2. **경로 참조**: 질문 템플릿·스코어링 기준 등 참조 문서를 오케스트레이터가 로드하지 않고 에이전트가 직접 Read
-3. **요약 우선 읽기**: 종합 Writer가 요약(~150줄)으로 구조를 먼저 파악한 뒤 전문을 순차 Read
+| 대상 | 형태 | 채점 |
+|---|---|---|
+| 업종·지역 ETF 20개 | 1·3·6개월 뒤 S&P 500 보다 잘할 **확률** | Brier 점수 (기준 0.25) |
+| 비중안 (자산군 4 + ETF 20 중) | 합계 100 | 그대로 보유 시 수익 vs 60/40 |
+| 거시 변수 11개 | 방향 (up/down/flat) | 방향 적중 — 진단용 |
 
-## 5개 보고서 구성
+- 실제값은 financial-data-platform API (FRED·가격). 개별 종목 추천은 하지 않는다
+- 시장 내재 기대치(FedWatch, `/api/fed-expectations/latest`)와 **다르게 본 부분**이 v2 의 핵심 가치
+- 형식: [judgment-schema.md](references/judgment-schema.md)
 
-| 보고서 | 핵심 질문 | 질문 항목 수 |
-|--------|---------|------------|
-| 내부자 매매 동향 | CEO/CFO가 자사주를 사고 있는가? | 13개 |
-| 애널리스트 목표가 변동 | 월스트리트가 어디에 베팅하는가? | 15개 |
-| 시장 주도 업종 분석 | 스마트머니가 어디로 이동하는가? | 12개 |
-| 유동성 환경 분석 | 시장에 돈이 풀리고 있는가? | 19개 |
-| 크로스에셋 레짐 분석 | 지금은 어떤 장인가? | 10개 |
+## 뉴스 출처 (약관 확인)
 
-## 종합보고서 구조
+연합뉴스(경제·마켓·국제)·CNBC·연준 RSS 를 데이터 플랫폼이 누적 → 내부망 전용 API → `fetch_headlines.py`. 여기에 FOMC 일정, FedWatch, WebSearch. MarketWatch·Google News·SAVE·FinancialJuice 는 약관상 자동 수집 금지라 쓰지 않는다. **기사 문장을 옮기지 않고**, 사실은 자체 문장으로, 근거는 각주 원문 링크로. 상세: [question-outlook.md](references/question-outlook.md)
 
-5개 보고서를 교차 분석하여 투자 판단을 내리는 **메타 보고서**:
+## 참고 문서
 
-1. 현재 시장 환경 평가 (5개 요약)
-2. **교차 시그널 심층 분석** (신호 반전·괴리, 스마트머니 vs 리테일, 옵션 포지셔닝)
-3. 투자 적합성 판단 (0~100점)
-4. 추천 투자 종목 (Tier 1~4 + 공급망 수혜주)
-5. 지역 로테이션 전략
-6. 포트폴리오 전략 (배분 트리맵)
-7. 타이밍 및 실행 계획 (3개월 로드맵)
-8. 리스크 관리 (경고 임계점 + 신규 시스템 리스크)
-9. 최종 결론
+| 문서 | 단일 출처 범위 |
+|---|---|
+| [judgment-schema.md](references/judgment-schema.md) | 판단 파일·JSON 스키마·예측 대상·확률 쓰는 법 |
+| [weekly-report-template.md](references/weekly-report-template.md) | 주간 보고 구조·각주·줄바꿈·차트 |
+| [plain-language-guide.md](references/plain-language-guide.md) | 문체·용어 사전·교차 정합성 |
+| [scoring-criteria.md](references/scoring-criteria.md) | 시장 점수 (v2 가중치) · 내부자 등급 |
+| `question-{liquidity,regime,sector,insider,outlook}.md` | scanner 수집 항목 |
+| [data-gaps-conventions.md](references/data-gaps-conventions.md) | 데이터 갭 명명 |
 
 ## 커맨드
 
 | 커맨드 | 용도 |
 |--------|------|
-| `/macro-report:generate` | 전체 워크플로우 (5개 + 종합 + 쉬운말 6개) |
-| `/macro-report:report [type]` | 개별 보고서 1개 (+ 쉬운말) |
-| `/macro-report:synthesize [date]` | 종합보고서만 (기존 5개 활용, + 쉬운말) |
-| `/macro-report:plain [type] [date]` | 기존 보고서의 쉬운말 버전만 (소급 적용·재생성) |
+| `/macro-report:collect [날짜]` | 1부 — 헤드라인 + 데이터 파일 5종 |
+| `/macro-report:weekly [날짜]` | 2부 — 판단 + 채점 + 주간 보고 |
 
-## 쉬운말 버전 (평이판)
-
-원본 보고서는 전문 용어로 압축돼 있어 금융 배경이 없으면 읽기 어렵다. 4단계는 같은 내용을 **용어를 풀어** 다시 쓴 문서를 원본 옆에 만든다.
-
-- **파일명**: 원본 + ` 쉬운 설명` (종합만 `종합 분석 쉬운 설명` 으로 축약)
-- **분량**: 종합 원본의 40~60%, 개별 원본의 30~45% — 요약이 아니라 **이해 비용을 줄이는 것**이 목적
-- **원칙**: 용어는 `쉬운 말(원어)` 병기 / 숫자는 한국어 단위 / 결론만 있는 곳에 인과 추가 / 독자 의문은 콜아웃으로 선점 / Plotly 차트는 표·불릿으로 대체
-- **금지**: 원본에 없는 종목·수치·판단 추가, 원본과 다른 결론 — plain 모드는 **번역이지 분석이 아니다**
-- **끄기**: `--no-plain` 인자 또는 `MACRO_SKIP_PLAIN=1` 환경변수
-
-작성 규칙의 단일 출처는 [plain-language-guide.md](references/plain-language-guide.md) 이며, 용어 사전(유동성·금리·시장국면·수급·실적·리스크 6개 분류)도 여기에 있다.
-
-## 질문 템플릿
-
-각 보고서의 질문 항목은 `references/question-*.md`에 정의되어 있으며, macro-scanner에게 전달되어 데이터 수집 가이드로 활용된다.
-
-## 데이터 수집 경로
-
-macro-scanner 는 두 가지 경로를 지원한다 (자세한 흐름은 `agents/macro-scanner.md`):
-
-- **신규 경로 (default, B 모드)**: `https://stock.xhhan.com/api/meta/capabilities` 를 먼저 fetch 해 사용 가능한 데이터/엔드포인트를 동적으로 파악한 뒤, 매칭되는 항목은 financial-data-platform API 로, 못 하는 항목만 WebSearch fallback. **사전 매핑 금지** — 매핑은 매 실행마다 capabilities 응답이 결정한다.
-- **기존 경로 (A 모드)**: 전통적인 WebSearch-only. `--no-api` 인자 또는 `MACRO_SKIP_API=1` 환경변수로 강제.
-
-scanner 가 WebSearch 보강을 사용한 항목 중 fdp 가 차후 자동 채울 수 있을 데이터는 sidecar JSONL 로 누적되고, 오케스트레이터(command Bash) 가 `POST /api/meta/data-gaps` 로 일괄 전송 — `FDP_API_KEY` 미설정 시 graceful skip. 명명 규약은 [data-gaps-conventions.md](references/data-gaps-conventions.md) 단일 출처.
-
-토큰 절감 효과 측정 양식은 [token-savings.md](references/token-savings.md) 참고.
+한 세션에서 1부·2부를 연달아 돌리면 5시간 한도에 걸릴 수 있어 루틴은 둘로 나눠 돈다 (Vault 밖 `~/.claude/commands/주간거시보고.md`).
 
 ## 출력
 
-- Obsidian 호환 마크다운
-- Plotly 차트 포함
-- `[[]]` 위키링크
-- 한국어 기반
+- Obsidian 호환 마크다운, `[[]]` 위키링크, 한국어
+- Plotly 차트는 주간 보고에 2개 (채점 스크립트 생성)
