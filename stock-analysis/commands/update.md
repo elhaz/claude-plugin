@@ -43,12 +43,12 @@ allowed-tools:
 - 애널리스트 목표가 변동
 - 내부자/수급 변동
 
-### Step 2: Analysis & Update (stock-analyst, Opus)
+### Step 2: Analysis & Update (stock-analyst, 세션 모델)
 
 `stock-analyst` 에이전트를 호출하여 기존 문서를 갱신.
 
 **에이전트 프롬프트에 포함**:
-- 기존 문서 내용 (Read한 전문)
+- 기존 문서 경로 (analyst 가 직접 Read — 전문을 붙여 넣지 않는다)
 - Step 1에서 수집된 델타 데이터
 - 갱신 지시:
   - frontmatter `updated` / `마지막수정일` 날짜 갱신

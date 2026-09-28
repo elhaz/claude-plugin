@@ -96,4 +96,3 @@ scanner 의 `report_type` 과 1:1 매칭. 단 한 보고서가 다른 카테고�
 - claude-bridge [#7](https://git.xhhan.com/xhh/claude-bridge/issues/7) — 본 작업 (data_gaps 짝꿍 활성화)
 - financial-data-platform [#15](https://git.xhhan.com/xhh/financial-data-platform/issues/15) — fdp 측 구현 (Closed)
 - financial-data-platform [#62](https://git.xhhan.com/xhh/financial-data-platform/issues/62) — capabilities 짝꿍 (Closed)
-- [token-savings.md](token-savings.md) — 토큰 절감 측정 페어 (data_gaps 누적과 함께 진행)

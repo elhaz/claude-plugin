@@ -40,29 +40,29 @@ frontmatter `sector` 값은 반드시 아래 목록 중 하나를 사용한다 (
 
 > 예: `sector: 기술` (O), `sector: 기술 (Technology)` (X), `sector: 정보기술(IT)` (X)
 
-## Phase 4: Deep Analysis
+## Phase 1: Deep Analysis
 
 data-collector가 수집한 데이터를 기반으로 추가 리서치 + 분석 수행.
 
-### 4a. 경쟁 분석
+### 1a. 경쟁 분석
 - data-collector의 Peer 수치를 기반으로 경쟁 우위/열위 **판단**
 - 필요 시 추가 검색: "{Company} competitive advantage moat"
 - 경쟁 포지셔닝 평가
 
-### 4b. 어닝콜 Q&A 분석
+### 1b. 어닝콜 Q&A 분석
 - Search: "{Ticker} earnings call Q&A transcript highlights"
 - **Bullish Highlights**: 경영진이 강조한 긍정 포인트
 - **Bearish Highlights**: 성장 둔화, 마진 압박 등 우려
 - **Misses**: 경영진이 답변 회피/정량화 거부한 항목
 
-### 4c. CEO/경영진 평가
+### 1c. CEO/경영진 평가
 - data-collector의 내부자 데이터 기반 + 추가 검색 필요 시
 - CEO 경력, 재임기간, 인센티브 정렬, 내부자 매수/매도 해석
 
-## Phase 5: SWOT & Risk
+## Phase 2: SWOT & Risk
 
 ### SWOT Analysis
-data-collector 데이터 + Phase 4 분석을 종합하여 구조화:
+data-collector 데이터 + Phase 1 분석을 종합하여 구조화:
 
 | | 긍정 | 부정 |
 |---|------|------|
@@ -74,7 +74,7 @@ data-collector 데이터 + Phase 4 분석을 종합하여 구조화:
 ### Risk Assessment
 리스크를 유형별로 분류 (사업/재무/규제/경쟁/매크로).
 
-## Phase 6: Valuation & Fair Price
+## Phase 3: Valuation & Fair Price
 
 시장 가이드와 기업 유형에 맞는 방법론 2~3개 교차 적용.
 
@@ -96,7 +96,7 @@ data-collector 데이터 + Phase 4 분석을 종합하여 구조화:
 4. 종합 적정가 범위 + 민감도 분석
 5. **frontmatter에 결과 반영**: `현재가`, `적정가하단`, `적정가상단` 값을 숫자로 기록 (통화 기호 없이, KRW는 정수, USD는 소수점 2자리까지)
 
-## Phase 7: Document Generation
+## Phase 4: Document Generation
 
 수집 데이터 + 분석 결과를 종합하여 최종 문서 작성.
 
@@ -121,19 +121,19 @@ updated: YYYY-MM-DD
 
 > 상위 문서: [[주식분석]]
 
-## 기업 개요 (data-collector Phase 1)
-## 핵심 밸류에이션 지표 (data-collector Phase 2)
-## 분기별 재무 추이 + Plotly 차트 (data-collector Phase 2)
-## 재무 건전성 (data-collector Phase 2)
-## 연도별 밸류에이션 추이 + Plotly 차트 (data-collector Phase 2)
-## Peer 정량 비교 (data-collector Phase 2)
-## 어닝콜 Q&A (Phase 4b)
-## 경쟁 환경 (Phase 4a)
-## CEO/경영진 (Phase 4c)
-## SWOT 분석 (Phase 5)
-## 리스크 요인 (Phase 5)
-## 적정가 산출 (Phase 6)
-## 애널리스트/수급 (data-collector Phase 2)
+## 기업 개요
+## 핵심 밸류에이션 지표
+## 분기별 재무 추이 + Plotly 차트
+## 재무 건전성
+## 연도별 밸류에이션 추이 + Plotly 차트
+## Peer 정량 비교
+## 어닝콜 Q&A
+## 경쟁 환경
+## CEO/경영진
+## SWOT 분석
+## 리스크 요인
+## 적정가 산출
+## 애널리스트/수급
 
 ---
 **태그**: #종목분석 #섹터 #산업
@@ -141,7 +141,7 @@ updated: YYYY-MM-DD
 
 ### Plotly 차트 (필수 3종 + 조건부 3종)
 
-차트 템플릿: `references/chart-templates.md`
+차트 템플릿: `${CLAUDE_PLUGIN_ROOT}/skills/stock-analysis-workflow/references/chart-templates.md` (오케스트레이터가 절대경로를 넘기면 그것을 쓴다)
 
 **필수**: 분기별 매출/EPS, 연간 매출/순이익, 매출 구성 도넛
 **조건부**: 손익 워터폴(흑자), 밸류에이션 추이(데이터 있을 때), 부채/레버리지(고레버리지)

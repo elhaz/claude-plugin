@@ -68,28 +68,13 @@ Gather quantitative data systematically:
 
 Apply the analysis template to ensure completeness:
 
-**Template sections to complete:**
-- Basic information
-- Investment thesis alignment
-- Quarterly financials
-- Industry-specific metrics
-- Business model & moat analysis
-- CEO evaluation
-- Risk assessment
-- Action items
-
-Reference: `references/analysis-template.md`
+문서 구조(절 순서·frontmatter)의 단일 출처는 `stock-analyst` 에이전트 정의다. `references/analysis-template.md` 는 절별 작성 예시로 참고한다.
 
 ### Step 4: Valuation & Fair Price Estimation
 
 기업 유형에 맞는 밸류에이션 방법론 2~3개를 교차 적용하여 적정가 범위 산출:
 
-| 기업 유형 | 1차 | 2차 | 보조 |
-|----------|-----|-----|------|
-| 흑자 성숙기업 | DCF | P/E Comp | Backward DCF |
-| 적자 고성장기업 | EV/Sales Comp | PSG | Backward DCF |
-| 프리레버뉴 기업 | rNPV (확률가중) | Comp | EV/Cash + Backward DCF |
-| 금융/리츠 | P/B 또는 NAV | DDM | P/E Comp |
+기업 유형별 방법론 표는 `stock-analyst` 에이전트 정의(Phase 3)를 따른다.
 
 **산출 원칙**:
 - 단일 방법론에 의존하지 말 것 — 최소 2개 교차 적용
@@ -125,7 +110,7 @@ When conducting web research for a stock:
 **Search Queries to Use:**
 ```
 "{Company} business model revenue segments"
-"{Ticker} earnings Q4 2024 guidance"
+"{Ticker} earnings {최근 분기} guidance"
 "{Company} insider buying selling {month} {year}"
 "{Company} vs {Competitor} comparison"
 "{Company} risks concerns {year}"
@@ -158,20 +143,9 @@ Generate analysis documents with:
    - GAAP vs Non-GAAP notes
    - Competitive comparison
 
-## Using the Stock Researcher Agent
+## 자동 실행
 
-For automated data collection, invoke the `stock-researcher` agent:
-
-```
-Task: Research [TICKER] using stock-researcher agent
-```
-
-The agent will systematically gather:
-- Company overview and business model
-- Financial metrics and valuation
-- Recent news and developments
-- Insider activity and analyst opinions
-- Competitive landscape
+`/stock-analysis:analyze {TICKER}` 가 `stock-data-collector`(수집) → `stock-analyst`(분석·문서) 순으로 에이전트를 호출한다. 기존 문서 갱신은 `/stock-analysis:update`.
 
 ## Additional Resources
 

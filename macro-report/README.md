@@ -19,7 +19,7 @@
         → 분석/데이터/{날짜}/{type}.md
 
 [2부] /macro-report:weekly
-  └── macro-writer (Opus) × 1
+  └── macro-writer (inherit — 세션 모델) × 1
         ├── 판단.md (예측 원장 ```json)
         ├── scripts/weekly_score.py validate / score → 채점.md (성적표 + 차트 2개)
         └── {날짜} 거시경제 주간 보고.md
@@ -37,7 +37,7 @@
 | 에이전트 | 모델 | 역할 |
 |----------|------|------|
 | `macro-scanner` | Sonnet | 데이터 수집 (판단 없음), 유형별 데이터 파일 |
-| `macro-writer` | Opus (inherit) | 판단 파일 → 검증·채점 → 주간 보고 |
+| `macro-writer` | inherit (세션 모델) | 판단 파일 → 검증·채점 → 주간 보고 |
 
 ## 스크립트 (표준 라이브러리만)
 
