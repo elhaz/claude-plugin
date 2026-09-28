@@ -113,9 +113,7 @@ WebSearch 보강을 사용한 항목, 또는 매칭 실패로 처리한 항목 �
 - 페이로드: `topic`(필수, 200자), `category`(enum: liquidity/insider/sector/regime/analyst/news — `outlook` 은 `news`), `requester="macro-report:<report_type>"` 고정, `context`(권장 `"YYYY-MM-DD <주기>"`), `reason`(한 줄)
 - **같은 갭은 같은 topic 문자열** — 컨벤션 문서의 권장 표를 우선 사용. 새 topic 은 영문 소문자 + 명사구 + 주기성 접미사 규칙을 따른다.
 
-#### A 모드 — 기존 WebSearch 경로
-
-기존과 동일.
+#### A 모드 — WebSearch 경로
 
 - 먼저 공식 소스 (FRED, SEC EDGAR, CME, CBOE, etf.com) 검색
 - 부족하면 Seeking Alpha, Bloomberg, Reuters 등 2차 소스
@@ -123,7 +121,7 @@ WebSearch 보강을 사용한 항목, 또는 매칭 실패로 처리한 항목 �
 
 #### 뉴스 (outlook 전용)
 
-뉴스·이벤트 수집은 `outlook` 유형이 전담한다 (`question-outlook.md`). 다른 유형은 열린 뉴스 스캔을 하지 않는다 — v1 에서 5개 scanner 가 같은 "최근 2주 이벤트" 검색을 반복했다.
+뉴스·이벤트 수집은 `outlook` 유형이 전담한다 (`question-outlook.md`). 다른 유형은 열린 뉴스 스캔을 하지 않는다.
 
 **기사 문장을 옮기지 않는다** (모든 유형 공통). 사실은 자체 문장 한 줄로, 원문 URL 은 반드시 남긴다 — 쉬운말 보고서가 공개 게시되고, 각주로 원문을 따라갈 수 있어야 한다.
 
@@ -132,7 +130,7 @@ WebSearch 보강을 사용한 항목, 또는 매칭 실패로 처리한 항목 �
 **수집 데이터를 `scan_data_path`에 Write로 저장하고, 저장 경로만 보고한다.**
 오케스트레이터로 결과 전문을 반환하지 않는다.
 
-**데이터 갭 sidecar (선택)**: Phase 2 에서 누적한 갭이 1건 이상이면, `scan_data_path` 의 확장자 직전에 `_data_gaps` 를 붙인 경로(예: `.scan/liquidity_2026-04-27.md` → `.scan/liquidity_2026-04-27_data_gaps.jsonl`) 에 한 줄에 한 JSON 으로 Write 한다. 갭이 0건이면 파일을 만들지 않는다. 이 파일은 오케스트레이터(command Bash) 가 읽어 `POST /api/meta/data-gaps` 로 일괄 전송한다 — scanner 본인은 POST 하지 않는다.
+**데이터 갭 sidecar (선택)**: Phase 2 에서 누적한 갭이 1건 이상이면, `scan_data_path` 의 확장자 직전에 `_data_gaps` 를 붙인 경로(예: `$DATA/liquidity.md` → `$DATA/liquidity_data_gaps.jsonl`) 에 한 줄에 한 JSON 으로 Write 한다. 갭이 0건이면 파일을 만들지 않는다. 이 파일은 오케스트레이터(command Bash) 가 읽어 `POST /api/meta/data-gaps` 로 일괄 전송한다 — scanner 본인은 POST 하지 않는다.
 
 scan_data 형식:
 
@@ -163,7 +161,7 @@ scan_data 형식:
 - web_kb_total: <float, KB, 실측 어려우면 빈칸>
 ```
 
-`수집 메타` 섹션은 #7 토큰 절감 측정용이다 (`references/token-savings.md` 와 페어).
+`수집 메타` 섹션은 선택이다. 값을 알기 어려우면 빈칸으로 둔다.
 
 ## 보고서 유형별 핵심 수집 항목
 
@@ -215,5 +213,4 @@ scan_data 형식:
 - 수치와 사실만 기재. "전월 대비 +X%" 같은 객관적 비교는 허용
 - 출처가 불분명한 수치는 `[미확인]` 태그 부착
 - 검색/호출 실패 항목은 `[수집 실패]` 표기 후 진행 (중단하지 않음)
-- 수집 완료 후 반드시 `scan_data_path`에 Write하고, **"저장 완료: [경로]"** 한 줄만 보고한다
-- 오케스트레이터에게 수집 데이터 전문을 반환하지 않는다 (토큰 절약)
+- 수집 완료 후 `scan_data_path`에 Write하고 "저장 완료: [경로]" 한 줄만 보고한다 (Phase 3)

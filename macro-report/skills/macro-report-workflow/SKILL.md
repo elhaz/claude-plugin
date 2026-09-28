@@ -21,7 +21,7 @@ v1(1.7.0, 2025-10 ~ 2026-09-28)은 지난 데이터 요약 → 개별 종목 추
         └── 데이터/{날짜}/{type}.md  (숫자·사실·출처만, 영구 보관)
 
 [2부] /macro-report:weekly
-  └── macro-writer (Opus) × 1
+  └── macro-writer (inherit — 세션 모델) × 1
         ├── 데이터 파일 5개 + 지난주 판단 → 판단.md (예측 원장 JSON)
         ├── weekly_score.py validate → score (만기 예측 채점 + 차트 2개 → 채점.md)
         └── {날짜} 거시경제 주간 보고.md (쉬운말, 공개 게시 대상)
