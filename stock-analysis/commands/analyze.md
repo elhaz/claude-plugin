@@ -7,6 +7,7 @@ allowed-tools:
   - Write
   - Glob
   - Grep
+  - Bash
   - WebSearch
   - WebFetch
   - Agent
@@ -22,6 +23,10 @@ allowed-tools:
 - `output-path` (optional): Path to save the analysis document. 생략 시 `$OBSIDIAN_VAULT/03_Resources/주식분석/종목분석/{회사명}.md` (`OBSIDIAN_VAULT` 미설정 시 현재 작업 디렉토리 기준 상대경로). 회사명은 해당 디렉토리의 기존 파일 관례를 따른다 (예: `AMD.md`, `ASML홀딩.md`)
 
 ## Workflow
+
+### Step 0: 이전 판 보관
+
+출력 경로에 문서가 이미 있으면 아래 "이전 판 보관" 의 `archive` 를 먼저 실행한다.
 
 ### Step 1: Data Collection (stock-data-collector, Sonnet)
 
@@ -46,6 +51,20 @@ allowed-tools:
 - 필수 산출물: 경쟁 분석, 어닝콜 Q&A, SWOT, 적정가, Plotly 차트
 
 **에이전트 산출물**: 완성된 종목분석 .md 파일
+
+### Step 3: 이력 링크
+
+`link` 를 실행해 최신본 끝에 이전 분석 링크를 붙인다 (이력이 없으면 절을 만들지 않는다).
+
+### 이전 판 보관 (날짜별 이력)
+
+최신본은 제자리에 두고, 덮어쓰기 전 판을 `종목분석/이력/{문서명}/{updated 날짜}.md` 로 보관한다. 이력본은 태그가 `종목분석이력` 으로 바뀌어 대시보드에 겹쳐 뜨지 않는다.
+
+```bash
+H="${CLAUDE_PLUGIN_ROOT:-$(ls -d ~/.claude/plugins/cache/elhaz-plugins/stock-analysis/*/ | sort -V | tail -1)}"; H="${H%/}/scripts/analysis_history.py"
+python3 "$H" archive "{문서 경로}"    # 쓰기 전 — 문서가 없으면 아무것도 안 함
+python3 "$H" link "{문서 경로}"       # 쓰기 후 — 끝에 `## 이전 분석` 링크 목록
+```
 
 ## 오케스트레이션 예시
 
