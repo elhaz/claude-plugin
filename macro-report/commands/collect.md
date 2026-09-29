@@ -19,7 +19,7 @@ allowed-tools:
 
 - **YYYY-MM-DD** (선택): 판단일. 기본 오늘
 - **--no-api**: scanner 에 `use_api=false` (`MACRO_SKIP_API=1` 과 같음)
-- **--api-base=URL**: 데이터 플랫폼 공개 주소 (기본 `$FDP_API_BASE` → `https://stock.xhhan.com`). scanner 의 WebFetch 용
+- **--api-base=URL**: 데이터 플랫폼 공개 주소 (기본 `$FDP_API_BASE` → `https://findata.xhhan.com`). scanner 의 WebFetch 용
 - **`FDP_API_KEY` 또는 `FDP_REPORTER_API_KEY` env** (선택): 있으면 scanner 가 남긴 데이터 갭을 `POST /api/meta/data-gaps` 로 전송
 
 ## Step 0: 준비 (Bash 한 번)
@@ -35,7 +35,7 @@ REF="$P/skills/macro-report-workflow/references"
 mkdir -p "$DATA"
 # 지난주 데이터 디렉토리 = 오늘보다 앞선 날짜 중 가장 최근
 PREV=$(for d in "$OUT/데이터"/????-??-??/; do [ -d "$d" ] && basename "$d"; done | awk -v t="$TODAY" '$0 < t' | sort | tail -1)
-USE_API=true; API_BASE="${FDP_API_BASE:-https://stock.xhhan.com}"
+USE_API=true; API_BASE="${FDP_API_BASE:-https://findata.xhhan.com}"
 [ "${MACRO_SKIP_API:-0}" = "1" ] && USE_API=false
 case " $ARGUMENTS " in *" --no-api "*) USE_API=false ;; esac
 for tok in $ARGUMENTS; do case "$tok" in --api-base=*) API_BASE="${tok#--api-base=}" ;; esac; done

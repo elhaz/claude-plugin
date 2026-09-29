@@ -26,7 +26,7 @@ tools:
 4. **question_template_path**: 해당 유형의 질문 템플릿 파일 경로 (직접 Read하여 사용)
 5. **scan_data_path**: 수집 결과를 저장할 파일 경로 — `데이터/{날짜}/{type}.md`. **영구 보관**되며 판단 단계의 유일한 입력이다
 6. **use_api** (선택, 기본 `true`): financial-data-platform 의 capabilities API 우선 경로 사용 여부. `false` 면 기존 WebSearch-only 경로로 강제.
-7. **api_base_url** (선택, 기본 `https://stock.xhhan.com`): financial-data-platform 베이스 URL.
+7. **api_base_url** (선택, 기본 `https://findata.xhhan.com`): financial-data-platform 베이스 URL.
 
 ## 실행 프로세스
 
