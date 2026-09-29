@@ -29,6 +29,7 @@ allowed-tools:
 
 **에이전트 프롬프트에 포함할 내용**:
 - 티커: {ticker}
+- findata 스크립트 경로 `${CLAUDE_PLUGIN_ROOT}/scripts/fdp_fundamentals.py` (미국 종목은 이것부터 — 없는 것만 웹)
 - 시장 가이드 참조 지시 (티커 형식에 따라 us/kr, 절대경로로)
 - 필수 수집 항목 전체 나열 (밸류에이션 11개, 분기별 재무, 연도별 추이, Peer 비교, 수급)
 
@@ -41,7 +42,7 @@ allowed-tools:
 **에이전트 프롬프트에 포함할 내용**:
 - Step 1에서 수집된 데이터 전체 (복사하여 전달)
 - 출력 파일 경로: {output-path}
-- 시장 가이드 참조 지시 (절대경로로)
+- 참고 파일 절대경로: 시장 가이드 · `chart-templates.md` · 해당 섹터 `sector-metrics-guide/references/*.md` (첫 턴에 병렬 Read)
 - 필수 산출물: 경쟁 분석, 어닝콜 Q&A, SWOT, 적정가, Plotly 차트
 
 **에이전트 산출물**: 완성된 종목분석 .md 파일
@@ -51,6 +52,8 @@ allowed-tools:
 ```
 1. stock-data-collector 호출:
    "Collect all quantitative data for {TICKER}.
+    First run: python3 ${CLAUDE_PLUGIN_ROOT}/scripts/fdp_fundamentals.py {TICKER} --peers {P1},{P2},{P3}
+    Copy its tables as-is; web-search only what its '### fdp 상태' lists, then record gaps.
     Read ${CLAUDE_PLUGIN_ROOT}/skills/stock-analysis-workflow/references/us-market-guide.md (or kr-market-guide.md).
     Return structured data including: valuation set (11 metrics),
     quarterly financials (5Q), valuation history (3-5Y),
@@ -65,7 +68,9 @@ allowed-tools:
     Write complete analysis to {output-path}.
     Include: competitive analysis, earnings call Q&A,
     SWOT, fair value estimation, Plotly charts (3+).
-    Read ${CLAUDE_PLUGIN_ROOT}/skills/stock-analysis-workflow/references/chart-templates.md for chart format."
+    In your first turn, Read in parallel: ${CLAUDE_PLUGIN_ROOT}/skills/stock-analysis-workflow/references/chart-templates.md,
+    the market guide, and ${CLAUDE_PLUGIN_ROOT}/skills/sector-metrics-guide/references/{sector}.md.
+    Do not re-search numbers already in the data. Write the document in one Write."
 ```
 
 ## Example Usage
