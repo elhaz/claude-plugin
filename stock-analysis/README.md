@@ -260,6 +260,10 @@ stock-analysis/
 
 ## Version History
 
+- **2.6.0** - 날짜별 분석 이력
+  - `scripts/analysis_history.py`: 덮어쓰기 전 판을 `종목분석/이력/{문서명}/{updated 날짜}.md` 로 보관(태그 `종목분석이력` 으로 바꿔 대시보드 중복 방지), 쓴 뒤 최신본 끝에 `## 이전 분석` 링크 목록. 테스트 포함
+  - analyze(기존 문서가 있을 때)·update 가 archive → 작성 → link 순서로 실행. classify 는 `이력/` 제외
+
 - **2.5.0** - findata 우선 수집 (claude-bridge #12, ADR 0003)
   - `scripts/fdp_fundamentals.py`: findata `GET /api/fundamentals` 원본(종목당 30~60KB)을 수집 양식 표 약 3.5KB 로 요약. P/S·FCF Yield·52주 범위·회계연도 말 배수는 계산해 붙임. 미수집 종목·경쟁사는 write 키로 수집 요청 후 재조회. `gap` 하위 명령으로 웹 보충 항목을 `data_gaps` 에 기록. 테스트 포함
   - `stock-data-collector`: Bash 추가, findata 먼저 → "웹으로 채울 것"만 검색 → 보충 항목 기록 (한국 종목은 기존대로 웹)

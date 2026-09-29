@@ -8,6 +8,7 @@ allowed-tools:
   - Edit
   - Glob
   - Grep
+  - Bash
   - WebSearch
   - WebFetch
   - Agent
@@ -30,6 +31,7 @@ allowed-tools:
    - `updated` 필드에서 마지막 분석 일자 확인
    - 기존 적정가, 핵심 지표 기록
 2. 시장 감지 (티커 형식)
+3. 아래 "이전 판 보관" 의 `archive` 실행 — 갱신 전 판을 이력으로 남긴다
 
 ### Step 1: Delta Data Collection (stock-data-collector, Sonnet)
 
@@ -61,6 +63,20 @@ allowed-tools:
   - SWOT 갱신 (신규 이벤트 반영)
   - 적정가 재산출 트리거 체크 (주가 15%+ 변동, 신규 실적)
   - 업데이트 이력 추가
+
+### Step 3: 이력 링크
+
+갱신이 끝나면 `link` 를 실행한다.
+
+### 이전 판 보관 (날짜별 이력)
+
+최신본은 제자리에 두고, 덮어쓰기 전 판을 `종목분석/이력/{문서명}/{updated 날짜}.md` 로 보관한다. 이력본은 태그가 `종목분석이력` 으로 바뀌어 대시보드에 겹쳐 뜨지 않는다.
+
+```bash
+H="${CLAUDE_PLUGIN_ROOT:-$(ls -d ~/.claude/plugins/cache/elhaz-plugins/stock-analysis/*/ | sort -V | tail -1)}"; H="${H%/}/scripts/analysis_history.py"
+python3 "$H" archive "{문서 경로}"    # 쓰기 전 — 문서가 없으면 아무것도 안 함
+python3 "$H" link "{문서 경로}"       # 쓰기 후 — 끝에 `## 이전 분석` 링크 목록
+```
 
 ### 적정가 재산출 트리거
 
