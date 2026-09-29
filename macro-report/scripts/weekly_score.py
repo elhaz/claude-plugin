@@ -185,7 +185,7 @@ def iter_judgments(data_root: Path):
 class FDP:
     def __init__(self, base: str | None = None):
         candidates = [base] if base else [
-            os.getenv("FDP_API_BASE"), "http://localhost:8000", "https://stock.xhhan.com",
+            os.getenv("FDP_API_BASE"), "http://localhost:8000", "https://findata.xhhan.com",
         ]
         self.base = None
         for c in filter(None, candidates):
