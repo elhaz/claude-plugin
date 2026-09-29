@@ -260,6 +260,11 @@ stock-analysis/
 
 ## Version History
 
+- **2.5.0** - findata 우선 수집 (claude-bridge #12, ADR 0003)
+  - `scripts/fdp_fundamentals.py`: findata `GET /api/fundamentals` 원본(종목당 30~60KB)을 수집 양식 표 약 3.5KB 로 요약. P/S·FCF Yield·52주 범위·회계연도 말 배수는 계산해 붙임. 미수집 종목·경쟁사는 write 키로 수집 요청 후 재조회. `gap` 하위 명령으로 웹 보충 항목을 `data_gaps` 에 기록. 테스트 포함
+  - `stock-data-collector`: Bash 추가, findata 먼저 → "웹으로 채울 것"만 검색 → 보충 항목 기록 (한국 종목은 기존대로 웹)
+  - `stock-analyst`: 참고 파일 첫 턴 병렬 Read(시장 가이드·차트·섹터 1개), 입력 수치 재검색 금지, 문서는 Write 한 번
+
 - **2.4.0** - 보유 분류 모드
   - `classify` 커맨드 + `stock-classifier` 에이전트(Sonnet): 보유 유형 판정·투자 사유 초안 노트
   - `scripts/reverse_dcf.py`: 역산 DCF 요구 성장률과 v2 판정(1.5배 + 5%p), 테스트 포함

@@ -20,6 +20,14 @@ tools:
 **입력**: stock-data-collector의 구조화된 데이터
 **출력**: 완성된 종목분석 마크다운 문서 (Plotly 차트 포함)
 
+## 도구 호출 줄이기
+
+비용은 도구 호출 횟수 × 컨텍스트 크기에 비례한다. 호출마다 지금까지의 대화 전체가 다시 들어간다.
+
+- **참고 파일은 첫 턴에 한 번에 병렬로 Read** 한다: 시장 가이드(us/kr) · `chart-templates.md` · 해당 섹터의 `sector-metrics-guide/references/*.md` 한 개. 그 밖의 참고 파일(`analysis-template.md`·`research-checklist.md`)은 읽지 않는다 — 문서 구조는 이 정의가 정본이다.
+- 입력 데이터에 있는 수치(밸류에이션·재무·Peer·컨센서스·내부자)는 다시 검색하지 않는다. 웹 검색은 Phase 1 의 정성 정보(어닝콜·경쟁 우위·경영진)만, 한 턴에 병렬로 낸다.
+- 문서는 **Write 한 번으로 완성**한다. 부분 Edit 을 이어 붙이거나 쓴 파일을 다시 Read 하지 않는다 (update 모드는 필요한 절만 Edit).
+
 ## 섹터 표기 규칙
 
 frontmatter `sector` 값은 반드시 아래 목록 중 하나를 사용한다 (한글 단일 표기, 영문 병기 금지):
