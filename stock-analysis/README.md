@@ -260,6 +260,10 @@ stock-analysis/
 
 ## Version History
 
+- **2.6.1** - findata 수집 요청에 실제 이유 (fdp #59 "추가 결정")
+  - `scripts/fdp_fundamentals.py`: `--reason` 추가. 수집 요청 reason 이 고정값 `stock-analysis` 대신 `종목 분석 GOOGL`·`업데이트 GOOGL · 경쟁사 비교` 처럼 목적 + 본 종목(+ 경쟁사 청크 표시). 없으면 `종목 데이터 수집 GOOGL`, 200자 제한. 테스트 포함
+  - analyze → `종목 분석`, update → `업데이트` 를 collector 에 넘기도록 지침 반영
+
 - **2.6.0** - 날짜별 분석 이력
   - `scripts/analysis_history.py`: 덮어쓰기 전 판을 `종목분석/이력/{문서명}/{updated 날짜}.md` 로 보관(태그 `종목분석이력` 으로 바꿔 대시보드 중복 방지), 쓴 뒤 최신본 끝에 `## 이전 분석` 링크 목록. 테스트 포함
   - analyze(기존 문서가 있을 때)·update 가 archive → 작성 → link 순서로 실행. classify 는 `이력/` 제외

@@ -6,7 +6,7 @@ fdp `GET /api/fundamentals/{ticker}` 원본은 종목당 30~60KB 라 에이전�
 없는 종목은 write 키가 있으면 `POST /api/collect/fundamentals` 로 수집시킨 뒤 다시 조회한다.
 
 사용:
-    python3 fdp_fundamentals.py GOOGL --peers MSFT,META,AMZN
+    python3 fdp_fundamentals.py GOOGL --peers MSFT,META,AMZN --reason "종목 분석"
     python3 fdp_fundamentals.py gap --ticker GOOGL --topic "equity short interest" --reason "공매도 비율 웹 보충"
 
 주소: --api-base → $FDP_API_BASE → http://localhost:8000(응답 시) → https://findata.xhhan.com
@@ -29,6 +29,8 @@ PUBLIC_BASE = "https://findata.xhhan.com"
 LOCAL_BASE = "http://localhost:8000"
 UA = "stock-analysis-fdp/1.0"   # Cloudflare 가 기본 UA 를 막는다
 REQUESTER = "stock-analysis:collector"
+DEFAULT_PURPOSE = "종목 데이터 수집"   # --reason 없을 때 (직접 실행 등)
+REASON_MAX = 200                      # fdp collect reason 칸 최대 길이
 
 # 수집 에이전트가 웹으로 채워야 하는 항목 — fdp 에 수집기가 없는 것
 WEB_ONLY = [
@@ -40,6 +42,18 @@ WEB_ONLY = [
     "Institutional 주요 변동",
     "업종 KPI (리츠 FFO/AFFO·BDC NAV·SaaS NRR 등, sector-metrics-guide)",
 ]
+
+
+def collect_reason(purpose: str | None, main: str, chunk: list[str]) -> str:
+    """fdp 수집 요청의 reason — 요청자는 API 키로 구분되니 '왜' 만 적는다.
+
+    예: "종목 분석 GOOGL", "업데이트 GOOGL · 경쟁사 비교". 목적에 티커가 이미 있으면 붙이지 않는다.
+    """
+    purpose = " ".join((purpose or "").split()) or DEFAULT_PURPOSE
+    text = purpose if main in purpose.upper().split() else f"{purpose} {main}"
+    if main not in chunk:
+        text += " · 경쟁사 비교"
+    return text[:REASON_MAX]
 
 
 # ---------- HTTP ----------
@@ -104,8 +118,11 @@ class Fdp:
         q = urllib.parse.urlencode(query)
         return _request(f"{self.base}{path}" + (f"?{q}" if q else ""), "POST", body, self.key, timeout=180)
 
-    def fundamentals(self, tickers: list[str], collect: bool = True) -> tuple[dict, list[str]]:
-        """{ticker: 응답}, 수집 트리거 메모. 404 는 키가 있으면 한 번에 수집 후 재조회."""
+    def fundamentals(self, tickers: list[str], collect: bool = True, purpose: str | None = None) -> tuple[dict, list[str]]:
+        """{ticker: 응답}, 수집 트리거 메모. 404 는 키가 있으면 한 번에 수집 후 재조회.
+
+        tickers[0] 이 본 종목, 나머지는 경쟁사. purpose 는 수집 요청 reason 의 앞머리.
+        """
         got, missing, notes = {}, [], []
         for t in tickers:
             status, body = self.get(f"/api/fundamentals/{t}", insider_days=180)
@@ -119,7 +136,8 @@ class Fdp:
             else:
                 for i in range(0, len(missing), 10):     # API 한 번에 최대 10개
                     chunk = missing[i:i + 10]
-                    status, _ = self.post("/api/collect/fundamentals", ticker=",".join(chunk), reason="stock-analysis")
+                    status, _ = self.post("/api/collect/fundamentals", ticker=",".join(chunk),
+                                          reason=collect_reason(purpose, tickers[0], chunk))
                     notes.append(f"수집 요청 {','.join(chunk)} → HTTP {status}")
                 for t in list(missing):
                     status, body = self.get(f"/api/fundamentals/{t}", insider_days=180)
@@ -426,6 +444,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("ticker")
     ap.add_argument("--peers", default="", help="쉼표 구분 경쟁사 티커 (최대 10)")
     ap.add_argument("--no-collect", action="store_true", help="없는 종목을 수집 요청하지 않는다")
+    ap.add_argument("--reason", default=None,
+                    help='수집 요청 이유(fdp 활동 기록의 "왜"). 예: "종목 분석", "업데이트". 티커는 자동으로 붙는다')
     ap.add_argument("--api-base", default=None)
     args = ap.parse_args(argv)
 
@@ -436,7 +456,7 @@ def main(argv: list[str] | None = None) -> int:
     fdp = Fdp(resolve_base(args.api_base))
     peers = [p.strip().upper() for p in args.peers.split(",") if p.strip() and p.strip().upper() != t][:10]
     try:
-        got, notes = fdp.fundamentals([t] + peers, collect=not args.no_collect)
+        got, notes = fdp.fundamentals([t] + peers, collect=not args.no_collect, purpose=args.reason)
     except (urllib.error.URLError, OSError) as e:
         print(f"## Data Collection: {t} (findata)\n\n- fdp 접속 실패({fdp.base}): {e} — 전 항목 웹 수집")
         return 2

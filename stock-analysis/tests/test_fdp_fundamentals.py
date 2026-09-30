@@ -61,6 +61,26 @@ class FdpFundamentalsTest(unittest.TestCase):
         self.assertIn("10b5-1 계획 매도 1건 $100", text)
         self.assertTrue(text.index("B $300") < text.index("A (CEO) $100"))
 
+    def test_collect_reason(self):
+        self.assertEqual(ff.collect_reason("종목 분석", "GOOGL", ["GOOGL", "MSFT"]), "종목 분석 GOOGL")
+        self.assertEqual(ff.collect_reason("업데이트", "GOOGL", ["MSFT"]), "업데이트 GOOGL · 경쟁사 비교")
+        self.assertEqual(ff.collect_reason("GOOGL 실적 점검", "GOOGL", ["GOOGL"]), "GOOGL 실적 점검")
+        self.assertEqual(ff.collect_reason(None, "GOOGL", ["GOOGL"]), "종목 데이터 수집 GOOGL")
+        self.assertEqual(ff.collect_reason("  ", "GOOGL", ["GOOGL"]), "종목 데이터 수집 GOOGL")
+        self.assertEqual(len(ff.collect_reason("가" * 300, "GOOGL", ["GOOGL"])), 200)
+
+    def test_fundamentals_sends_reason(self):
+        """네트워크 없이 get/post 를 가로채 reason 이 청크별로 실리는지 본다."""
+        fdp = ff.Fdp.__new__(ff.Fdp)
+        fdp.base, fdp.key = "http://x", "k"
+        posted = []
+        fdp.get = lambda path, **q: (404, None)
+        fdp.post = lambda path, body=None, **q: posted.append(q) or (202, None)
+        peers = [f"P{i}" for i in range(10)]
+        fdp.fundamentals(["GOOGL"] + peers, purpose="종목 분석")
+        self.assertEqual([q["reason"] for q in posted], ["종목 분석 GOOGL", "종목 분석 GOOGL · 경쟁사 비교"])
+        self.assertEqual(posted[1]["ticker"], "P9")
+
     def test_korean_ticker_goes_to_web(self):
         self.assertEqual(ff.main(["005930"]), 2)
 
