@@ -27,8 +27,10 @@ tools:
 
 ```bash
 S="${CLAUDE_PLUGIN_ROOT:-$(ls -d ~/.claude/plugins/cache/elhaz-plugins/stock-analysis/*/ | sort -V | tail -1)}"; S="${S%/}/scripts/fdp_fundamentals.py"
-python3 "$S" {TICKER} --peers {PEER1},{PEER2},{PEER3}    # Windows 는 python
+python3 "$S" {TICKER} --peers {PEER1},{PEER2},{PEER3} --reason "{이유}"    # Windows 는 python
 ```
+
+- `--reason`: findata 에 없는 종목을 수집 요청할 때 활동 기록의 "왜" 로 남는다. 오케스트레이터가 준 이유를 그대로 쓰고(예: analyze → `종목 분석`, update → `업데이트`), 없으면 `데이터 수집`. 티커는 스크립트가 붙이고, 경쟁사만 담긴 요청엔 `· 경쟁사 비교` 가 붙는다 (예: `종목 분석 GOOGL`, `종목 분석 GOOGL · 경쟁사 비교`). 요청자는 API 키로 구분되니 `stock-analysis` 같은 이름은 적지 않는다. 최대 200자
 
 - 출력은 아래 Output Format 과 같은 절 이름의 표다. **그 표는 그대로 옮기고** 같은 값을 웹에서 다시 찾지 않는다.
 - findata 에 없는 종목은 스크립트가 수집을 요청한 뒤 다시 조회한다(1~2분). 끝의 `### fdp 상태` 가 무엇이 비었고 무엇을 웹으로 채울지 알려 준다.

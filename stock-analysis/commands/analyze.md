@@ -35,6 +35,7 @@ allowed-tools:
 **에이전트 프롬프트에 포함할 내용**:
 - 티커: {ticker}
 - findata 스크립트 경로 `${CLAUDE_PLUGIN_ROOT}/scripts/fdp_fundamentals.py` (미국 종목은 이것부터 — 없는 것만 웹)
+- 수집 이유 `--reason "종목 분석"` (findata 활동 기록의 "왜". 사용자가 목적을 말했으면 그것을 짧게, 예: `"종목 분석 · 매수 검토"`)
 - 시장 가이드 참조 지시 (티커 형식에 따라 us/kr, 절대경로로)
 - 필수 수집 항목 전체 나열 (밸류에이션 11개, 분기별 재무, 연도별 추이, Peer 비교, 수급)
 
@@ -71,7 +72,7 @@ python3 "$H" link "{문서 경로}"       # 쓰기 후 — 끝에 `## 이전 분
 ```
 1. stock-data-collector 호출:
    "Collect all quantitative data for {TICKER}.
-    First run: python3 ${CLAUDE_PLUGIN_ROOT}/scripts/fdp_fundamentals.py {TICKER} --peers {P1},{P2},{P3}
+    First run: python3 ${CLAUDE_PLUGIN_ROOT}/scripts/fdp_fundamentals.py {TICKER} --peers {P1},{P2},{P3} --reason "종목 분석"
     Copy its tables as-is; web-search only what its '### fdp 상태' lists, then record gaps.
     Read ${CLAUDE_PLUGIN_ROOT}/skills/stock-analysis-workflow/references/us-market-guide.md (or kr-market-guide.md).
     Return structured data including: valuation set (11 metrics),
