@@ -19,7 +19,7 @@ allowed-tools:
 
 - **YYYY-MM-DD** (선택): 판단일. 기본 오늘
 - **--no-api**: scanner 에 `use_api=false` (`MACRO_SKIP_API=1` 과 같음)
-- **--api-base=URL**: 데이터 플랫폼 공개 주소 (기본 `$FDP_API_BASE` → `https://findata.xhhan.com`). scanner 의 WebFetch 용
+- **--api-base=URL**: 데이터 플랫폼 주소. 기본은 stock-analysis·채점과 같은 규칙 `$FDP_API_BASE` → `http://localhost:8000`(응답하면) → `https://findata.xhhan.com`. 헤드라인·갭 전송은 이 주소를, scanner(WebFetch)는 localhost 를 못 부르므로 내부 주소일 때 공개 주소를 쓴다
 - **`FDP_API_KEY` 또는 `FDP_REPORTER_API_KEY` env** (선택): 있으면 scanner 가 남긴 데이터 갭을 `POST /api/meta/data-gaps` 로 전송
 
 ## Step 0: 준비 (Bash 한 번)
@@ -35,11 +35,18 @@ REF="$P/skills/macro-report-workflow/references"
 mkdir -p "$DATA"
 # 지난주 데이터 디렉토리 = 오늘보다 앞선 날짜 중 가장 최근
 PREV=$(for d in "$OUT/데이터"/????-??-??/; do [ -d "$d" ] && basename "$d"; done | awk -v t="$TODAY" '$0 < t' | sort | tail -1)
-USE_API=true; API_BASE="${FDP_API_BASE:-https://findata.xhhan.com}"
+USE_API=true
 [ "${MACRO_SKIP_API:-0}" = "1" ] && USE_API=false
 case " $ARGUMENTS " in *" --no-api "*) USE_API=false ;; esac
-for tok in $ARGUMENTS; do case "$tok" in --api-base=*) API_BASE="${tok#--api-base=}" ;; esac; done
-echo "TODAY=$TODAY DATA=$DATA PREV=${PREV:-없음} P=$P use_api=$USE_API api_base=$API_BASE"
+# 주소 규칙 (stock-analysis·weekly_score 와 같음): --api-base → $FDP_API_BASE → localhost(응답하면) → 공개 주소
+PUBLIC_BASE="https://findata.xhhan.com"; FDP_BASE="${FDP_API_BASE:-}"
+for tok in $ARGUMENTS; do case "$tok" in --api-base=*) FDP_BASE="${tok#--api-base=}" ;; esac; done
+if [ -z "$FDP_BASE" ]; then
+  curl -fsS -m 2 -o /dev/null http://localhost:8000/api/health && FDP_BASE="http://localhost:8000" || FDP_BASE="$PUBLIC_BASE"
+fi
+# scanner 의 WebFetch 는 localhost·내부 호스트를 부르지 못한다 → 그때만 공개 주소
+case "$FDP_BASE" in *://localhost*|*://127.*|*://host.docker.internal*) API_BASE="$PUBLIC_BASE" ;; *) API_BASE="$FDP_BASE" ;; esac
+echo "TODAY=$TODAY DATA=$DATA PREV=${PREV:-없음} P=$P use_api=$USE_API fdp=$FDP_BASE scanner_api=$API_BASE"
 ```
 
 ## Step 1: 뉴스 헤드라인 (Bash)
@@ -48,7 +55,7 @@ echo "TODAY=$TODAY DATA=$DATA PREV=${PREV:-없음} P=$P use_api=$USE_API api_bas
 
 ```bash
 SINCE="${PREV:-$(date -d "$TODAY -7 day" '+%Y-%m-%d')}"
-python3 "$P/scripts/fetch_headlines.py" --since "$SINCE" --out "$DATA/뉴스헤드라인.md" \
+python3 "$P/scripts/fetch_headlines.py" --since "$SINCE" --out "$DATA/뉴스헤드라인.md" --api-base "$FDP_BASE" \
   || echo "헤드라인 실패 — outlook scanner 가 WebSearch 로 대신한다"
 ```
 
@@ -83,7 +90,7 @@ if [ -n "$KEY" ] && [ "$USE_API" = "true" ]; then
     while IFS= read -r line; do
       [ -z "$line" ] && continue
       printf '%s' "$line" > "$TMP_GAP"   # 한글 UTF-8 보존 (#5)
-      if curl -fsS -m 5 -X POST "$API_BASE/api/meta/data-gaps" -H "Content-Type: application/json" \
+      if curl -fsS -m 5 -X POST "$FDP_BASE/api/meta/data-gaps" -H "Content-Type: application/json" \
            -H "X-Client: macro-report" -H "X-API-Key: $KEY" --data-binary @"$TMP_GAP" >/dev/null 2>&1
       then posted=$((posted+1)); else failed=$((failed+1)); fi
     done < "$f"

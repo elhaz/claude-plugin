@@ -53,8 +53,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--since", required=True, help="이 날짜(UTC) 이후 발행분 — 보통 지난 판단일")
     ap.add_argument("--out", type=Path, required=True)
-    ap.add_argument("--api-base", default=os.getenv("FDP_INTERNAL_BASE", "http://localhost:8000"),
-                    help="내부망 주소여야 한다 (공개 주소는 403)")
+    ap.add_argument("--api-base", default=os.getenv("FDP_API_BASE") or "http://localhost:8000",
+                    help="기본 FDP_API_BASE → localhost. 내부망 주소여야 한다 (공개 주소는 403)")
     args = ap.parse_args()
 
     try:
