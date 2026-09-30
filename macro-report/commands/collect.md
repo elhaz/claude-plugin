@@ -84,7 +84,7 @@ if [ -n "$KEY" ] && [ "$USE_API" = "true" ]; then
       [ -z "$line" ] && continue
       printf '%s' "$line" > "$TMP_GAP"   # 한글 UTF-8 보존 (#5)
       if curl -fsS -m 5 -X POST "$API_BASE/api/meta/data-gaps" -H "Content-Type: application/json" \
-           -H "X-API-Key: $KEY" --data-binary @"$TMP_GAP" >/dev/null 2>&1
+           -H "X-Client: macro-report" -H "X-API-Key: $KEY" --data-binary @"$TMP_GAP" >/dev/null 2>&1
       then posted=$((posted+1)); else failed=$((failed+1)); fi
     done < "$f"
   done

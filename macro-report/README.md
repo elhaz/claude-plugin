@@ -70,6 +70,7 @@
 
 ## Version History
 
+- **2.0.3** (2026-09-30): collect 의 데이터 갭 전송에 `X-Client: macro-report` 헤더 — fdp 사용량 집계(`/api/meta/usage`)에 `curl` 대신 이름으로 남는다.
 - **2.0.2** (2026-09-30): 데이터 플랫폼 공개 주소 기본값을 `stock.xhhan.com` → `findata.xhhan.com` 으로 이전 (fdp ADR 0004, claude-bridge #14). 대상: collect `--api-base`, scanner `api_base_url`, `weekly_score.py` 대체 주소.
 - **2.0.0** (2026-09-28): 전면 개편 — 과거 데이터 요약 + 종목 추천(v1)을 **뉴스 기반 1·3·6개월 예측 + 채점**으로 교체. 개별 보고서 5종·종합·쉬운말 6종 → 데이터 파일 5종 + 판단 파일 + 주간 보고 1개. 애널리스트 목표가 보고서 제거, 뉴스·전망(`outlook`) 신설. 판단 파일 JSON 을 예측 원장으로 쓰고 `weekly_score.py` 가 매주 채점. 커맨드 `generate`/`report`/`synthesize`/`plain`/`backtest` 를 `collect`/`weekly` 로 교체 (v1 은 태그 `macro-report-v1.7.0`). 데이터 갭 전송 키에 `FDP_REPORTER_API_KEY` 대체 추가. 첫 실행(2026-09-28) 에이전트 토큰 547만 — v1(09-21) 2,102만 대비 약 74% 감소.
 - **1.7.0** (2026-09-20): `OBSIDIAN_VAULT` 환경변수 지원.
