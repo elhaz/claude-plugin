@@ -260,6 +260,7 @@ stock-analysis/
 
 ## Version History
 
+- **2.6.2** - 분석·갱신 후 데일리로그 개인 칸에 링크 한 줄 (NAS 만)
 - **2.6.1** - findata 수집 요청에 실제 이유 (fdp #59 "추가 결정")
   - `scripts/fdp_fundamentals.py`: `--reason` 추가. 수집 요청 reason 이 고정값 `stock-analysis` 대신 `종목 분석 GOOGL`·`업데이트 GOOGL · 경쟁사 비교` 처럼 목적 + 본 종목(+ 경쟁사 청크 표시). 없으면 `종목 데이터 수집 GOOGL`, 200자 제한. 테스트 포함
   - analyze → `종목 분석`, update → `업데이트` 를 collector 에 넘기도록 지침 반영

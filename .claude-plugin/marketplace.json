@@ -21,7 +21,7 @@
       "name": "stock-analysis",
       "source": "./stock-analysis",
       "description": "주식 종목분석 워크플로우 자동화 플러그인 - 2-Agent 파이프라인(수집 Sonnet + 분석 세션 모델), 다국가 지원(미국/한국), 밸류에이션 적정가 산출, Plotly 차트, frontmatter 현재가/적정가/섹터 규칙, 보유 유형 분류 모드(classify), findata 우선 수집, 날짜별 분석 이력",
-      "version": "2.6.1",
+      "version": "2.6.2",
       "keywords": ["stock", "investment", "analysis", "finance", "research"],
       "license": "MIT"
     },
