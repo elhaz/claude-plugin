@@ -69,6 +69,7 @@
 
 ## Version History
 
+- **2.1.1** (2026-10-06): 공매도 잔고·일별 공매도 비율은 fdp `/api/short/{ticker}` (fdp #161) — scanner 경로 표·insider 템플릿.
 - **2.1.0** (2026-10-06): fdp 에 있는 데이터를 웹으로 찾지 않게 — scanner 에 자주 놓치던 항목의 fdp 경로 표(FOMC·지표 발표일·GDPNow·FedWatch·마진 부채·기간 수익률/YTD·상관계수·워치리스트 내부자)를 두고, 수익률·상관은 계산 API(`/api/analysis/returns`·`correlations`, fdp #157)로만 구한다. insider 도 B 모드(워치리스트는 fdp, 시장 전체 상위 15 는 웹). 질문 템플릿 5종에 `fdp:` 출처 힌트. FRED 19→40종 등 낡은 수치 정정.
 - **2.0.4** (2026-09-30): 데이터 플랫폼 주소 규칙을 하나로 — collect·헤드라인·채점·갭 전송 모두 `--api-base` → `FDP_API_BASE` → localhost(응답하면) → 공개 주소. `FDP_INTERNAL_BASE` 제거. 갭 전송이 NAS 에서 localhost 로 간다. scanner 만 WebFetch 제약으로 내부 주소일 때 공개 주소.
 - **2.0.3** (2026-09-30): collect 의 데이터 갭 전송에 `X-Client: macro-report` 헤더 — fdp 사용량 집계(`/api/meta/usage`)에 `curl` 대신 이름으로 남는다.
