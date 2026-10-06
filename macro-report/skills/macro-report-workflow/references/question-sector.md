@@ -1,6 +1,8 @@
 # 시장 주도 업종 분석 — 질문 템플릿
 
 > macro-scanner에게 전달되는 데이터 수집 가이드
+> `fdp:` 는 데이터 플랫폼에 있는 심볼·경로 — 웹보다 먼저 쓴다 (경로 표는 `agents/macro-scanner.md`)
+> 자금 흐름(유입·유출)·공매도·옵션은 fdp 에 없다 (웹). **가격·YTD 성과는 fdp** `/api/analysis/returns` (SCHD 만 없음)
 
 ## 수집 범위
 
