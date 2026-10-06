@@ -14,9 +14,10 @@
 | 출처 | 받는 법 | 쓰는 법 |
 |---|---|---|
 | **뉴스 헤드라인 파일** (`headlines_path`) | 오케스트레이터가 미리 만든 파일을 Read | 연합뉴스(경제·마켓·국제)·CNBC(Top·Economy)·연준 보도자료 RSS 를 데이터 플랫폼이 3시간마다 누적한 것에서 거시 관련만 거른 표. **사건 후보의 1차 목록** |
-| FOMC 일정 | WebFetch `https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm` | 다음 회의 2건만 |
+| FOMC 일정 | WebFetch `{api_base_url}/api/calendar/fomc?start_date={현재일}` | 다음 회의 2건만 |
+| 지표 발표일 | WebFetch `{api_base_url}/api/calendar/releases?symbols=CPIAUCSL,PAYEMS,PCEPI,GDP&start_date={현재일}&end_date={현재일+60일}` | CPI·고용·PCE·GDP 다음 1회씩 |
 | 시장 내재 기대치 | WebFetch `{api_base_url}/api/fed-expectations/latest` | FOMC 회의별 인상/동결/인하 확률 |
-| WebSearch | — | 추린 사건의 사실 확인·보충, 경제지표 발표 일정 |
+| WebSearch | — | 추린 사건의 사실 확인·보충, fdp 에 없는 일정(무역 기한·선거·실적 등) |
 
 - RSS 를 직접 WebFetch 하지 않는다 — WebFetch 는 연합뉴스에 접속하지 못하고, 헤드라인 조회 API 는 내부망 전용이다
 - 헤드라인 파일이 없거나 비었으면 WebSearch 로 "이번 주 주요 경제 뉴스" 류를 찾아 대신하고, 수집 메타에 `headlines_missing: true` 를 적는다

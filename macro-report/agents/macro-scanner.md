@@ -38,11 +38,9 @@ tools:
 mode = "B"   # 신규 경로 (capabilities 우선)
 if use_api is False:
     mode = "A"   # 기존 경로 (WebSearch-only)
-
-# 내부자 매매는 데이터 플랫폼 커버리지가 watchlist 3종목뿐이라 capabilities 흡수 비용만 든다.
-if mode == "B" and report_type == "insider":
-    mode = "A"
 ```
+
+`insider` 도 B 모드로 간다 — 워치리스트 종목(약 75개)의 Form 4·10b5-1 은 데이터 플랫폼에 있고, 시장 전체 매수 상위 15 같은 워치리스트 밖 항목만 WebSearch 로 채운다.
 
 A 모드면 Phase 0.5 를 **건너뛰고** Phase 1 로 진입한다. B 모드면 Phase 0.5 를 수행한다.
 
@@ -52,8 +50,8 @@ financial-data-platform 의 디스커버리 응답 3건을 사전에 받아 메�
 
 ```
 [a] WebFetch GET {api_base_url}/api/meta/capabilities    # text/markdown ~3KB
-[b] WebFetch GET {api_base_url}/api/meta/symbols          # JSON ~4.5KB (한국어 name 포함)
-[c] WebFetch GET {api_base_url}/api/indicators/latest     # JSON ~2.5KB (FRED 19종 최신값)
+[b] WebFetch GET {api_base_url}/api/meta/symbols          # JSON ~30KB (한국어 name 포함)
+[c] WebFetch GET {api_base_url}/api/indicators/latest     # JSON ~4.5KB (FRED 40종 최신값)
 ```
 
 **자동 degrade**: 위 3건 중 [a] 가 5xx/타임아웃이면 신규 경로 포기 → A 모드로 전환. `degrade_reason` 을 메타에 기록한다 (예: `"fdp-api unreachable (HTTP 503)"`). [b]/[c] 만 실패한 경우는 메모리에 비어 있는 상태로 진행하되 항목 매칭이 줄어들 뿐 정상 동작.
@@ -61,7 +59,7 @@ financial-data-platform 의 디스커버리 응답 3건을 사전에 받아 메�
 **메모리 보유 데이터**:
 - `available_paths`: capabilities 본문에서 추출한 엔드포인트 path 목록. `/api/analysis/liquidity-snapshot`, `/api/analysis/yield-curve` 같은 편의 분석 엔드포인트 포함.
 - `symbols`: `name` ↔ `symbol` ↔ `category/subcategory` 매핑. 한국어 항목명("M2 통화량") → symbol("M2SL") 1차 매칭에 활용.
-- `latest_values`: FRED 19종 최신값 일괄. 단순 스냅샷 항목 다수가 추가 호출 없이 이 응답만으로 커버됨.
+- `latest_values`: FRED 40종 최신값 일괄. 단순 스냅샷 항목 다수가 추가 호출 없이 이 응답만으로 커버됨.
 
 ### Phase 1: 지난 데이터 파일 로드 (previous_data_path가 있는 경우)
 
@@ -89,7 +87,21 @@ question_template_path를 Read하여 수집 항목 목록을 파악한다.
 
 #### B 모드 — 동적 매칭 우선
 
-> **사전 매핑 금지 원칙**: "M2 항목은 `/api/analysis/liquidity-snapshot.m2`" 같은 정적 매핑을 프롬프트나 메모리에 박지 말 것. 매 실행마다 Phase 0.5 응답을 보고 결정한다. financial-data-platform 에 새 엔드포인트가 추가되면 다음 실행부터 자동 사용된다.
+> **동적 매칭이 기본**: 항목 ↔ 경로를 매 실행마다 Phase 0.5 응답으로 정한다. financial-data-platform 에 새 엔드포인트가 추가되면 다음 실행부터 자동 사용된다. 단, 이름만으로는 잘 안 잡혀 **웹으로 새던 항목**은 아래 표를 먼저 본다 (표에 없는 항목은 정적 매핑을 새로 박지 말 것).
+
+| 항목 | fdp 경로 |
+|---|---|
+| FOMC 회의일 | `/api/calendar/fomc?start_date={오늘}` |
+| CPI·고용·PCE·GDP·소비자심리 발표일 | `/api/calendar/releases?symbols=CPIAUCSL,PAYEMS,PCEPI,GDP,UMCSENT` (기본 ±30일) |
+| GDPNow | `/api/fed/overview?fedwatch_days=1&margin_years=1` 의 `gdpnow` (`/api/indicators/GDPNOW` 는 없음, 404) |
+| FedWatch (회의별 확률) | `/api/fed-expectations/latest` |
+| 마진 부채 (FINRA) | `/api/margin-debt/recent?months=13` |
+| 기간 수익률·YTD (가격·FRED) | `/api/analysis/returns?symbols=SPY,DGS10&periods=1w,1m,ytd,1y` |
+| 상관계수 | `/api/analysis/correlations?symbols=SPY,TLT,DGS10&windows=30,60` |
+| 내부자 매매 (워치리스트) | 종목 목록 `/api/watchlist` → 요약 `/api/insider/{ticker}/summary?days=30`, 건별·10b5-1 `/api/fundamentals/{ticker}?statements=&insider_days=30` |
+
+- **수익률·YTD·상관계수는 웹 검색 금지** — 심볼이 `symbols`·`latest_values` 에 있으면 위 계산 API 로 구한다. 응답 `missing` 에 든 심볼만 WebSearch.
+- returns 의 FRED 값(`k: fred`)은 % 변화가 아니라 수준 차이(%p). correlations 는 같은 날짜로 맞춘 일간 변화의 상관이며 표본이 모자라면 `null`.
 
 각 항목에 대해 다음 순서로 매칭한다:
 
@@ -166,6 +178,7 @@ scan_data 형식:
 ## 보고서 유형별 핵심 수집 항목
 
 ### insider (내부자 매매)
+- 워치리스트 종목은 fdp (`/api/insider/{ticker}/summary`, 건별·10b5-1 은 `/api/fundamentals/{ticker}?statements=&insider_days=30`). 시장 전체 상위 15·공매도·소송 등 워치리스트 밖은 WebSearch
 - SEC Form 4 기반 매수 상위 15개 종목 (금액, 임원, 직책, 날짜)
 - 10b5-1 vs 재량매수 구분
 - 공매도 비율 변화

@@ -1,11 +1,13 @@
 # 내부자 매매 동향 — 질문 템플릿
 
 > macro-scanner에게 전달되는 데이터 수집 가이드
+> `fdp:` 는 데이터 플랫폼에 있는 심볼·경로 — 웹보다 먼저 쓴다 (경로 표는 `agents/macro-scanner.md`)
 
 ## 수집 범위
 
 - 기간: 현재일 기준 최근 1개월
 - 대상: 미국 상장회사 SEC Form 4 공시
+- 워치리스트 종목(`/api/watchlist`)은 fdp — 요약 `/api/insider/{ticker}/summary?days=30`, 건별·10b5-1 `/api/fundamentals/{ticker}?statements=&insider_days=30`. 시장 전체 매수 상위 15·공매도·소송·목표가는 웹
 
 ## 수집 항목 (13개)
 
