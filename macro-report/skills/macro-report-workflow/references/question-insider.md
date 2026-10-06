@@ -7,7 +7,7 @@
 
 - 기간: 현재일 기준 최근 1개월
 - 대상: 미국 상장회사 SEC Form 4 공시
-- 워치리스트 종목(`/api/watchlist`)은 fdp — 요약 `/api/insider/{ticker}/summary?days=30`, 건별·10b5-1 `/api/fundamentals/{ticker}?statements=&insider_days=30`. 시장 전체 매수 상위 15·공매도·소송·목표가는 웹
+- 워치리스트 종목(`/api/watchlist`)은 fdp — 요약 `/api/insider/{ticker}/summary?days=30`, 건별·10b5-1 `/api/fundamentals/{ticker}?statements=&insider_days=30`. 공매도 `/api/short/{ticker}`. 시장 전체 매수 상위 15·소송·목표가는 웹
 
 ## 수집 항목 (13개)
 

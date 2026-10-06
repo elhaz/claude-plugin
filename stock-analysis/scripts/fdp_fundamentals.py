@@ -35,7 +35,7 @@ REASON_MAX = 200                      # fdp collect reason 칸 최대 길이
 # 수집 에이전트가 웹으로 채워야 하는 항목 — fdp 에 수집기가 없는 것
 WEB_ONLY = [
     "Business Model / Revenue Breakdown (세그먼트·지역)",
-    "Short Interest (Short Float %, Days to Cover)",
+    "Short Float % (유동주식 기준 — fdp 는 잔고·Days to Cover·발행주식 대비만)",
     "Analyst 최근 목표가 변동 · Buy/Hold/Sell 수",
     "Non-GAAP EPS (회사가 발표하는 경우)",
     "Recent Events (실적 헤드라인·가이던스·뉴스)",
@@ -248,6 +248,27 @@ def valuation_history(fund: dict, prices: list[tuple[str, float]]) -> list[tuple
     return out
 
 
+def short_summary(fund: dict, shares: float | None) -> list[str]:
+    """FINRA 공매도 잔고(월 2회)·일별 공매도 거래량 비율 (fdp #161)."""
+    sh = fund.get("short") or {}
+    rows = (sh.get("interest") or {}).get("data") or []
+    if not rows:
+        return ["- fdp 공매도 데이터 없음"]
+    cols = sh["interest"]["columns"]
+    ix = {c: i for i, c in enumerate(cols)}
+    last = rows[-1]
+    si = last[ix["short_interest"]]
+    lines = [f"- 잔고 {last[ix['date']]} 결제일: {money(si, '')}주 (직전 대비 {num(last[ix['change_pct']], 2, '%')}) · "
+             f"Days to Cover {num(last[ix['days_to_cover']])} · 평균 거래량 {money(last[ix['avg_daily_volume']], '')}주"
+             + (f" · 발행주식 대비 {pct(div(si, shares))}" if shares else "")]
+    if len(rows) > 1:
+        lines.append("- 이전: " + " · ".join(f"{r[ix['date']]} {money(r[ix['short_interest']], '')}주" for r in rows[:-1]))
+    if sh.get("ratio_5d") is not None:
+        lines.append(f"- 일별 공매도 거래량 비율 최근 {sh.get('ratio_days')}일 평균 {pct(sh['ratio_5d'])} "
+                     f"({sh.get('ratio_as_of')}까지, FINRA 장외 보고분 기준 — 거래소 전체 아님)")
+    return lines
+
+
 def insider_summary(fund: dict) -> list[str]:
     ins = fund.get("insider") or {}
     cols, rows = ins.get("columns") or [], ins.get("data") or []
@@ -401,6 +422,7 @@ def render(t: str, f: dict, peers: dict, fdp: Fdp, notes: list[str]) -> str:
               f"현재가 대비 {pct(div((c.get('target_consensus') or 0) - (price or 0), price))}", ""]
 
     L += ["### Insider (SEC Form 4)"] + insider_summary(f) + [""]
+    L += ["### Short Interest (FINRA)"] + short_summary(f, div(mcap, price)) + [""]
 
     missing = f.get("missing") or []
     L += ["### fdp 상태"]

@@ -102,7 +102,7 @@ findata 가 없을 때(종료 코드 2) 쓰는 검색 목록:
 **수급/센티먼트**:
 - 애널리스트: Buy/Hold/Sell 수, 평균 목표가, 최근 변동
 - 내부자: 최근 6개월 매수/매도 패턴
-- 공매도: Short Float %, Days to Cover
+- 공매도: 잔고·Days to Cover 는 findata 표(Short Interest) 그대로. 웹은 Short Float % 만
 - (한국) 외국인/기관 순매수 동향
 
 **최근 이벤트**: 최근 실적 헤드라인, 가이던스, 주요 뉴스 3~5개 (판단 없이 사실만)
@@ -113,7 +113,7 @@ findata 에 수집기가 없어 웹으로 채운 정형 항목은 fdp `data_gaps
 
 ```bash
 S="{Phase 0 에서 쓴 스크립트 절대경로}"    # 셸 변수는 Bash 호출 사이에 유지되지 않는다
-python3 "$S" gap --ticker {TICKER} --topic "equity short interest" --reason "Short Float·Days to Cover 웹 보충"
+python3 "$S" gap --ticker {TICKER} --topic "equity short interest" --reason "Short Float % 웹 보충"
 python3 "$S" gap --ticker {TICKER} --topic "equity revenue segments" --reason "세그먼트·지역 매출 웹 보충"
 ```
 
@@ -121,7 +121,7 @@ topic 은 아래 문자열만 쓴다 (같은 주제가 같은 문자열로 모�
 
 | topic | 언제 |
 |-------|------|
-| `equity short interest` | 공매도 비율·Days to Cover 를 웹으로 채움 |
+| `equity short interest` | Short Float % 를 웹으로 채움 (findata 에 공매도 데이터가 없는 종목은 잔고·Days to Cover 도) |
 | `equity revenue segments` | 세그먼트·지역 매출 |
 | `equity analyst rating changes` | 목표가 변동·Buy/Hold/Sell 수 |
 | `equity non-gaap eps` | Non-GAAP EPS |

@@ -1,7 +1,7 @@
 ---
 name: Macro Report Workflow
 description: This skill should be used when the user asks to "generate macro report", "weekly macro report", "run macro analysis", "거시경제 분석", "거시경제 주간 보고", "시장 전망", "1·3·6개월 전망", "예측 채점", "지난 예측 성적", "판단 파일", "뉴스 헤드라인 수집", "쉬운말 보고서", "시장 환경 분석", "유동성 분석", "크로스에셋 분석"
-version: 2.1.0
+version: 2.1.1
 ---
 
 # 거시경제 주간 보고 워크플로우 (v2)

@@ -98,6 +98,7 @@ question_template_path를 Read하여 수집 항목 목록을 파악한다.
 | 마진 부채 (FINRA) | `/api/margin-debt/recent?months=13` |
 | 기간 수익률·YTD (가격·FRED) | `/api/analysis/returns?symbols=SPY,DGS10&periods=1w,1m,ytd,1y` |
 | 상관계수 | `/api/analysis/correlations?symbols=SPY,TLT,DGS10&windows=30,60` |
+| 공매도 잔고·일별 공매도 비율 (워치리스트·주요 ETF) | `/api/short/{ticker}?interest_limit=3&volume_days=5` — 비율은 FINRA 장외 보고분 기준 |
 | 내부자 매매 (워치리스트) | 종목 목록 `/api/watchlist` → 요약 `/api/insider/{ticker}/summary?days=30`, 건별·10b5-1 `/api/fundamentals/{ticker}?statements=&insider_days=30` |
 
 - **수익률·YTD·상관계수는 웹 검색 금지** — 심볼이 `symbols`·`latest_values` 에 있으면 위 계산 API 로 구한다. 응답 `missing` 에 든 심볼만 WebSearch.
@@ -178,7 +179,7 @@ scan_data 형식:
 ## 보고서 유형별 핵심 수집 항목
 
 ### insider (내부자 매매)
-- 워치리스트 종목은 fdp (`/api/insider/{ticker}/summary`, 건별·10b5-1 은 `/api/fundamentals/{ticker}?statements=&insider_days=30`). 시장 전체 상위 15·공매도·소송 등 워치리스트 밖은 WebSearch
+- 워치리스트 종목은 fdp (`/api/insider/{ticker}/summary`, 건별·10b5-1 은 `/api/fundamentals/{ticker}?statements=&insider_days=30`). 공매도는 `/api/short/{ticker}`. 시장 전체 상위 15·소송 등 워치리스트 밖은 WebSearch
 - SEC Form 4 기반 매수 상위 15개 종목 (금액, 임원, 직책, 날짜)
 - 10b5-1 vs 재량매수 구분
 - 공매도 비율 변화
