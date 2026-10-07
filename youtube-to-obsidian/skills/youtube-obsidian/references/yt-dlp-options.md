@@ -1,5 +1,8 @@
 # yt-dlp 자막 다운로드 옵션 상세 가이드
 
+> [!note] 옵션 참고용 문서
+> 실제 작업 절차는 `commands/youtube-extract.md` 가 단일 출처다. 아래 예시의 `--sub-lang ko`·`00_Inbox/` 출력 경로는 옵션 설명용이며, 한국어 영상은 원본 자동자막 `ko-orig` 를 받는다 (`ko` 는 번역 트랙).
+
 ## 설치 방법
 
 ### Windows
