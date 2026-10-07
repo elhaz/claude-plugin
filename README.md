@@ -6,14 +6,14 @@
 
 | 플러그인 | 버전 | 설명 | 구성 |
 |---------|------|------|------|
-| [youtube-to-obsidian](./youtube-to-obsidian/) | 1.2.0 | YouTube 자막을 Obsidian 스타일 마크다운으로 변환, 핵심 장면 이미지 추출 | commands, skills, scripts |
+| [youtube-to-obsidian](./youtube-to-obsidian/) | 1.4.0 | YouTube 자막을 Obsidian 스타일 마크다운으로 변환, 핵심 장면 이미지 추출 | commands, skills, scripts |
 | [stock-analysis](./stock-analysis/) | 2.7.0 | 주식 종목분석 자동화 (2-Agent 파이프라인 Sonnet+Opus, findata 우선 수집, 날짜별 이력, 다국가, 밸류에이션, Plotly 차트) | commands, skills, agents |
 | [macro-report](./macro-report/) | 2.1.1 | 거시경제 주간 보고 (뉴스 기반 1·3·6개월 ETF·거시 예측 + 판단 파일 예측 원장 + 매주 자동 채점 + 쉬운말 보고 1개) | commands, skills, agents, scripts |
 | [dailylog](./dailylog/) | 0.3.0 | Obsidian 데일리로그 관리 (날짜별 읽기, 항목 추가, 통계 요약) | commands, skills, scripts |
 | [nanobanana](./nanobanana/) | 2.0.0 | Gemini AI 이미지 생성/편집 (Nano Banana 2 / Pro) | commands, skills |
 | [openai-image](./openai-image/) | 1.3.0 | OpenAI 이미지 생성/편집 (hq=gpt-image-1.5 인증불필요 / fast=gpt-image-1-mini / v2=gpt-image-2 인증필요, 마스크 편집, 투명 배경, prompt-rewriter 에이전트, 기본 webp) | commands, skills, agents |
 
-마켓플레이스 메타데이터: `.claude-plugin/marketplace.json` (현재 v1.14.0)
+마켓플레이스 메타데이터: `.claude-plugin/marketplace.json` (현재 v1.15.0)
 
 ## 설치 방법
 
@@ -47,7 +47,7 @@ source 레포에서 수정한 후 즉시 반영하려면:
 |------|---------------|------|
 | `FDP_API_BASE` | macro-report, stock-analysis | findata(fdp) 주소. 미설정 시 `http://localhost:8000`(응답하면) → `https://findata.xhhan.com` |
 | `FDP_API_KEY` / `FDP_REPORTER_API_KEY` | macro-report, stock-analysis | (선택) fdp write 키 — 데이터 갭 기록, stock-analysis 는 미수집 종목 수집 요청에도 사용 |
-| `OBSIDIAN_VAULT` | dailylog, macro-report, stock-analysis | Obsidian Vault 루트 절대경로. 설정하면 어떤 작업 디렉토리에서 실행해도 Vault 기준으로 읽고 쓴다. 미설정 시 현재 작업 디렉토리를 Vault 루트로 간주(기존 동작). |
+| `OBSIDIAN_VAULT` | dailylog, macro-report, stock-analysis, youtube-to-obsidian | Obsidian Vault 루트 절대경로. 설정하면 어떤 작업 디렉토리에서 실행해도 Vault 기준으로 읽고 쓴다. 미설정 시 현재 작업 디렉토리를 Vault 루트로 간주(기존 동작). |
 
 Claude Code `settings.json` 의 `env` 블록에 넣어두면 세션과 서브에이전트 모두에 상속된다:
 
