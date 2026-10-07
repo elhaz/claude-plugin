@@ -211,14 +211,14 @@ def format_timestamp(timestamp):
 
 def extract_video_info(vtt_filename):
     """VTT 파일명에서 비디오 정보 추출"""
-    # 파일명 패턴: "제목 [VIDEO_ID].ko.vtt" 또는 "제목 [VIDEO_ID].en.vtt"
-    match = re.search(r'\[([^\]]+)\]\.(ko|en)\.vtt$', vtt_filename)
+    # 파일명 패턴: "제목 [VIDEO_ID].ko.vtt", ".ko-orig.vtt"(한국어 원본 자동자막), ".en.vtt", ".en-orig.vtt"
+    match = re.search(r'\[([^\]]+)\]\.(ko|en)(?:-orig)?\.vtt$', vtt_filename)
     if match:
         video_id = match.group(1)
         lang = match.group(2)
         video_url = f"https://www.youtube.com/watch?v={video_id}"
         # 제목 추출
-        title = re.sub(r'\s*\[([^\]]+)\]\.(ko|en)\.vtt$', '', vtt_filename)
+        title = re.sub(r'\s*\[([^\]]+)\]\.(ko|en)(?:-orig)?\.vtt$', '', vtt_filename)
         return video_url, title, lang
     else:
         return None, vtt_filename.replace('.vtt', ''), 'unknown'

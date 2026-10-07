@@ -6,14 +6,14 @@
 
 | 플러그인 | 버전 | 설명 | 구성 |
 |---------|------|------|------|
-| [youtube-to-obsidian](./youtube-to-obsidian/) | 1.4.0 | YouTube 자막을 Obsidian 스타일 마크다운으로 변환, 핵심 장면 이미지 추출 | commands, skills, scripts |
+| [youtube-to-obsidian](./youtube-to-obsidian/) | 1.4.1 | YouTube 자막을 Obsidian 스타일 마크다운으로 변환, 핵심 장면 이미지 추출 | commands, skills, scripts |
 | [stock-analysis](./stock-analysis/) | 2.7.0 | 주식 종목분석 자동화 (2-Agent 파이프라인 Sonnet+Opus, findata 우선 수집, 날짜별 이력, 다국가, 밸류에이션, Plotly 차트) | commands, skills, agents |
 | [macro-report](./macro-report/) | 2.1.1 | 거시경제 주간 보고 (뉴스 기반 1·3·6개월 ETF·거시 예측 + 판단 파일 예측 원장 + 매주 자동 채점 + 쉬운말 보고 1개) | commands, skills, agents, scripts |
 | [dailylog](./dailylog/) | 0.3.0 | Obsidian 데일리로그 관리 (날짜별 읽기, 항목 추가, 통계 요약) | commands, skills, scripts |
 | [nanobanana](./nanobanana/) | 2.0.0 | Gemini AI 이미지 생성/편집 (Nano Banana 2 / Pro) | commands, skills |
 | [openai-image](./openai-image/) | 1.3.0 | OpenAI 이미지 생성/편집 (hq=gpt-image-1.5 인증불필요 / fast=gpt-image-1-mini / v2=gpt-image-2 인증필요, 마스크 편집, 투명 배경, prompt-rewriter 에이전트, 기본 webp) | commands, skills, agents |
 
-마켓플레이스 메타데이터: `.claude-plugin/marketplace.json` (현재 v1.15.0)
+마켓플레이스 메타데이터: `.claude-plugin/marketplace.json` (현재 v1.15.1)
 
 ## 설치 방법
 
