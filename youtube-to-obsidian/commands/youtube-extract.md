@@ -239,6 +239,7 @@ PYTHONIOENCODING=utf-8 uv run "$SCRIPT_PATH" "$VTT_FILE" --delete-vtt
 - **단계별 프로세스**: 순서도나 흐름이 있는 설명
 - **비교 대조**: 두 개념을 나란히 비교하는 부분 (예: 고전 비트 vs 큐비트)
 - **수치/데이터 시각화**: 통계, 그래프, 표가 언급되는 부분
+- **변하는 과정 자체가 핵심인 애니메이션**: 선이 펴지며 원이 되는 장면, 단계별로 쌓이는 도식처럼 한 장으로는 "어떻게 바뀌는지"가 안 보이는 부분 → 한 장 대신 **연속 프레임**으로 뽑는다 (6.8.5 참조)
 
 > [!important] 판단 원칙
 > 모든 장면을 추출하는 것이 아니라, **텍스트만으로 이해가 어렵고 이미지가 있으면 이해에 도움이 되는 장면**만 선별한다.
@@ -285,7 +286,9 @@ ffmpeg -ss $((T-5)) -t 10 -i "$WORK_DIR/video.mp4" \
 ffmpeg -ss <SECONDS> -i "$WORK_DIR/video.mp4" -frames:v 1 -q:v 2 -update 1 "$WORK_DIR/<filename>.jpg" -y
 ```
 
-파일명 규칙: `<video_id>_<index>_<seconds>s.jpg`
+연속 프레임은 변화 구간을 0.5초 간격으로 먼저 훑어 보고(Read 로 확인), 변화가 잘 보이는 4~6장을 고른다. 각각 지정 시각 프레임으로 뽑는다.
+
+파일명 규칙: `<video_id>_<index>_<seconds>s.jpg` (연속 프레임은 소수 초 허용: `kSjySvJMdFo_05_12.5s.jpg`)
 예시: `kSjySvJMdFo_01_10s.jpg`, `kSjySvJMdFo_02_100s.jpg`
 
 ##### 6.8.4 이미지를 첨부파일 폴더로 이동
@@ -302,6 +305,13 @@ mv "$WORK_DIR"/*.jpg "$V/05_Attachments/첨부파일/"
 ```markdown
 ![[kSjySvJMdFo_01_10s.jpg]]
 *[0:10](https://youtu.be/kSjySvJMdFo?t=10) - 미로에 물을 붓는 비유*
+```
+
+연속 프레임은 너비를 줄여 **한 줄에 나란히** 넣고, 캡션 하나로 구간과 간격을 밝힌다:
+
+```markdown
+![[kSjySvJMdFo_01_12s.jpg|180]] ![[kSjySvJMdFo_05_12.5s.jpg|180]] ![[kSjySvJMdFo_06_13s.jpg|180]] ![[kSjySvJMdFo_07_13.5s.jpg|180]]
+*[0:12](https://youtu.be/kSjySvJMdFo?t=12) ~ 0:13.5 (0.5초 간격) - 벽을 따라 그린 선이 풀리며 원으로 펴진다*
 ```
 
 캡션 형식:
