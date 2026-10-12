@@ -1,6 +1,6 @@
 {
   "name": "session-pin",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "세션 핀 - Claude Code pinboard 를 데스크톱 앱·Obsidian 환경에서 비슷하게 쓰려고 만든 훅 플러그인. 세션마다 미결 질문·진행 중·끝남을 볼트 노트 하나에 모으고, 답변 끝 질문을 맥락과 함께 자동 기록, '핀' 으로 보드 보기",
   "author": {
     "name": "elhaz"

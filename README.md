@@ -11,10 +11,10 @@
 | [macro-report](./macro-report/) | 2.1.1 | 거시경제 주간 보고 (뉴스 기반 1·3·6개월 ETF·거시 예측 + 판단 파일 예측 원장 + 매주 자동 채점 + 쉬운말 보고 1개) | commands, skills, agents, scripts |
 | [dailylog](./dailylog/) | 0.3.0 | Obsidian 데일리로그 관리 (날짜별 읽기, 항목 추가, 통계 요약) | commands, skills, scripts |
 | [nanobanana](./nanobanana/) | 2.0.0 | Gemini AI 이미지 생성/편집 (Nano Banana 2 / Pro) | commands, skills |
-| [session-pin](./session-pin/) | 0.1.0 | Claude Code pinboard 를 데스크톱 앱·Obsidian 에서 비슷하게 — 세션마다 미결 질문·진행 중·끝남을 볼트 노트 하나에 모음 (답변 끝 질문 자동 기록, `핀` 으로 보기) | hooks, scripts |
+| [session-pin](./session-pin/) | 0.2.0 | Claude Code pinboard 를 데스크톱 앱·Obsidian 에서 비슷하게 — 세션마다 미결 질문·진행 중·끝남을 볼트 노트 하나에 모음 (답변 끝 질문 자동 기록, `핀` 으로 보기, `핀 닫기`·방치 노트 자동 정리) | hooks, scripts |
 | [openai-image](./openai-image/) | 1.3.0 | OpenAI 이미지 생성/편집 (hq=gpt-image-1.5 인증불필요 / fast=gpt-image-1-mini / v2=gpt-image-2 인증필요, 마스크 편집, 투명 배경, prompt-rewriter 에이전트, 기본 webp) | commands, skills, agents |
 
-마켓플레이스 메타데이터: `.claude-plugin/marketplace.json` (현재 v1.17.0)
+마켓플레이스 메타데이터: `.claude-plugin/marketplace.json` (현재 v1.18.0)
 
 ## 설치 방법
 

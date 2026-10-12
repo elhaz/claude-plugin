@@ -3,7 +3,8 @@
 Claude Code 의 pinboard(터미널 전용·세션 휘발)를 데스크톱 앱·Obsidian 환경에서 비슷하게 쓰려고 만들었다.
 
 플러그인 훅에서 부른다 (hooks/hooks.json):
-  UserPromptSubmit → session-pin.py prompt   ("핀" 이면 보드 전체, 아니면 미결 요약을 컨텍스트로 주입)
+  UserPromptSubmit → session-pin.py prompt   ("핀" 이면 보드 전체, "핀 닫기" 면 노트 삭제, 아니면 미결 요약을 컨텍스트로 주입.
+                                              방치된 다른 세션 노트도 함께 정리)
   Stop             → session-pin.py stop     (마지막 답변 끝의 질문을 맥락 한 토막과 함께 "미결 질문" 에 자동 추가)
   SessionEnd       → session-pin.py end      (열린 항목이 없으면 노트 삭제)
 
@@ -11,11 +12,16 @@ Claude Code 의 pinboard(터미널 전용·세션 휘발)를 데스크톱 앱·O
 배치 `claude -p` 에서는 아무것도 하지 않는다. SESSION_PIN=0/1 로 강제로 끄고 켤 수 있다.
 
 노트 위치: $SESSION_PIN_DIR > $OBSIDIAN_VAULT/00_Inbox/세션 핀. 둘 다 없으면 아무것도 하지 않는다.
+
+폰·데스크톱 앱은 세션을 직접 끝낼 수 없어 SessionEnd 가 거의 오지 않는다(아카이브 훅도 없음). 그래서
+대화가 멈춘 세션의 노트를 정리한다 — 열린 항목이 없으면 1일, 있으면 3일 뒤. 대화가 멈췄는지는 세션 기록
+파일(transcript)의 수정 시각으로 본다. 매핑(MAP_DIR)이 기기마다 따로라 각 기기는 자기 세션 노트만 지운다.
 """
 import json
 import os
 import re
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -25,6 +31,10 @@ PIN_DIR = Path(_DIR)
 MAP_DIR = Path(os.environ.get("SESSION_PIN_MAP", Path.home() / ".claude" / "session-pins"))
 SECTIONS = ("미결 질문", "진행 중", "끝남")
 SHOW_RE = re.compile(r"^\s*/?핀(\s*(보여\s*줘|보기))?\s*[.!?]?\s*$")
+CLOSE_RE = re.compile(r"^\s*/?핀\s*(닫기|닫아\s*줘|지워\s*줘|삭제)\s*[.!?]?\s*$")
+STALE_DONE = 1 * 86400  # 열린 항목 없는 노트: 대화가 이만큼 멈추면 삭제
+STALE_OPEN = 3 * 86400  # 열린 항목 남은 노트
+CLAUDE_DIR = Path(os.environ.get("CLAUDE_CONFIG_DIR") or Path.home() / ".claude")
 
 
 INTERACTIVE_ENTRYPOINTS = {"cli", "claude-desktop", "claude-vscode"}
@@ -60,7 +70,7 @@ def first_prompt(transcript: str) -> str:
 def pin_path(sid: str, transcript: str, create: bool) -> Path | None:
     m = MAP_DIR / f"{sid}.path"
     if m.exists():
-        p = Path(m.read_text(encoding="utf-8").strip())
+        p = Path(m.read_text(encoding="utf-8").splitlines()[0].strip())
         return p if p.exists() or create else None
     if not create:
         return None
@@ -74,7 +84,7 @@ def pin_path(sid: str, transcript: str, create: bool) -> Path | None:
         f"# 세션 핀 — {title}\n\n" + "".join(f"## {s}\n\n" for s in SECTIONS),
         encoding="utf-8",
     )
-    m.write_text(str(p), encoding="utf-8")
+    m.write_text(f"{p}\n{transcript}", encoding="utf-8")
     return p
 
 
@@ -164,8 +174,55 @@ def cmd_stop(ev: dict) -> None:
     p.write_text(text, encoding="utf-8")
 
 
+def has_open(text: str) -> bool:
+    return any(l.startswith("- [ ]") for s in SECTIONS for l in items(text, s))
+
+
+def drop(sid: str, p: Path | None) -> None:
+    if p is not None:
+        p.unlink(missing_ok=True)
+    (MAP_DIR / f"{sid}.path").unlink(missing_ok=True)
+
+
+def last_active(m: Path) -> float:
+    """세션 기록 파일의 수정 시각. 못 찾으면 매핑 파일 시각."""
+    lines = m.read_text(encoding="utf-8").splitlines()
+    cands = [Path(lines[1].strip())] if len(lines) > 1 and lines[1].strip() else []
+    cands += list((CLAUDE_DIR / "projects").glob(f"*/{m.stem}.jsonl"))
+    times = [c.stat().st_mtime for c in cands if c.exists()]
+    return max(times) if times else m.stat().st_mtime
+
+
+def sweep(current: str) -> None:
+    """대화가 멈춘 다른 세션의 노트를 지운다."""
+    if not MAP_DIR.is_dir():
+        return
+    now = time.time()
+    for m in MAP_DIR.glob("*.path"):
+        if m.stem == current:
+            continue
+        try:
+            p = Path(m.read_text(encoding="utf-8").splitlines()[0].strip())
+            if not p.exists():
+                drop(m.stem, None)
+                continue
+            limit = STALE_OPEN if has_open(p.read_text(encoding="utf-8")) else STALE_DONE
+            if now - last_active(m) > limit:
+                drop(m.stem, p)
+        except (OSError, IndexError):
+            continue
+
+
 def cmd_prompt(ev: dict) -> None:
     sid, tr = ev["session_id"], ev.get("transcript_path", "")
+    sweep(sid)
+    if CLOSE_RE.match(ev.get("prompt", "")):
+        p = pin_path(sid, tr, create=False)
+        drop(sid, p)
+        ctx = (f"[세션 핀] 사용자 요청으로 이 세션 핀 노트를 지웠다({p.name if p else '노트 없음'}). "
+               f"지웠다고 한 줄로만 알린다. 이후 답변 끝에 질문이 나오면 노트가 새로 생긴다.")
+        print(json.dumps({"hookSpecificOutput": {"hookEventName": "UserPromptSubmit", "additionalContext": ctx}}))
+        return
     show = bool(SHOW_RE.match(ev.get("prompt", "")))
     p = pin_path(sid, tr, create=show)
     if p is None:
@@ -194,10 +251,8 @@ def cmd_end(ev: dict) -> None:
     p = pin_path(ev["session_id"], "", create=False)
     if p is None:
         return
-    text = p.read_text(encoding="utf-8")
-    if not any(l.startswith("- [ ]") for s in SECTIONS for l in items(text, s)):
-        p.unlink(missing_ok=True)
-        (MAP_DIR / f"{ev['session_id']}.path").unlink(missing_ok=True)
+    if not has_open(p.read_text(encoding="utf-8")):
+        drop(ev["session_id"], p)
 
 
 def main() -> None:
