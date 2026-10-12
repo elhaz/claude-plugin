@@ -11,9 +11,10 @@
 | [macro-report](./macro-report/) | 2.1.1 | 거시경제 주간 보고 (뉴스 기반 1·3·6개월 ETF·거시 예측 + 판단 파일 예측 원장 + 매주 자동 채점 + 쉬운말 보고 1개) | commands, skills, agents, scripts |
 | [dailylog](./dailylog/) | 0.3.0 | Obsidian 데일리로그 관리 (날짜별 읽기, 항목 추가, 통계 요약) | commands, skills, scripts |
 | [nanobanana](./nanobanana/) | 2.0.0 | Gemini AI 이미지 생성/편집 (Nano Banana 2 / Pro) | commands, skills |
+| [session-pin](./session-pin/) | 0.1.0 | Claude Code pinboard 를 데스크톱 앱·Obsidian 에서 비슷하게 — 세션마다 미결 질문·진행 중·끝남을 볼트 노트 하나에 모음 (답변 끝 질문 자동 기록, `핀` 으로 보기) | hooks, scripts |
 | [openai-image](./openai-image/) | 1.3.0 | OpenAI 이미지 생성/편집 (hq=gpt-image-1.5 인증불필요 / fast=gpt-image-1-mini / v2=gpt-image-2 인증필요, 마스크 편집, 투명 배경, prompt-rewriter 에이전트, 기본 webp) | commands, skills, agents |
 
-마켓플레이스 메타데이터: `.claude-plugin/marketplace.json` (현재 v1.16.0)
+마켓플레이스 메타데이터: `.claude-plugin/marketplace.json` (현재 v1.17.0)
 
 ## 설치 방법
 
@@ -47,7 +48,7 @@ source 레포에서 수정한 후 즉시 반영하려면:
 |------|---------------|------|
 | `FDP_API_BASE` | macro-report, stock-analysis | findata(fdp) 주소. 미설정 시 `http://localhost:8000`(응답하면) → `https://findata.xhhan.com` |
 | `FDP_API_KEY` / `FDP_REPORTER_API_KEY` | macro-report, stock-analysis | (선택) fdp write 키 — 데이터 갭 기록, stock-analysis 는 미수집 종목 수집 요청에도 사용 |
-| `OBSIDIAN_VAULT` | dailylog, macro-report, stock-analysis, youtube-to-obsidian | Obsidian Vault 루트 절대경로. 설정하면 어떤 작업 디렉토리에서 실행해도 Vault 기준으로 읽고 쓴다. 미설정 시 현재 작업 디렉토리를 Vault 루트로 간주(기존 동작). |
+| `OBSIDIAN_VAULT` | dailylog, macro-report, session-pin, stock-analysis, youtube-to-obsidian | Obsidian Vault 루트 절대경로. 설정하면 어떤 작업 디렉토리에서 실행해도 Vault 기준으로 읽고 쓴다. 미설정 시 현재 작업 디렉토리를 Vault 루트로 간주(기존 동작). |
 
 Claude Code `settings.json` 의 `env` 블록에 넣어두면 세션과 서브에이전트 모두에 상속된다:
 
@@ -85,6 +86,7 @@ claude-plugin/                            # 저장소 루트
 │   └── skills/
 ├── dailylog/                             # 개별 플러그인 4
 ├── nanobanana/                           # 개별 플러그인 5
+├── session-pin/                          # 훅 플러그인 (hooks/hooks.json + scripts)
 ├── openai-image/                         # 개별 플러그인 6
 │   ├── .claude-plugin/plugin.json
 │   ├── agents/                           # prompt-rewriter 서브에이전트
