@@ -51,7 +51,7 @@ echo "TODAY=$TODAY DATA=$DATA PREV=${PREV:-없음} P=$P use_api=$USE_API fdp=$FD
 
 ## Step 1: 뉴스 헤드라인 (Bash)
 
-데이터 플랫폼이 3시간마다 누적한 RSS 헤드라인에서 한 주치를 거시 관련만 걸러 파일로 만든다. 헤드라인 API 는 **내부망 전용**이라 scanner(WebFetch) 가 직접 부를 수 없다.
+데이터 플랫폼이 3시간마다 누적한 RSS 헤드라인과 SAVE 앱 기사·리포트 제목에서 한 주치를 거시 관련만 걸러 파일로 만든다. 헤드라인 API 는 **내부망 전용**이라 scanner(WebFetch) 가 직접 부를 수 없다.
 
 ```bash
 SINCE="${PREV:-$(date -d "$TODAY -7 day" '+%Y-%m-%d')}"
