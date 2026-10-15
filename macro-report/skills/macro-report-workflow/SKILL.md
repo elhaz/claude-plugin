@@ -24,7 +24,7 @@ v1(1.7.0, 2025-10 ~ 2026-09-28)은 지난 데이터 요약 → 개별 종목 추
   └── macro-writer (inherit — 세션 모델) × 1
         ├── 데이터 파일 5개 + 지난주 판단 → 판단.md (예측 원장 JSON)
         ├── weekly_score.py validate → score (만기 예측 채점 + 차트 2개 → 채점.md)
-        └── {날짜} 거시경제 주간 보고.md (쉬운말, 공개 게시 대상)
+        └── {날짜} 거시경제 주간 보고.md (쉬운말, 게시 여부는 실행 루틴이 정함)
 ```
 
 ## 예측과 채점
@@ -41,7 +41,7 @@ v1(1.7.0, 2025-10 ~ 2026-09-28)은 지난 데이터 요약 → 개별 종목 추
 
 ## 뉴스 출처 (약관 확인)
 
-연합뉴스(경제·마켓·국제)·CNBC·연준 RSS 를 데이터 플랫폼이 누적 → 내부망 전용 API → `fetch_headlines.py`. 여기에 FOMC 일정, FedWatch, WebSearch. MarketWatch·Google News·SAVE·FinancialJuice 는 약관상 자동 수집 금지라 쓰지 않는다. **기사 문장을 옮기지 않고**, 사실은 자체 문장으로, 근거는 각주 원문 링크로. 상세: [question-outlook.md](references/question-outlook.md)
+연합뉴스(경제·마켓·국제)·CNBC·연준 RSS 와 SAVE 앱 기사(SAVE PICK·로이터 번역·SAVE 리포트 제목)를 데이터 플랫폼이 누적 → 내부망 전용 API → `fetch_headlines.py`. 여기에 FOMC 일정, FedWatch, WebSearch. MarketWatch·Google News·FinancialJuice 는 웹에서 자동 수집하지 않는다. **기사 문장을 옮기지 않고**, 사실은 자체 문장으로, 근거는 각주 원문 링크로. 상세: [question-outlook.md](references/question-outlook.md)
 
 ## 참고 문서
 

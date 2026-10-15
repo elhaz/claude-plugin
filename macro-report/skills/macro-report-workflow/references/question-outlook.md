@@ -13,7 +13,7 @@
 
 | 출처 | 받는 법 | 쓰는 법 |
 |---|---|---|
-| **뉴스 헤드라인 파일** (`headlines_path`) | 오케스트레이터가 미리 만든 파일을 Read | 연합뉴스(경제·마켓·국제)·CNBC(Top·Economy)·연준 보도자료 RSS 를 데이터 플랫폼이 3시간마다 누적한 것에서 거시 관련만 거른 표. **사건 후보의 1차 목록** |
+| **뉴스 헤드라인 파일** (`headlines_path`) | 오케스트레이터가 미리 만든 파일을 Read | 연합뉴스(경제·마켓·국제)·CNBC(Top·Economy)·연준 보도자료 RSS 를 데이터 플랫폼이 3시간마다 누적한 것에서 거시 관련만 거른 표 + SAVE 기사(SAVE PICK 전부·로이터 번역 거시 관련)·SAVE 리포트 날짜별 기사 제목. **사건 후보의 1차 목록**. SAVE 는 기사 주소가 없어 원문 URL 대신 `SAVE PICK`·`로이터(SAVE)` 와 날짜를 출처로 적는다 |
 | FOMC 일정 | WebFetch `{api_base_url}/api/calendar/fomc?start_date={현재일}` | 다음 회의 2건만 |
 | 지표 발표일 | WebFetch `{api_base_url}/api/calendar/releases?symbols=CPIAUCSL,PAYEMS,PCEPI,GDP&start_date={현재일}&end_date={현재일+60일}` | CPI·고용·PCE·GDP 다음 1회씩 |
 | 시장 내재 기대치 | WebFetch `{api_base_url}/api/fed-expectations/latest` | FOMC 회의별 인상/동결/인하 확률 |
@@ -22,10 +22,10 @@
 - RSS 를 직접 WebFetch 하지 않는다 — WebFetch 는 연합뉴스에 접속하지 못하고, 헤드라인 조회 API 는 내부망 전용이다
 - 헤드라인 파일이 없거나 비었으면 WebSearch 로 "이번 주 주요 경제 뉴스" 류를 찾아 대신하고, 수집 메타에 `headlines_missing: true` 를 적는다
 
-**쓰지 않는 출처** (약관상 자동 수집 금지 또는 차단): MarketWatch·다우존스, Google News, SAVE(세이브티커), FinancialJuice, Reuters, FT, Bloomberg. WebSearch 결과에 이 도메인이 나와도 **본문을 WebFetch 하지 않는다**. 검색 요약에 보이는 사실만 쓰고 출처는 그 도메인으로 적는다.
+**웹에서 읽지 않는 출처** (약관상 자동 수집 금지 또는 차단): MarketWatch·다우존스, Google News, FinancialJuice, Reuters, FT, Bloomberg. (SAVE 앱 기사 — SAVE PICK·로이터 번역·SAVE 리포트 — 는 데이터 플랫폼이 모아 헤드라인 파일의 `## SAVE` 절로 들어온다. 웹에서 따로 찾지 않는다.) WebSearch 결과에 이 도메인이 나와도 **본문을 WebFetch 하지 않는다**. 검색 요약에 보이는 사실만 쓰고 출처는 그 도메인으로 적는다.
 
 > [!important] 기사 문장을 옮기지 않는다
-> 쉬운말 보고서가 공개 게시되므로 데이터 파일에도 **사실만 자체 문장 한 줄로** 요약한다. 헤드라인도 그대로 복사하지 말고 요약한다. 대신 **원문 URL 은 반드시** 남긴다 — 보고서 각주에서 원문으로 따라갈 수 있어야 한다.
+> 쉬운말 보고서가 공개 게시될 수 있으므로 데이터 파일에도 **사실만 자체 문장 한 줄로** 요약한다. 헤드라인도 그대로 복사하지 말고 요약한다. 대신 **원문 URL 은 반드시** 남긴다 — 보고서 각주에서 원문으로 따라갈 수 있어야 한다.
 
 ## 수집 절차
 

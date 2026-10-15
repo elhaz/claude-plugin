@@ -43,7 +43,7 @@
 
 | 스크립트 | 용도 |
 |---|---|
-| `scripts/fetch_headlines.py` | `/api/news/headlines` (내부망 전용) → 거시 키워드 필터 → `데이터/{날짜}/뉴스헤드라인.md` |
+| `scripts/fetch_headlines.py` | `/api/news/headlines` + SAVE `/api/news/articles`·`/api/news/reports` (내부망 전용) → 거시 키워드 필터 → `데이터/{날짜}/뉴스헤드라인.md` |
 | `scripts/weekly_score.py validate <판단.md>` | 판단 파일 스키마 검증 |
 | `scripts/weekly_score.py score --data-root <데이터> --date <날짜>` | 모든 판단 파일의 만기 예측 채점 + 차트 → `채점.md` |
 
@@ -62,13 +62,14 @@
 | 파일 | 대상 |
 |---|---|
 | `분석/데이터/{날짜}/{liquidity,regime,sector,insider,outlook}.md` | LLM 입력 (영구 보관, 게시 안 함) |
-| `분석/데이터/{날짜}/뉴스헤드라인.md` | LLM 입력 — 연합뉴스 RSS 는 개인 용도만 허용, **게시 금지** |
+| `분석/데이터/{날짜}/뉴스헤드라인.md` | LLM 입력 — 연합뉴스 RSS·SAVE 기사는 개인 용도만, **게시 금지** |
 | `분석/데이터/{날짜}/판단.md` | 예측 원장 — 게시 후 수정 금지 |
 | `분석/데이터/{날짜}/채점.md` | 성적표 + 차트 |
-| `분석/{날짜} 거시경제 주간 보고.md` | 사람이 읽는 유일한 문서 (공개 게시) |
+| `분석/{날짜} 거시경제 주간 보고.md` | 사람이 읽는 유일한 문서 (게시 여부는 실행 루틴이 정함) |
 
 ## Version History
 
+- **2.2.0** (2026-10-16): 뉴스 헤드라인 파일에 SAVE 앱 기사 추가 — fdp `/api/news/articles`(SAVE PICK 전부·로이터 번역 거시 관련)·`/api/news/reports`(날짜별 "오늘의 소식" 제목), fdp 에 없으면 건너뜀. "SAVE 쓰지 않음" 문구 철회(사용자 결정). 보고서 공개 게시를 전제하지 않고 게시 여부는 실행 루틴이 정한다.
 - **2.1.1** (2026-10-06): 공매도 잔고·일별 공매도 비율은 fdp `/api/short/{ticker}` (fdp #161) — scanner 경로 표·insider 템플릿.
 - **2.1.0** (2026-10-06): fdp 에 있는 데이터를 웹으로 찾지 않게 — scanner 에 자주 놓치던 항목의 fdp 경로 표(FOMC·지표 발표일·GDPNow·FedWatch·마진 부채·기간 수익률/YTD·상관계수·워치리스트 내부자)를 두고, 수익률·상관은 계산 API(`/api/analysis/returns`·`correlations`, fdp #157)로만 구한다. insider 도 B 모드(워치리스트는 fdp, 시장 전체 상위 15 는 웹). 질문 템플릿 5종에 `fdp:` 출처 힌트. FRED 19→40종 등 낡은 수치 정정.
 - **2.0.4** (2026-09-30): 데이터 플랫폼 주소 규칙을 하나로 — collect·헤드라인·채점·갭 전송 모두 `--api-base` → `FDP_API_BASE` → localhost(응답하면) → 공개 주소. `FDP_INTERNAL_BASE` 제거. 갭 전송이 NAS 에서 localhost 로 간다. scanner 만 WebFetch 제약으로 내부 주소일 때 공개 주소.
