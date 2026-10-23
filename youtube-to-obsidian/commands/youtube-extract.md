@@ -110,6 +110,40 @@ yt-dlp --write-sub --write-auto-sub --sub-lang ko-orig --sub-format vtt --skip-d
 yt-dlp --write-sub --write-auto-sub --sub-lang en --sub-format vtt --skip-download -o "$WORK_DIR/%(title)s [%(id)s]" "<YouTube_URL>"
 ```
 
+#### 3.5 한국어 해설 + 외국어 인터뷰 영상 (원본 자막이 외국어로만 잡힐 때)
+
+한국 채널이 외국 인터뷰를 인용하며 한국어로 해설하는 영상은 YouTube 가 언어를 영어로 판정해 **원본 자동자막이 `en-orig` 하나뿐**일 수 있다. 이 트랙에는 인터뷰 발언만 있고 **한국어 해설은 통째로 빠진다**. 이때 `ko` 는 `en-orig` 를 번역한 트랙이라 해설이 없기는 마찬가지다 (2026-10-23).
+
+알아보는 법: 채널·제목·설명란이 한국어인데 `yt-dlp --list-subs` 의 자동자막에 `ko-orig` 가 없고 `en-orig` 만 있다. 받은 영어 자막에 수십 초씩 빈 구간이 있고, 그 구간 프레임을 보면 한국어 화면 자막·숫자 카드가 있다.
+
+대처 — 세 출처를 맞춰 쓴다:
+
+1. **인터뷰 발언**: `en-orig` 자막 (가장 정확)
+2. **해설 음성**: 오디오를 받아 한국어로 받아쓴다. 받아쓰기 도구가 없으면 `uv run --with faster-whisper --with numpy` 로 임시로 돌린다. `av` 버전 충돌(`open() got an unexpected keyword argument 'metadata_errors'`)을 피하려고 ffmpeg 로 16kHz PCM 을 만들어 배열로 넘긴다:
+   ```bash
+   yt-dlp -f "ba[ext=m4a]/ba" -o "$WORK_DIR/audio.%(ext)s" "<YouTube_URL>"
+   ffmpeg -i "$WORK_DIR/audio.m4a" -ac 1 -ar 16000 -f s16le "$WORK_DIR/audio.pcm" -y
+   ```
+   ```python
+   # stt.py <audio.pcm> <out.txt> — 스크립트는 작업 폴더 밖(스크래치)에 둔다
+   import sys, numpy as np
+   from faster_whisper import WhisperModel
+   a = np.fromfile(sys.argv[1], dtype=np.int16).astype(np.float32) / 32768
+   m = WhisperModel("small", device="cpu", compute_type="int8", cpu_threads=4)
+   segs, _ = m.transcribe(a, language="ko", vad_filter=True, beam_size=1)
+   with open(sys.argv[2], "w", encoding="utf-8") as f:
+       for s in segs:
+           f.write(f"[{int(s.start)//60}:{s.start%60:05.2f}] {s.text.strip()}\n"); f.flush()
+   ```
+   CPU small 모델은 14분 영상에 10분 남짓 걸리니 백그라운드로 돌린다. 영어 구간은 엉터리로 나오고 해설도 고유명사·숫자가 틀리거나 일부 빠진다
+3. **화면 자막·숫자 카드**: 영상을 5초 간격 몽타주(5×5, 한 장에 2분)로 훑어 한국어 화면 자막과 카드를 읽는다. 받아쓰기가 빠뜨리거나 틀린 해설은 화면 자막으로 바로잡고, 카드의 숫자는 원본으로 삼는다. 카드는 원래 해상도로 다시 뽑아 읽는다
+   ```bash
+   mkdir -p "$WORK_DIR/scan"
+   ffmpeg -i "$WORK_DIR/video.mp4" -vf "fps=1/5,scale=256:-1,drawtext=text='%{pts\:hms}':x=4:y=4:fontsize=20:fontcolor=yellow:box=1:boxcolor=black,tile=5x5" -q:v 4 "$WORK_DIR/scan/m_%02d.jpg" -y
+   ```
+
+세 출처가 어긋나면 화면 자막·카드 > 영어 자막 > 받아쓰기 순으로 믿고, 어긋난 점은 노트에 밝힌다 (예: 영어 자막 "1 million" vs 화면 자막 "10억 명"). 노트의 언어 항목에 `한국어 해설 + 영어 인터뷰 원본` 과 정리 출처를 적는다.
+
 ### 4단계: VTT를 마크다운으로 변환 (임시 폴더에서)
 
 임시 폴더의 VTT 파일을 찾아 파이썬 스크립트로 변환한다.
