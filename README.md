@@ -13,8 +13,9 @@
 | [nanobanana](./nanobanana/) | 2.0.0 | Gemini AI 이미지 생성/편집 (Nano Banana 2 / Pro) | commands, skills |
 | [session-pin](./session-pin/) | 0.2.0 | Claude Code pinboard 를 데스크톱 앱·Obsidian 에서 비슷하게 — 세션마다 미결 질문·진행 중·끝남을 볼트 노트 하나에 모음 (답변 끝 질문 자동 기록, `핀` 으로 보기, `핀 닫기`·방치 노트 자동 정리) | hooks, scripts |
 | [openai-image](./openai-image/) | 1.3.0 | OpenAI 이미지 생성/편집 (hq=gpt-image-1.5 인증불필요 / fast=gpt-image-1-mini / v2=gpt-image-2 인증필요, 마스크 편집, 투명 배경, prompt-rewriter 에이전트, 기본 webp) | commands, skills, agents |
+| [proposal-estimate](./proposal-estimate/) | 0.1.0 | 고객 제안서(PPT) 요청 요약 노트 + 내부용 공수 산정 노트 (쪽 번호 근거 · 받는 쪽별 질문 · 기능 모듈 표 · 전문가 페르소나 검토 · 레인 그림 · SI PM 페르소나 사람 견적 + 배율 실작업) | commands, skills, agents, scripts |
 
-마켓플레이스 메타데이터: `.claude-plugin/marketplace.json` (현재 v1.18.0)
+마켓플레이스 메타데이터: `.claude-plugin/marketplace.json` (현재 v1.19.0)
 
 ## 설치 방법
 
@@ -87,6 +88,7 @@ claude-plugin/                            # 저장소 루트
 ├── dailylog/                             # 개별 플러그인 4
 ├── nanobanana/                           # 개별 플러그인 5
 ├── session-pin/                          # 훅 플러그인 (hooks/hooks.json + scripts)
+├── proposal-estimate/                    # 제안서 요약 · 공수 산정 (agents 3 + scripts + config)
 ├── openai-image/                         # 개별 플러그인 6
 │   ├── .claude-plugin/plugin.json
 │   ├── agents/                           # prompt-rewriter 서브에이전트
