@@ -1,0 +1,41 @@
+{
+  "sections": [
+    {"key": "A", "name": "착수 · 분석", "kind": "analysis"},
+    {"key": "DEV", "name": "소요 · 발주 · 입고"},
+    {"key": "H", "name": "테스트 · 배포 · 교육"}
+  ],
+  "rows": [
+    {"id": "A1", "section": "A", "item": "요구사항 확정 · 질문 회신 반영", "md": 5.0, "basis": "질문지 2~3회 왕복, 반영 문서화"},
+    {"id": "A2", "section": "A", "item": "업무 흐름 · 데이터 모델 설계", "md": 6.0, "basis": "p.32, 37. 테이블 약 15개"},
+    {"id": "F02-2", "section": "DEV", "item": "규격 · 재질별 집계, 여유율", "md": 5.0, "basis": "p.33 집계표 14열", "kind": "dev"},
+    {"id": "F04-2", "section": "DEV", "item": "발주서 작성 · 승인 · 출력", "md": 6.0, "basis": "p.38. 업체별 분할, PDF 출력", "kind": "dev"},
+    {"id": "F05-0", "section": "DEV", "item": "공통 할당 엔진", "md": 5.0, "basis": "p.34 ②", "kind": "logic"},
+    {"id": "F07-2a", "section": "DEV", "item": "입고 · 검수 · 일부 입고", "md": 3.5, "basis": "p.35 목록 16열", "kind": "dev"},
+    {"id": "H1a", "section": "H", "item": "내부 통합 테스트 · 결함 수정", "md": 12.0, "basis": "업계 관행", "kind": "logic"},
+    {"id": "H1b", "section": "H", "item": "고객 UAT 시나리오 · 검수 대응", "md": 5.0, "basis": "업계 관행", "kind": "analysis"},
+    {"id": "H3", "section": "H", "item": "교육", "md": 2.5, "basis": "p.38. 준비 포함", "kind": "meeting"}
+  ],
+  "meetings": [
+    {"id": "M1", "item": "착수 회의 · 범위 확정", "md": 1.0, "note": "대면"},
+    {"id": "M2", "item": "주간 진행 공유 (약 14회 × 0.25 MD)", "md": 3.5, "note": "원격"}
+  ],
+  "uncertain": [
+    {"item": "F05-0 할당 엔진", "range": "4~10", "reason": "결과가 현장 담당자의 엑셀 감각과 맞을 때까지 규칙 조정이 반복된다"}
+  ],
+  "options": [
+    {"id": "O1", "item": "지연 경보 메일 발송", "md": 4.0, "basis": "메일 서버 연동, 양식 3종, 실패 기록"},
+    {"id": "O2", "item": "판재 모양 배치(네스팅) 직접 계산", "md": 25.0, "range": "20~40", "basis": "2차원 배치, 배치도, 수동 수정"}
+  ],
+  "increase": [
+    {"factor": "불확실 항목이 범위 위쪽으로 감", "md": "최대 +5", "basis": "F05-0 +5"}
+  ],
+  "reduce": [
+    {"item": "F04-2 다단계 결재 대신 1인 승인", "md": -1.0, "condition": "p.37 approver 단일"},
+    {"item": "F02-2 여유율 수동 조정 미룸", "md": -1.5, "rejected": true, "reason": "고객이 지금도 수동 조정한다(p.30)"}
+  ],
+  "warranty": {"md": 8.0, "basis": "오픈 뒤 2개월, 월 4 MD"},
+  "module_opinion": [
+    "형강 · 판재 공통 할당부를 F05-0 으로 떼어 냈다",
+    "입고 때 할당 상태 자동 전환은 숨은 연계 공수라 따로 센다"
+  ]
+}

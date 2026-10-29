@@ -1,0 +1,43 @@
+{
+  "title": "원자재 관리 업무 흐름 (예시)",
+  "eyebrow": "Swimlane · 예시",
+  "desc": "구매 · 생산관리 · 자재창고 · 보는 화면 네 줄에 소요 집계, 발주, 절단계획 매칭, 입고, 현황판 업무를 일이 거치는 순서대로 놓았다.",
+  "note": "공통 바탕(권한 · 알림 · 감사 기록)은 흐름이 없어 그림에서 뺐다.",
+  "stage_title": "요청 묶음",
+  "lanes": [
+    {"key": "plm", "name": "설계 · BOM", "code": "PLM 2.1"},
+    {"key": "buy", "name": "구매", "code": "MM 발주"},
+    {"key": "pp", "name": "생산관리", "code": "MM CP"},
+    {"key": "wh", "name": "자재창고", "code": "MM 입고"},
+    {"key": "view", "name": "보는 화면", "code": "MM 현황판 · PLM 1.1"}
+  ],
+  "stages": [
+    {"label": "지금 있음", "from": 0, "to": 0, "now": true},
+    {"label": "가 소요 · 발주", "from": 1, "to": 2},
+    {"label": "나 절단계획", "from": 3, "to": 3},
+    {"label": "다 입고", "from": 4, "to": 5},
+    {"label": "라 보기", "from": 6, "to": 6}
+  ],
+  "nodes": [
+    {"id": "bom", "name": "BOM 차수 등록", "sub": "지금 있는 화면", "kind": "now", "lane": "plm", "col": 0, "tag": "NOW"},
+    {"id": "mto", "name": "소요 집계 · 여유율", "sub": "규격 · 재질별", "lane": "buy", "col": 1, "tag": "F02"},
+    {"id": "po", "name": "구매요청 · 발주", "sub": "업체별 분할 · 승인", "lane": "buy", "col": 2, "tag": "F04"},
+    {"id": "cp", "name": "절단계획 매칭", "sub": "길이 · 면적 적합도", "lane": "pp", "col": 3, "tag": "F05"},
+    {"id": "rcv", "name": "입고 · 검수", "sub": "일부 입고 · 반품", "lane": "wh", "col": 4, "tag": "F07"},
+    {"id": "late", "name": "미입고 판정", "sub": "정기 실행 · 경보", "lane": "wh", "col": 5, "tag": "F08"},
+    {"id": "dash", "name": "원자재 현황판", "sub": "요약 카드 · 일정표", "lane": "view", "col": 6, "tag": "F09"}
+  ],
+  "edges": [
+    {"from": "bom", "to": "mto", "label": "BOM 받기"},
+    {"from": "mto", "to": "po"},
+    {"from": "po", "to": "cp", "to_dx": -30},
+    {"from": "cp", "to": "rcv", "label": "입고 예정", "to_dx": -30},
+    {"from": "rcv", "to": "late"},
+    {"from": "rcv", "to": "cp", "style": "back", "label": "할당 상태 전환", "from_dx": 30},
+    {"from": "late", "to": "dash", "style": "link", "label": "지연 이벤트"},
+    {"from": "cp", "to": "po", "style": "focus", "label": "부족분 재발주", "from_dx": 30}
+  ],
+  "texts": [
+    {"lane": "view", "col": 1, "dy": 40, "text": "보는 화면은 위 업무 기록을 모아 본다(선은 생략)."}
+  ]
+}
