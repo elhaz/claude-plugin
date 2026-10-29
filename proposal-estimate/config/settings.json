@@ -1,0 +1,38 @@
+{
+  "rate": {
+    "grade": "응용SW개발자",
+    "daily_won": 378250,
+    "monthly_won": 7754124,
+    "workdays_per_month": 20.5,
+    "applies": "2026-01-01 ~ 2026-12-31",
+    "source": "「2026년 적용 SW기술자 평균임금 공표」(한국인공지능 · 소프트웨어산업협회, 2025-12-19 공표) 1쪽 표 ⑨ 응용SW개발자. 소프트웨어진흥법 제46조 「소프트웨어기술자의 인건비 기준」",
+    "source_file": "D:\\kakao\\2026년_적용_SW기술자_평균임금_공표.pdf"
+  },
+  "factors": {
+    "dev": {
+      "label": "화면 · 기능 개발 (입력 · 조회 · 출력 · API) · 문서",
+      "factor": 0.45
+    },
+    "logic": {
+      "label": "계산 로직 · 기존 코드 수정 · 서버 구성 · 데이터 이관 · 테스트",
+      "factor": 0.6
+    },
+    "analysis": {
+      "label": "분석 · 설계 · 명세 · 검수 시나리오",
+      "factor": 0.75
+    },
+    "meeting": {
+      "label": "회의 · 교육",
+      "factor": 1.0
+    }
+  },
+  "rounding_md": 0.5,
+  "schedule": {
+    "md_per_week": 5
+  },
+  "notes": {
+    "vault_env": "OBSIDIAN_VAULT",
+    "default_dir": "01_Projects/회사업무",
+    "attachments_dir": "05_Attachments/첨부파일"
+  }
+}

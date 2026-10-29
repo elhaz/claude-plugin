@@ -1,0 +1,9 @@
+{
+  "name": "proposal-estimate",
+  "version": "0.1.0",
+  "description": "고객 제안서(PPT) 요청 요약 · 공수 산정 플러그인 - 쪽 번호 근거 요약 노트, 받는 쪽별 질문, 기능 모듈 표, 전문가 페르소나 검토 1·2차, 레인 그림, SI PM 페르소나 사람 견적 + 일 종류별 배율 실작업, 옵션·축소안·하자보수",
+  "author": {
+    "name": "elhaz"
+  },
+  "keywords": ["estimate", "proposal", "pptx", "si", "man-day", "obsidian", "persona"]
+}
