@@ -26,7 +26,8 @@ DAILYLOG_PATH_PATTERN = "02_Areas/일지/데일리로그 {year}.md"
 WEEKDAYS_KO = ["월", "화", "수", "목", "금", "토", "일"]
 
 # 섹션 목록
-SECTIONS = ["회사", "개인", "스크랩", "아이디어"]
+# 2026-11-02: 스크랩 칸 폐지 — 스크랩은 읽을거리 Base(노트 frontmatter 생성일)로만 본다
+SECTIONS = ["회사", "개인", "아이디어"]
 
 
 def get_dailylog_path(vault_path: Path, year: int) -> Path:
@@ -133,8 +134,8 @@ def parse_dailylog(content: str) -> dict:
             section_match = section_pattern.match(line)
             if section_match:
                 section_name = section_match.group(1).strip()
-                if section_name in SECTIONS:
-                    current_section = section_name
+                # 목록에 없는 칸(옛 '스크랩' 등)의 항목은 앞 칸에 섞이지 않게 버린다
+                current_section = section_name if section_name in SECTIONS else None
             elif current_section and line.strip().startswith("-") and not line.strip().startswith("---"):
                 entries[current_date]["sections"][current_section].append(line)
             elif line.startswith("---"):
@@ -199,9 +200,6 @@ def generate_day_template(date: datetime) -> str:
 -
 
 ##### 개인
--
-
-##### 스크랩
 -
 
 ##### 아이디어
@@ -497,7 +495,7 @@ def main():
     add_parser = subparsers.add_parser("add", help="항목 추가")
     add_parser.add_argument("item", type=str, help="추가할 항목 내용")
     add_parser.add_argument("--section", "-s", type=str, required=True,
-                            choices=SECTIONS, help="섹션 (회사, 개인, 스크랩, 아이디어)")
+                            choices=SECTIONS, help="섹션 (회사, 개인, 아이디어)")
     add_parser.add_argument("--date", "-d", type=str, default="today",
                             help="날짜 (기본값: today)")
 
