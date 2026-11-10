@@ -17,16 +17,25 @@ image: https://i.ytimg.com/vi/VIDEO_ID/maxresdefault.jpg
 ```
 ```
 
-## 필수 필드
+## 필드
 
-| 필드 | 설명 | 예시 |
-|------|------|------|
-| `url` | 원본 URL | `https://www.youtube.com/watch?v=abc123` |
-| `title` | 페이지/영상 제목 | `Claude Code 사용법` |
-| `description` | 설명 텍스트 | `AI 코딩 도구 소개` |
-| `host` | 호스트 도메인 | `www.youtube.com` |
-| `favicon` | 파비콘 URL | (아래 참조) |
-| `image` | 썸네일/대표 이미지 URL | (아래 참조) |
+| 필드 | 필수 | 설명 | 예시 |
+|------|------|------|------|
+| `url` | 필수 | 원본 URL | `https://www.youtube.com/watch?v=abc123` |
+| `title` | 필수 | 페이지/영상 제목 | `Claude Code 사용법` |
+| `description` | 필수 | 설명 텍스트 | `AI 코딩 도구 소개` |
+| `host` | 필수 | 호스트 도메인 | `www.youtube.com` |
+| `favicon` | 확인될 때만 | 파비콘 URL | (아래 참조) |
+| `image` | 확인될 때만 | 썸네일/대표 이미지 URL | (아래 참조) |
+
+> [!important] `favicon`·`image` 는 실제로 열릴 때만 넣는다 (2026-11-10)
+> 주소를 짐작해 넣으면 카드에 **빈 이미지 아이콘**이 뜬다. 넣기 전에 확인하고, 안 되면 **그 줄을 통째로 뺀다**(빈 값 `image:` 도 남기지 않는다). 둘 다 없는 카드도 제목·설명·주소만으로 깔끔하게 나온다.
+> ```bash
+> curl -sIL -o /dev/null -w '%{http_code} %{content_type}\n' "<URL>"   # 200 image/… 여야 넣는다
+> ```
+> - 유튜브 썸네일 `maxresdefault.jpg` 는 영상에 따라 없다(404) → `hqdefault.jpg` 로 바꾸거나 뺀다
+> - 블로그·뉴스의 `og:image` 는 만료 서명 URL 이거나 핫링크 차단일 수 있다 → 확인이 안 되면 뺀다
+> - 볼트 쪽 같은 규칙: `06_Metadata/Reference/Obsidian 마크다운 작성 가이드.md` 「웹 링크 추가」
 
 ## YouTube 전용 값
 
