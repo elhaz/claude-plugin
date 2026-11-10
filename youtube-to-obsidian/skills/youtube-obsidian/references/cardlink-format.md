@@ -77,6 +77,9 @@ description: 이것은 인용이 들어간 설명
 - 말줄임표 (`...`) → 제거
 - 콜론 (`:`) → ` -`로 변환
 - 줄바꿈 → 공백으로 변환
+- **첫 글자가 YAML 기호**(`[` `{` `@` `&` `*` `!` `|` `>` `%` `` ` `` `#`) → 대괄호·중괄호는 소괄호로, 그 밖의 기호는 앞에 낱말을 붙인다
+  - `title: [속보] Fable 5.2 출시` → YAML 이 목록으로 읽어 카드가 깨진다 → `title: (속보) Fable 5.2 출시`
+  - `title: @Transactional 붙였는데` → `@` 는 예약 기호라 오류 → `title: Spring @Transactional 붙였는데`
 
 ### Python 변환 함수
 
@@ -91,6 +94,14 @@ def sanitize_yaml_string(text):
     # 연속 공백 정리
     import re
     text = re.sub(r'\s+', ' ', text).strip()
+    # 첫 글자가 YAML 기호면 깨진다 — 대괄호·중괄호는 소괄호로 바꾼다
+    if text.startswith('['):
+        text = text.replace('[', '(', 1).replace(']', ')', 1)
+    elif text.startswith('{'):
+        text = text.replace('{', '(', 1).replace('}', ')', 1)
+    # 그 밖의 기호(@ & * ! | > % ` #)로 시작하면 손으로 낱말을 붙인다 (예: Spring @Transactional)
+    if text[:1] in tuple('@&*!|>%`#'):
+        raise ValueError(f'첫 글자가 YAML 기호: {text[:20]} — 앞에 낱말을 붙일 것')
     return text
 ```
 
