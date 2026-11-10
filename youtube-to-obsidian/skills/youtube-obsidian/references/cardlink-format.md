@@ -31,8 +31,9 @@ image: https://i.ytimg.com/vi/VIDEO_ID/maxresdefault.jpg
 > [!important] `favicon`·`image` 는 실제로 열릴 때만 넣는다 (2026-11-10)
 > 주소를 짐작해 넣으면 카드에 **빈 이미지 아이콘**이 뜬다. 넣기 전에 확인하고, 안 되면 **그 줄을 통째로 뺀다**(빈 값 `image:` 도 남기지 않는다). 둘 다 없는 카드도 제목·설명·주소만으로 깔끔하게 나온다.
 > ```bash
-> curl -sIL -o /dev/null -w '%{http_code} %{content_type}\n' "<URL>"   # 200 image/… 여야 넣는다
+> curl -sL -o /dev/null -w '%{http_code} %{content_type}\n' "<URL>"   # GET. 200 image/… 여야 넣는다
 > ```
+> - **`curl -I`(HEAD)로 확인하지 않는다** — 일부 언론사 CDN 은 HEAD 에만 404 를 주고 GET 은 200 이다(2026-11-10, 에너지안전신문·AI타임스·시사저널e)
 > - 유튜브 썸네일 `maxresdefault.jpg` 는 영상에 따라 없다(404) → `hqdefault.jpg` 로 바꾸거나 뺀다
 > - 블로그·뉴스의 `og:image` 는 만료 서명 URL 이거나 핫링크 차단일 수 있다 → 확인이 안 되면 뺀다
 > - 볼트 쪽 같은 규칙: `06_Metadata/Reference/Obsidian 마크다운 작성 가이드.md` 「웹 링크 추가」
