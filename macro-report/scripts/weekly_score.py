@@ -374,26 +374,37 @@ def chart_score(judgments: list[tuple[str, dict]]) -> str:
 
 
 def chart_allocation(judgments: list[tuple[str, dict]]) -> dict:
-    """차트 ②: 주별 비중 변화 (자산군 묶음 누적)."""
+    """차트 ②: 주별 비중 변화 (자산군 묶음 누적 막대).
+
+    비중은 주마다 한 번 정하는 값이라 주 사이를 잇는 면적 대신 끊어진 막대로 그린다.
+    배경은 투명하게 두어 어두운 테마에서도 튀지 않게 한다.
+    """
     groups = {"미국 주식(SPY)": ["SPY"], "업종·지역 ETF": RELATIVE, "장기채(TLT)": ["TLT"],
               "단기채(SHY)": ["SHY"], "금(GLD)": ["GLD"]}
     colors = {"미국 주식(SPY)": "#1E88E5", "업종·지역 ETF": "#8E24AA", "장기채(TLT)": "#FB8C00",
               "단기채(SHY)": "#90A4AE", "금(GLD)": "#FDD835"}
     recent = judgments[-12:]
-    dates = [rd for rd, _ in recent]
+    dates = [rd[5:] for rd, _ in recent]
     data = []
     for name, tickers in groups.items():
+        ys = [sum(j["allocation"].get(t, 0) for t in tickers) for _, j in recent]
         data.append({
-            "type": "scatter", "mode": "lines", "stackgroup": "one", "name": name,
-            "x": dates, "y": [sum(j["allocation"].get(t, 0) for t in tickers) for _, j in recent],
-            "line": {"color": colors[name]},
+            "type": "bar", "name": name, "x": dates, "y": ys,
+            "marker": {"color": colors[name]},
+            "text": [_mermaid_label(v) if v else "" for v in ys],
+            "textposition": "inside", "insidetextanchor": "middle",
         })
     return {
         "data": data,
         "layout": {
+            "barmode": "stack",
             "title": {"text": f"주별 비중 변화 (최근 {len(recent)}주, %)", "font": {"size": 14}},
-            "yaxis": {"range": [0, 100], "ticksuffix": "%"}, "height": 380,
-            "margin": {"l": 50, "r": 20, "t": 50, "b": 40},
+            "xaxis": {"type": "category"},
+            "yaxis": {"range": [0, 100], "ticksuffix": "%"},
+            "paper_bgcolor": "rgba(0,0,0,0)", "plot_bgcolor": "rgba(0,0,0,0)",
+            "font": {"color": "#9E9E9E"},
+            "legend": {"orientation": "h", "y": -0.15}, "height": 400,
+            "margin": {"l": 50, "r": 20, "t": 50, "b": 60},
         },
     }
 
