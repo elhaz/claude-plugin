@@ -21,7 +21,7 @@
 [2부] /macro-report:weekly
   └── macro-writer (inherit — 세션 모델) × 1
         ├── 판단.md (예측 원장 ```json)
-        ├── scripts/weekly_score.py validate / score → 채점.md (성적표 + 차트 2개)
+        ├── scripts/weekly_score.py validate / score → 채점.md (성적표 + 차트 3개)
         └── {날짜} 거시경제 주간 보고.md
 ```
 
@@ -69,6 +69,7 @@
 
 ## Version History
 
+- **2.3.0** (2026-11-16): 차트 ① ETF 전망을 Mermaid 가로 막대로 바꾸고(높이를 항목 수에 맞춰 종목명이 숨지 않게), 차트 ③ 시장 점수 흐름(Mermaid 선, 40점 경계선)을 더했다. 기존 Plotly 막대는 축이 ±50 이라 막대가 거의 안 보였다. 차트 ② 제목의 "최근 12주" 를 실제 주 수로 고쳤다.
 - **2.2.0** (2026-10-16): 뉴스 헤드라인 파일에 SAVE 앱 기사 추가 — fdp `/api/news/articles`(SAVE PICK 전부·로이터 번역 거시 관련)·`/api/news/reports`(날짜별 "오늘의 소식" 제목), fdp 에 없으면 건너뜀. "SAVE 쓰지 않음" 문구 철회(사용자 결정). 보고서 공개 게시를 전제하지 않고 게시 여부는 실행 루틴이 정한다.
 - **2.1.1** (2026-10-06): 공매도 잔고·일별 공매도 비율은 fdp `/api/short/{ticker}` (fdp #161) — scanner 경로 표·insider 템플릿.
 - **2.1.0** (2026-10-06): fdp 에 있는 데이터를 웹으로 찾지 않게 — scanner 에 자주 놓치던 항목의 fdp 경로 표(FOMC·지표 발표일·GDPNow·FedWatch·마진 부채·기간 수익률/YTD·상관계수·워치리스트 내부자)를 두고, 수익률·상관은 계산 API(`/api/analysis/returns`·`correlations`, fdp #157)로만 구한다. insider 도 B 모드(워치리스트는 fdp, 시장 전체 상위 15 는 웹). 질문 템플릿 5종에 `fdp:` 출처 힌트. FRED 19→40종 등 낡은 수치 정정.

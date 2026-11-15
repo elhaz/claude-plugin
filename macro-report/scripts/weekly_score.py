@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import re
 import sys
@@ -37,6 +38,8 @@ RELATIVE = [
 SECTORS = RELATIVE[:11]
 ALLOCATABLE = ASSET_CLASS + RELATIVE
 BENCHMARK_6040 = {"SPY": 60, "IEF": 40}
+# 시장 점수 "조건부 적합" 경계 (차트 ③ 기준선)
+GRADE_LINE = 40
 
 # 거시 변수: (데이터 종류, 심볼, 변환, '유지' 폭). 폭 안의 변화는 flat.
 #   변환 level = 수준 차이, pct = 변화율(%), yoy = 전년비(%)의 차이
@@ -330,23 +333,44 @@ def _fmt(x, digits=1, suffix=""):
     return "—" if x is None else f"{x:+.{digits}f}{suffix}" if suffix == "%p" else f"{x:.{digits}f}{suffix}"
 
 
-def chart_relative(j: dict) -> dict:
-    """차트 ①: 이번 주 ETF 3개월 전망 — S&P 500 보다 잘할 확률."""
+def _mermaid_label(v: float) -> str:
+    """Mermaid 숫자 표기 — 정수면 소수점을 뺀다."""
+    return str(int(v)) if float(v).is_integer() else str(v)
+
+
+def chart_relative(j: dict) -> str:
+    """차트 ①: 이번 주 ETF 3개월 전망 — S&P 500 보다 잘할 확률 (Mermaid 가로 막대).
+
+    높이를 항목 수에 맞춰 키운다. 작으면 Mermaid 가 겹치는 종목명을 하나 건너 숨긴다.
+    """
     rows = sorted(j["relative"], key=lambda r: r["h3m"])
     xs = [round((r["h3m"] - 0.5) * 100, 1) for r in rows]
-    return {
-        "data": [{
-            "type": "bar", "orientation": "h",
-            "y": [r["ticker"] for r in rows], "x": xs,
-            "text": [f"{round(r['h3m'] * 100)}%" for r in rows], "textposition": "outside",
-            "marker": {"color": ["#43A047" if x > 0 else "#E53935" if x < 0 else "#9E9E9E" for x in xs]},
-        }],
-        "layout": {
-            "title": {"text": "3개월 뒤 S&P 500 보다 잘할 확률 (50% 기준)", "font": {"size": 14}},
-            "xaxis": {"title": "50% 대비 (%p)", "zeroline": True, "range": [-50, 50]},
-            "height": 520, "margin": {"l": 60, "r": 30, "t": 50, "b": 40},
-        },
-    }
+    lim = max(5, math.ceil(max((abs(x) for x in xs), default=0)) + 1)
+    return "\n".join([
+        "---", "config:", "  xyChart:", f"    height: {max(400, 35 * len(rows))}",
+        "    xAxis:", "      labelFontSize: 12", "---",
+        "xychart horizontal",
+        '    title "3개월 뒤 S&P 500 보다 잘할 확률 (50% 대비 %p)"',
+        "    x-axis [" + ", ".join(f'"{r["ticker"]}"' for r in rows) + "]",
+        f'    y-axis "50% 대비 (%p)" {-lim} --> {lim}',
+        "    bar [" + ", ".join(_mermaid_label(x) for x in xs) + "]",
+    ])
+
+
+def chart_score(judgments: list[tuple[str, dict]]) -> str:
+    """차트 ③: 시장 점수 흐름 (Mermaid 선). 두 번째 선은 조건부 적합 경계 40점."""
+    recent = [(d, j) for d, j in judgments if isinstance(j.get("market_score"), (int, float))][-12:]
+    scores = [j["market_score"] for _, j in recent]
+    lo = math.floor((min(scores + [GRADE_LINE]) - 3) / 5) * 5
+    hi = math.ceil((max(scores + [GRADE_LINE]) + 3) / 5) * 5
+    return "\n".join([
+        "xychart",
+        '    title "시장 점수 (100점 만점)"',
+        "    x-axis [" + ", ".join(f'"{d[5:]}"' for d, _ in recent) + "]",
+        f"    y-axis {lo} --> {hi}",
+        "    line [" + ", ".join(_mermaid_label(v) for v in scores) + "]",
+        "    line [" + ", ".join([str(GRADE_LINE)] * len(recent)) + "]",
+    ])
 
 
 def chart_allocation(judgments: list[tuple[str, dict]]) -> dict:
@@ -367,7 +391,7 @@ def chart_allocation(judgments: list[tuple[str, dict]]) -> dict:
     return {
         "data": data,
         "layout": {
-            "title": {"text": "주별 비중 변화 (최근 12주, %)", "font": {"size": 14}},
+            "title": {"text": f"주별 비중 변화 (최근 {len(recent)}주, %)", "font": {"size": 14}},
             "yaxis": {"range": [0, 100], "ticksuffix": "%"}, "height": 380,
             "margin": {"l": 50, "r": 20, "t": 50, "b": 40},
         },
@@ -412,10 +436,10 @@ def render(score: dict, judgments: list[tuple[str, dict]], target: dict, today: 
                              f"| {x['bench']:+.2f}% | {x['ret'] - x['bench']:+.2f}%p |")
             lines.append("")
 
-    lines += ["## 차트 ① 이번 주 ETF 전망", "", "```plotly",
-              json.dumps(chart_relative(target), ensure_ascii=False, indent=1), "```", "",
+    lines += ["## 차트 ① 이번 주 ETF 전망", "", "```mermaid", chart_relative(target), "```", "",
               "## 차트 ② 주별 비중 변화", "", "```plotly",
-              json.dumps(chart_allocation(judgments), ensure_ascii=False, indent=1), "```", ""]
+              json.dumps(chart_allocation(judgments), ensure_ascii=False, indent=1), "```", "",
+              "## 차트 ③ 시장 점수 흐름", "", "```mermaid", chart_score(judgments), "```", ""]
     return "\n".join(lines)
 
 
